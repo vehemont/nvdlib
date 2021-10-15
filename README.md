@@ -1,5 +1,5 @@
 # NVDLib
-## A simple NIST NVD API wrapper library
+## Simple NIST NVD API wrapper library
 
 Nvdlib allows you to interface with the [NIST National Vulnerability Database](https://nvd.nist.gov/) and pull vulnerabilities (CVEs) and Common Platform Enumeration (CPEs) into easily accessible objects.
 
