@@ -32,7 +32,7 @@ CPE Search Examples
 Filter for a partial cpeMatchString for Microsoft Exchange 2013, return all the vulnerabilities 
 for said matching CPEs, and print their CVE IDs.
 
-.. note:: CVEs returned do *not* contain details and are only the ID.
+.. note:: CVEs returned using searchCPE do *not* contain details and are only the ID.
 
 .. code-block:: python 
     

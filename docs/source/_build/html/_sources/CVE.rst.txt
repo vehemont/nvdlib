@@ -18,7 +18,7 @@ Begin by importing NVDLib:
 
 Lets grab CVE-2017-0144.
 
-   >>> r = nvdlib.getCVE('CVE-2017-0144')
+   >>> r = nvdlib.getCVE('CVE-2017-0144', cpe_dict = False)
 
 From this point you are able to retrieve any information on the CVE.
 Here is a method to print the version 3 CVSS severity.
@@ -26,7 +26,9 @@ Here is a method to print the version 3 CVSS severity.
    >>> print(r.v3severity)
    HIGH
 
-Below are is all of the accessible variables within a CVE. Since these are assigned as is from the response of the aPI,
+.. autofunction:: nvdlib.cve.getCVE
+
+Below is all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
 I recommend printing some of the values to get an idea of what they will return.
 
 .. _cve:

@@ -15,8 +15,8 @@ To use NVDLib, first install it using pip:
 Requirements
 ----------------
 
-Next, download the required libraries for NVDLib to function. Requests is the only 
-library required.
+Next, download the Requests library for NVDLib to function. 
+Currently this is the only library required.
 
 .. code-block:: console
 
