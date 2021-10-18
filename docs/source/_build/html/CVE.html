@@ -182,7 +182,7 @@ publish date, etc.</p>
 </pre></div>
 </div>
 <p>Lets grab CVE-2017-0144.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">nvdlib</span><span class="o">.</span><span class="n">getCVE</span><span class="p">(</span><span class="s1">&#39;CVE-2017-0144&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">nvdlib</span><span class="o">.</span><span class="n">getCVE</span><span class="p">(</span><span class="s1">&#39;CVE-2017-0144&#39;</span><span class="p">,</span> <span class="n">cpe_dict</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>From this point you are able to retrieve any information on the CVE.
@@ -191,7 +191,21 @@ Here is a method to print the version 3 CVSS severity.</p>
 <span class="go">HIGH</span>
 </pre></div>
 </div>
-<p>Below are is all of the accessible variables within a CVE. Since these are assigned as is from the response of the aPI,
+<dl class="py function">
+<dt class="sig sig-object py" id="nvdlib.cve.getCVE">
+<span class="sig-prename descclassname"><span class="pre">nvdlib.cve.</span></span><span class="sig-name descname"><span class="pre">getCVE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">CVEID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpe_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nvdlib/cve.html#getCVE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nvdlib.cve.getCVE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build and send GET request for a single CVE then return object containing CVE attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>CVEID</strong> (<em>str</em>) – String of the CVE ID of the vulnerability to retrieve more details.</p></li>
+<li><p><strong>cpe_dict</strong> (<em>Bool True</em>) – Required True/False Boolean. Allows you to control whether matching CPE names from the Official Dictionary are included in the response.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Below is all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
 I recommend printing some of the values to get an idea of what they will return.</p>
 <span class="target" id="id1"></span><dl class="py class">
 <dt class="sig sig-object py" id="nvdlib.classes.CVE">

@@ -10,12 +10,12 @@ from .get import __get
 def getCVE(CVEID, cpe_dict):
     """Build and send GET request for a single CVE then return object containing CVE attributes.
 
-    CVEID -- String of the CVE ID of the vulnerability to retrieve more details.
+    :param CVEID: String of the CVE ID of the vulnerability to retrieve more details.
+    :type CVEID: str
 
-    cpe_dict -- Required True/False Boolean. Allows you to control whether matching CPE names from the Official Dictionary are included in the response.
+    :param cpe_dict: Required True/False Boolean. Allows you to control whether matching CPE names from the Official Dictionary are included in the response.
+    :type cpe_dict: Bool True
 
-    Example:
-    cve = nvdlib.getCVE('CVE-2021-39334', cpe_dict = False)
     """
     def __get(CVEID, cpe_dict):
         link = 'https://services.nvd.nist.gov/rest/json/cve/1.0/'

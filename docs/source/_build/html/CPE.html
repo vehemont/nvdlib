@@ -232,7 +232,7 @@ Example: '2020-06-28 00:00'</em>) – CPE modification end date</p></li>
 for said matching CPEs, and print their CVE IDs.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>CVEs returned do <em>not</em> contain details and are only the ID.</p>
+<p>CVEs returned using searchCPE do <em>not</em> contain details and are only the ID.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">nvdlib</span><span class="o">.</span><span class="n">searchCPE</span><span class="p">(</span><span class="n">cpeMatchString</span> <span class="o">=</span> <span class="s1">&#39;cpe:2.3:a:microsoft:exchange_server:2013:&#39;</span><span class="p">,</span> <span class="n">cves</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">eachCPE</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
