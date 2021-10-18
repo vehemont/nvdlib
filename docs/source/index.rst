@@ -58,6 +58,7 @@ Features:
  * CPE match string. 
  * Dump data into objects to be accessible easily as class attributes. 
 
+For more information on the NIST NVD API for CPE and CVEs, see the documentation here: https://nvd.nist.gov/General/News/New-NVD-CVE-CPE-API-and-SOAP-Retirement
 
 Navigation:
 ----------------
