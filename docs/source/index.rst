@@ -31,7 +31,7 @@ Demo::
    CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H 
 
 **NVDLib** is able to pull all data on known CVEs, search the NVD for CVEs 
-or `Common Platform Enumeration (CPE) <https://nvd.nist.gov/products/cpe>`_ names, or publish/modification dates.
+or `Common Platform Enumeration (CPE) <https://nvd.nist.gov/products/cpe>`_ names.
 
 
 Features:
