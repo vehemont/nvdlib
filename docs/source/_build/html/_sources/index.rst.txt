@@ -14,6 +14,10 @@ Release 0.5.0
 
 .. image:: https://img.shields.io/badge/Python%203.8.3-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen
 
+.. image:: https://readthedocs.org/projects/nvdlib/badge/?version=latest
+   :target: https://nvdlib.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 **NVDLib** is a Python API wrapper utilizing the REST API provided by NIST for the National Vulnerability Database (NVD).
 
 -------------------
@@ -31,7 +35,7 @@ Demo::
    CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H 
 
 **NVDLib** is able to pull all data on known CVEs, search the NVD for CVEs 
-or `Common Platform Enumeration (CPE) <https://nvd.nist.gov/products/cpe>`_ names, or publish/modification dates.
+or `Common Platform Enumeration (CPE) <https://nvd.nist.gov/products/cpe>`_ names.
 
 
 Features:
