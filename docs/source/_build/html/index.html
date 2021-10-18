@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>NVDLib: NIST National Vulnerability Database API Wrapper &#8212; NVDLib 0.5.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CVE" href="CVE.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="nvdlib-nist-national-vulnerability-database-api-wrapper">
+<h1>NVDLib: NIST National Vulnerability Database API Wrapper<a class="headerlink" href="#nvdlib-nist-national-vulnerability-database-api-wrapper" title="Permalink to this headline">¶</a></h1>
+<p>Release 0.5.0</p>
+<a class="reference external image-reference" href="https://pypi.org/project/nvdlib/"><img alt="License Badge" src="https://img.shields.io/github/license/bradleeriley/nvdlib" /></a>
+<img alt="https://img.shields.io/badge/Python%203.8.3-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen" src="https://img.shields.io/badge/Python%203.8.3-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen" />
+<p><strong>NVDLib</strong> is a Python API wrapper utilizing the REST API provided by NIST for the National Vulnerability Database (NVD).</p>
+<hr class="docutils" />
+<p>Demo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">nvdlib</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">nvdlib</span><span class="o">.</span><span class="n">getCVE</span><span class="p">(</span><span class="s1">&#39;CVE-2021-26855&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">v3severity</span> <span class="o">+</span> <span class="s1">&#39; - &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">v3score</span><span class="p">))</span>
+<span class="go">CRITICAL - 9.8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">cve</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">description_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="go">Microsoft Exchange Server Remote Code Execution Vulnerability This CVE ID is unique from CVE-2021-26412,</span>
+<span class="go">CVE-2021-26854, CVE-2021-26857, CVE-2021-26858, CVE-2021-27065, CVE-2021-27078.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">v3vector</span><span class="p">)</span>
+<span class="go">CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</span>
+</pre></div>
+</div>
+<p><strong>NVDLib</strong> is able to pull all data on known CVEs, search the NVD for CVEs
+or <a class="reference external" href="https://nvd.nist.gov/products/cpe">Common Platform Enumeration (CPE)</a> names, or publish/modification dates.</p>
+<section id="features">
+<h2>Features:<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Pull data on individual CVEs:</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>CVE ID, description, reference links, CWE.</p></li>
+<li><p>CPE applicability statements and optional CPE names.</p></li>
+<li><p>CVSS severity scores.</p></li>
+<li><p>CVE publication date.</p></li>
+<li><p>CVE modified date.</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Search the NVD for CVEs by:</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Keywords</p></li>
+<li><p>Publish or modification start/end dates</p></li>
+<li><p>cweID</p></li>
+<li><p>CVSS V2/V3, score, severity, or metrics.</p></li>
+<li><p>CPE match string</p></li>
+<li><p>CPE name.</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Search the NVD for CPE names by:</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Modification start/End dates</p></li>
+<li><p>Keywords</p></li>
+<li><p>CPE match string.</p></li>
+<li><p>Dump data into objects to be accessible easily as class attributes.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="navigation">
+<h2>Navigation:<a class="headerlink" href="#navigation" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="CVE.html">CVE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CVE.html#single-cve">Single CVE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CVE.html#searching-cves">Searching CVEs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CVE.html#searchcve-examples">SearchCVE Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CPE.html">CPE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CPE.html#search-cpe">Search CPE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CPE.html#cpe-search-examples">CPE Search Examples</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">NVDLib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="CVE.html">CVE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CPE.html">CPE</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="CVE.html" title="next chapter">CVE</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Brad Riley.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

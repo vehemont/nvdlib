@@ -1,28 +1,30 @@
 import json
 
 class CPE:
-    """JSON Dump class for CPEs.
+    """JSON dump class for CPEs
 
-    getvars() -- Assigns commonly used variables to shorter attribute names. Ran automatically after retrieving data.
+    :var deprecated: Indicates whether CPE has been deprecated
+    :vartype deprecated: bool
 
+    :var cpe23Uri: The CPE name
+    :vartype cpe23Uri: str
 
-    Attributes:
+    :var lastModifiedDate: CPE modification date
+    :vartype lastModifiedDate: 
 
-    deprecated -- Indicates whether CPE has been deprecated.
+    :var titles: Human-readable CPE titles
+    :vartype titles: dict
 
-    cpe23Uri -- The CPE name.
+    :var refs: Reference links.
+    :vartype refs: dict
 
-    lastModifiedDate -- CPE modification date
+    :var deprecatedBy: If deprecated=true, one or more CPE that replace this one
+    :vartype deprecatedby: list
 
-    titles -- Human-readable CPE titles.
-
-    refs -- Reference links.
-
-    deprecatedBy -- If deprecated=true, one or more CPE that replace this one.
-
-    vulnerabilities -- Optional vulnerabilities associated with this CPE. Must use 'cves = true' argument in searchCPE.
-    
+    :var vulnerabilities: Optional vulnerabilities associated with this CPE. Must use 'cves = true' argument in searchCPE.
+    :vartype vulnerabilities: list
     """
+
     def __init__(self, dict):
         vars(self).update(dict)
 
@@ -42,43 +44,58 @@ class CPE:
 
 
 class CVE:
-    """JSON Dump class for CVEs.
-    
-    getvars() -- Assigns commonly used variables to shorter attribute names. Ran automatically after retrieving data.
+    """JSON dump class for CVEs
 
-    Attributes:
+    :var cve: CVE ID, description, reference links, CWE.
+    :vartype cve: dict
 
-    Static Attributes from JSON:
+    :var configurations: CPE applicability statements and optional CPE names.
+    :vartype  configurations: dict
 
-    cve -- CVE ID, description, reference links, CWE.
+    :var impact: CVSS severity scores
+    :vartype impact: dict
 
-    configurations -- CPE applicability statements and optional CPE names.
+    :var publishedDate: CVE publication date
+    :vartype publishedDate: ISO 8601 date/time format including time zone.
 
-    impact -- CVSS severity scores
+    :var lastModifiedDate: CVE modified date
+    :vartype lastModifiedDate: ISO 8601 date/time format including time zone.
 
-    publishedDate -- CVE publication date
+    :var id: CVE ID
+    :vartype id: str
 
-    lastModifiedDate -- CVE modified date.
+    :var cwe: Common Weakness Enumeration Specification (CWE)
+    :vartype cwe: str
 
+    :var url: Link to additional details on nvd.nist.gov for that CVE.
+    :vartype url: str
 
-    Custom attributes:
+    :var v3score: List that contains V3 or V2 CVSS score (float 1 - 10) as index 0 and the version that score was taken from as index 1.
+    :vartype v3score: list
 
-    id -- CVE ID number.
+    :var v2vector: Version two of the CVSS score represented as a vector string, a compressed textual representation of the values used to derive the score.
+    :vartype v2vector: str
 
-    cwe -- Common Weakness Enumeration Specification (CWE)
+    :var v3vector: Version three of the CVSS score represented as a vector string.
+    :vartype v3vector: str
 
-    url -- Link to additional details on nvd.nist.gov for that CVE.
+    :var v2severity: LOW, MEDIUM, HIGH (Critical is only available for v3).
+    :vartype v2severity: str
 
-    v3score -- List that contains V3 or V2 CVSS score (float 1 - 10) as index 0 and the version that score was taken from as index 1.
+    :var v3severity: LOW, MEDIUM, HIGH, CRITICAL.
+    :vartype v3severity: str
 
-    v2/v3vector -- A CVSS score is also represented as a vector string, a compressed textual representation of the values used to derive the score.
+    :var v2exploitability: Reflects the ease and technical means by which the vulnerability can be exploited.
+    :vartype v2exploitability: float 
 
-    v2/v3severity -- LOW, MEDIUM, HIGH, or CRITICAL (Critical is only available for v3)
+    :var v3exploitability: Reflects the ease and technical means by which the vulnerability can be exploited.
+    :vartype v3exploitability: float 
 
-    v2/v3exploitability -- Float 1 - 10.
+    :var v2impactScore: Reflects the direct consequence of a successful exploit.
+    :vartype v2impactScore: float
 
-    v2/v3impactScore -- Float 1 - 10.
-
+    :var v3impactScore: Reflects the direct consequence of a successful exploit.
+    :vartype v3impactScore: float
     """
 
     def __init__(self, dict):
@@ -96,7 +113,8 @@ class CVE:
 
     def getvars(self):
         
-        self.id = self.cve.CVE_data_meta.ID
+        self.id = self.cve.CVE_data_meta.ID 
+        """ ID of the CVE """
         self.cwe = self.cve.problemtype.problemtype_data
         self.url = 'https://nvd.nist.gov/vuln/detail/' + self.id
 

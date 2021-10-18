@@ -3,6 +3,7 @@ import datetime
 import time
 
 from json.decoder import JSONDecodeError
+from datetime import datetime
 from .classes import __convert
 from .get import __get
 
@@ -46,47 +47,60 @@ def getCVE(CVEID, cpe_dict):
 def searchCVE(**kwargs):
     """Build and send GET request then return list of objects containing a collection of CVEs.
 
-    Arguments:
-
-    pubStartDate / pubEndDate  -- The pubStartDate and pubEndDate parameters specify the set of CVE that were added to NVD (published) during the period. 
+    :param pubStartDate: The pubStartDate and pubEndDate parameters specify the set of CVE that were added to NVD (published) during the period. 
         It is not necessary to provide both start and end dates if your goal is to retrieve all CVE after a certain date, or up to a certain date. All times are in UTC 00:00.
-
         Example: '2020-06-28 00:00'
-
+    :type pubStartDate: ISO 8601 date/time
     
-    modStartDate / modEndDate -- The modStartDate and modEndDate parameters specify CVE that were subsequently modified. All times are in UTC 00:00.
-
+    :param pubEndDate: Publish end date. Can be used to get all vulnerabilities published up to a specific date and time. All times are in UTC 00:00.
         Example: '2020-06-28 00:00'
-    
-    includeMatchStringChange -- Takes boolean True. Retrieve vulnerabilities where CPE names changed during the time period. This returns 
+    :type pubEndDate: ISO 8601 date/time
+
+    :param modStartDate: The modStartDate and modEndDate parameters specify CVE that were subsequently modified. All times are in UTC 00:00.
+        Example: '2020-06-28 00:00'
+    :type modStartDate: ISO 8601 date/time
+
+    :param modEndDate: Modifified end date. Can be used to get all vulnerabilities modfied up to a specific date and time. All times are in UTC 00:00.
+    :type modEndDate: ISO 8601 date/time
+
+    :param includeMatchStringChange: Retrieve vulnerabilities where CPE names changed during the time period. This returns 
         vulnerabilities where either the vulnerabilities or the associated product names were modified.
+    :type includeMatchStringChange: bool True
 
-    keyword -- Word or phrase to search the vulnerability description or reference links.
+    :param keyword: Word or phrase to search the vulnerability description or reference links.
+    :type keyword: str
 
-    exactMatch -- Takes boolean True. If the keyword is a phrase, i.e., contains more than one term, then the isExactMatch parameter may be
+    :param exactMatch: If the keyword is a phrase, i.e., contains more than one term, then the isExactMatch parameter may be
         used to influence the response. Use exactMatch to retrieve records matching the exact phrase.
         Otherwise, the results contain any record having any of the terms.
+    :type exactMatch: bool True
 
-    cvssV2Severity -- Find vulnerabilities having a 'LOW', 'MEDIUM', or 'HIGH' version 2 score.
+    :param cvssV2Severity: Find vulnerabilities having a 'LOW', 'MEDIUM', or 'HIGH' version 2 score.
+    :type cvssV2Severity: str
 
-    cvssV3Severity -- Find vulnerabilities having a 'LOW', 'MEDIUM', 'HIGH', or 'CRITICAL' version 3 score.
+    :param cvssV3Severity: -- Find vulnerabilities having a 'LOW', 'MEDIUM', 'HIGH', or 'CRITICAL' version 3 score.
+    :type cvssV3Severity: str
 
-    cvssV2Metrics / cvssV3Metrics -- If your application supports CVSS vector strings, use the cvssV2Metric or cvssV3Metrics parameter to
+    :param cvssV2Metrics / cvssV3Metrics: -- If your application supports CVSS vector strings, use the cvssV2Metric or cvssV3Metrics parameter to
         find vulnerabilities having those score metrics. Partial vector strings are supported.
+    :type cvssV2Metrics / cvssV3Metrics: str
 
-    cpeMatchString -- Use cpeMatchString when you want a broader search against the applicability statements attached to the Vulnerabilities 
+    :param cpeMatchString: -- Use cpeMatchString when you want a broader search against the applicability statements attached to the Vulnerabilities 
         (e.x. find all vulnerabilities attached to a specific product).
-    
-    cpeName -- Use cpeName when you know what CPE you want to compare against the applicability statements 
-        attached to the vulnerability (i.e. find the vulnerabilities attached to that CPE). 
+    :type cpeMatchString: str
 
-    cpe_dict -- Takes boolean True. When the request has this parameter, the response returns official CPE names for each CPE match
+    :param cpeName: -- Use cpeName when you know what CPE you want to compare against the applicability statements 
+        attached to the vulnerability (i.e. find the vulnerabilities attached to that CPE). 
+    :type cpeName: str
+
+    :param cpe_dict: -- When the request has this parameter, the response returns official CPE names for each CPE match
         string in the configuration, in so far as they are present in the Official CPE Dictionary.
 
-        WARNING: If your search contains many results, the response will be very large as it will contain every CPE that a vulnerability has.
+        **Warning:** If your search contains many results, the response will be very large as it will contain every CPE that a vulnerability has, thus resulting in delays.
+    :type cpe_dict: bool True
 
-    limit -- Custom argument to limit the number of results of the search. Allowed any number between 1 and 2000.
-
+    :param limit: -- Custom argument to limit the number of results of the search. Allowed any number between 1 and 2000.
+    :type limit: int
     
     """
     def __buildCVECall(kwargs):

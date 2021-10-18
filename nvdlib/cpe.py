@@ -1,10 +1,38 @@
 import datetime
 
+from datetime import datetime
 from .get import __get
 from .classes import __convert
 
 def searchCPE(**kwargs):
-    """Build and send GET request then return list of objects containing a collection of CPEs."""
+    """Build and send GET request then return list of objects containing a collection of CPEs.
+    
+    :param modStartDate: CPE modification start date
+    :type modStartDate: ISO 8601 date/time
+        Example: '2020-06-28 00:00'
+
+    :param modEndDate: CPE modification end date
+    :type modEndDate: ISO 8601 date/time
+        Example: '2020-06-28 00:00'
+
+    :param includeDeprecated: Include deprecated CPE names that have been replaced.
+    :type includeDeprecated: Bool True
+
+    :param keyword: Free text keyword search.
+    :type keyword: str
+
+    :param cpeMatchString: CPE match string search.
+    :type cpeMatchString: str
+
+    :param cves: Return vulnerabilities. 
+        **Warning**: This parameter may incur large amounts of results causing delays.
+    :type cves: bool True
+
+    :param limit: Limits the number of results of the search.
+    :type limit: int
+
+    """
+
 
     def __buildCPECall(kwargs):
         parameters = []

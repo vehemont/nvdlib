@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nvdlib.classes &#8212; NVDLib 0.5.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for nvdlib.classes</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<div class="viewcode-block" id="CPE"><a class="viewcode-back" href="../../_build/nvdlib.html#nvdlib.classes.CPE">[docs]</a><span class="k">class</span> <span class="nc">CPE</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;JSON dump class for CPEs</span>
+
+<span class="sd">    :var deprecated: Indicates whether CPE has been deprecated</span>
+<span class="sd">    :vartype deprecated: bool</span>
+
+<span class="sd">    :var cpe23Uri: The CPE name</span>
+<span class="sd">    :vartype cpe23Uri: str</span>
+
+<span class="sd">    :var lastModifiedDate: CPE modification date</span>
+<span class="sd">    :vartype lastModifiedDate: </span>
+
+<span class="sd">    :var titles: Human-readable CPE titles</span>
+<span class="sd">    :vartype titles: dict</span>
+
+<span class="sd">    :var refs: Reference links.</span>
+<span class="sd">    :vartype refs: dict</span>
+
+<span class="sd">    :var deprecatedBy: If deprecated=true, one or more CPE that replace this one</span>
+<span class="sd">    :vartype deprecatedby: list</span>
+
+<span class="sd">    :var vulnerabilities: Optional vulnerabilities associated with this CPE. Must use &#39;cves = true&#39; argument in searchCPE.</span>
+<span class="sd">    :vartype vulnerabilities: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="mi">5</span>
+        <span class="k">yield from</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<div class="viewcode-block" id="CPE.getvars"><a class="viewcode-back" href="../../_build/nvdlib.html#nvdlib.classes.CPE.getvars">[docs]</a>    <span class="k">def</span> <span class="nf">getvars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpe23Uri</span></div></div>
+
+
+<div class="viewcode-block" id="CVE"><a class="viewcode-back" href="../../_build/nvdlib.html#nvdlib.classes.CVE">[docs]</a><span class="k">class</span> <span class="nc">CVE</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;JSON dump class for CVEs</span>
+
+<span class="sd">    :var cve: CVE ID, description, reference links, CWE.</span>
+<span class="sd">    :vartype cve: dict</span>
+
+<span class="sd">    :var configurations: CPE applicability statements and optional CPE names.</span>
+<span class="sd">    :vartype  configurations: dict</span>
+
+<span class="sd">    :var impact: CVSS severity scores</span>
+<span class="sd">    :vartype impact: dict</span>
+
+<span class="sd">    :var publishedDate: CVE publication date</span>
+<span class="sd">    :vartype publishedDate: ISO 8601 date/time format including time zone.</span>
+
+<span class="sd">    :var lastModifiedDate: CVE modified date</span>
+<span class="sd">    :vartype lastModifiedDate: ISO 8601 date/time format including time zone.</span>
+
+<span class="sd">    :var id: CVE ID</span>
+<span class="sd">    :vartype id: str</span>
+
+<span class="sd">    :var cwe: Common Weakness Enumeration Specification (CWE)</span>
+<span class="sd">    :vartype cwe: str</span>
+
+<span class="sd">    :var url: Link to additional details on nvd.nist.gov for that CVE.</span>
+<span class="sd">    :vartype url: str</span>
+
+<span class="sd">    :var v3score: List that contains V3 or V2 CVSS score (float 1 - 10) as index 0 and the version that score was taken from as index 1.</span>
+<span class="sd">    :vartype v3score: list</span>
+
+<span class="sd">    :var v2vector: Version two of the CVSS score represented as a vector string, a compressed textual representation of the values used to derive the score.</span>
+<span class="sd">    :vartype v2vector: str</span>
+
+<span class="sd">    :var v3vector: Version three of the CVSS score represented as a vector string.</span>
+<span class="sd">    :vartype v3vector: str</span>
+
+<span class="sd">    :var v2severity: LOW, MEDIUM, HIGH (Critical is only available for v3).</span>
+<span class="sd">    :vartype v2severity: str</span>
+
+<span class="sd">    :var v3severity: LOW, MEDIUM, HIGH, CRITICAL.</span>
+<span class="sd">    :vartype v3severity: str</span>
+
+<span class="sd">    :var v2exploitability: Reflects the ease and technical means by which the vulnerability can be exploited.</span>
+<span class="sd">    :vartype v2exploitability: float </span>
+
+<span class="sd">    :var v3exploitability: Reflects the ease and technical means by which the vulnerability can be exploited.</span>
+<span class="sd">    :vartype v3exploitability: float </span>
+
+<span class="sd">    :var v2impactScore: Reflects the direct consequence of a successful exploit.</span>
+<span class="sd">    :vartype v2impactScore: float</span>
+
+<span class="sd">    :var v3impactScore: Reflects the direct consequence of a successful exploit.</span>
+<span class="sd">    :vartype v3impactScore: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="mi">5</span>
+        <span class="k">yield from</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<div class="viewcode-block" id="CVE.getvars"><a class="viewcode-back" href="../../_build/nvdlib.html#nvdlib.classes.CVE.getvars">[docs]</a>    <span class="k">def</span> <span class="nf">getvars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cve</span><span class="o">.</span><span class="n">CVE_data_meta</span><span class="o">.</span><span class="n">ID</span> 
+        <span class="sd">&quot;&quot;&quot; ID of the CVE &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cwe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cve</span><span class="o">.</span><span class="n">problemtype</span><span class="o">.</span><span class="n">problemtype_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://nvd.nist.gov/vuln/detail/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">,</span> <span class="s1">&#39;baseMetricV3&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v3score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV3</span><span class="o">.</span><span class="n">cvssV3</span><span class="o">.</span><span class="n">baseScore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v3vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV3</span><span class="o">.</span><span class="n">cvssV3</span><span class="o">.</span><span class="n">vectorString</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v3severity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV3</span><span class="o">.</span><span class="n">cvssV3</span><span class="o">.</span><span class="n">baseSeverity</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v3exploitability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV3</span><span class="o">.</span><span class="n">exploitabilityScore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v3impactScore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV3</span><span class="o">.</span><span class="n">impactScore</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">,</span> <span class="s1">&#39;baseMetricV2&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v2score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV2</span><span class="o">.</span><span class="n">cvssV2</span><span class="o">.</span><span class="n">baseScore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v2vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV2</span><span class="o">.</span><span class="n">cvssV2</span><span class="o">.</span><span class="n">vectorString</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v2severity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV2</span><span class="o">.</span><span class="n">severity</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v2exploitability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV2</span><span class="o">.</span><span class="n">exploitabilityScore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v2impactScore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV2</span><span class="o">.</span><span class="n">impactScore</span>
+        
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">,</span> <span class="s1">&#39;baseMetricV3&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV3</span><span class="o">.</span><span class="n">cvssV3</span><span class="o">.</span><span class="n">baseScore</span><span class="p">,</span> <span class="s1">&#39;V3&#39;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="p">,</span> <span class="s1">&#39;baseMetricV2&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">impact</span><span class="o">.</span><span class="n">baseMetricV2</span><span class="o">.</span><span class="n">cvssV2</span><span class="o">.</span><span class="n">baseScore</span><span class="p">,</span> <span class="s1">&#39;V2&#39;</span><span class="p">]</span></div></div>
+
+<span class="k">def</span> <span class="nf">__convert</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">CVEID</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert the JSON response to a referenceable object.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">product</span> <span class="o">==</span> <span class="s1">&#39;cve&#39;</span><span class="p">:</span>
+        <span class="n">vuln</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">CVEID</span><span class="p">),</span> <span class="n">object_hook</span><span class="o">=</span> <span class="n">CVE</span><span class="p">)</span>
+        <span class="n">vuln</span><span class="o">.</span><span class="n">getvars</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">vuln</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cpeEntry</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">CVEID</span><span class="p">),</span> <span class="n">object_hook</span><span class="o">=</span> <span class="n">CPE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cpeEntry</span> 
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">NVDLib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CVE.html">CVE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CPE.html">CPE</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Brad Riley.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

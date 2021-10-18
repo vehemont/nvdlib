@@ -1,6 +1,10 @@
 # NVDLib
 ## Simple NIST NVD API wrapper library
 
+![License](https://img.shields.io/github/license/bradleeriley/nvdlib) 
+![Written](https://img.shields.io/badge/Python%203.8.3-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen)
+
+
 Nvdlib allows you to interface with the [NIST National Vulnerability Database](https://nvd.nist.gov/) and pull vulnerabilities (CVEs) and Common Platform Enumeration (CPEs) into easily accessible objects.
 
 
@@ -19,7 +23,7 @@ $ pip install nvdlib
 
 ### Demo
 ```python
-from nvdlib import nvdlib
+import nvdlib
 
 # Perform the search with the known cpeName
 cves = nvdlib.searchCVE(cpeName='cpe:2.3:a:apache:tomcat:7.0.67:*:*:*:*:*:*:*', limit = 5)
