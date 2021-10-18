@@ -14,6 +14,10 @@ Release 0.5.0
 
 .. image:: https://img.shields.io/badge/Python%203.8.3-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen
 
+.. image:: https://readthedocs.org/projects/nvdlib/badge/?version=latest
+   :target: https://nvdlib.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 **NVDLib** is a Python API wrapper utilizing the REST API provided by NIST for the National Vulnerability Database (NVD).
 
 -------------------
