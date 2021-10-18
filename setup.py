@@ -11,7 +11,7 @@ setup(
     install_requires = ['requests'],
     description='National Vulnerability Database CPE/CVE API Library',
     author='Brad Riley',
-    author_email="brad@bradsvpn.com",
+    author_email="brad@nvdlib.com",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/bradleeriley/nvdlib",

@@ -36,7 +36,7 @@ for eachCVE in cves:
 
 ### Documentation
 
-https://nvdlib.readthedocs.io/en/latest/
+https://nvdlib.com
 
 
 
