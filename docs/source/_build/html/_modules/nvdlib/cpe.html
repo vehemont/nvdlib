@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nvdlib.cpe &#8212; NVDLib 0.5.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for nvdlib.cpe</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">.get</span> <span class="kn">import</span> <span class="n">__get</span>
+<span class="kn">from</span> <span class="nn">.classes</span> <span class="kn">import</span> <span class="n">__convert</span>
+
+<div class="viewcode-block" id="searchCPE"><a class="viewcode-back" href="../../_build/nvdlib.html#nvdlib.cpe.searchCPE">[docs]</a><span class="k">def</span> <span class="nf">searchCPE</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Build and send GET request then return list of objects containing a collection of CPEs.</span>
+<span class="sd">    </span>
+<span class="sd">    :param modStartDate: CPE modification start date</span>
+<span class="sd">    :type modStartDate: ISO 8601 date/time</span>
+<span class="sd">        Example: &#39;2020-06-28 00:00&#39;</span>
+
+<span class="sd">    :param modEndDate: CPE modification end date</span>
+<span class="sd">    :type modEndDate: ISO 8601 date/time</span>
+<span class="sd">        Example: &#39;2020-06-28 00:00&#39;</span>
+
+<span class="sd">    :param includeDeprecated: Include deprecated CPE names that have been replaced.</span>
+<span class="sd">    :type includeDeprecated: Bool True</span>
+
+<span class="sd">    :param keyword: Free text keyword search.</span>
+<span class="sd">    :type keyword: str</span>
+
+<span class="sd">    :param cpeMatchString: CPE match string search.</span>
+<span class="sd">    :type cpeMatchString: str</span>
+
+<span class="sd">    :param cves: Return vulnerabilities. </span>
+<span class="sd">        **Warning**: This parameter may incur large amounts of results causing delays.</span>
+<span class="sd">    :type cves: bool True</span>
+
+<span class="sd">    :param limit: Limits the number of results of the search.</span>
+<span class="sd">    :type limit: int</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="nf">__buildCPECall</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;modStartDate&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;modStartDate&#39;</span><span class="p">],</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;:000 UTC-00:00&#39;</span>
+            <span class="n">modStartDate</span> <span class="o">=</span> <span class="s1">&#39;modStartDate=&#39;</span> <span class="o">+</span> <span class="n">date</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modStartDate</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;modEndDate&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;modEndDate&#39;</span><span class="p">],</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;:000 UTC-00:00&#39;</span>
+            <span class="n">modEndDate</span> <span class="o">=</span> <span class="s1">&#39;modEndDate=&#39;</span> <span class="o">+</span> <span class="n">date</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modEndDate</span><span class="p">)</span>     
+        
+        <span class="k">if</span> <span class="s1">&#39;includeDeprecated&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">includeDeprecated</span> <span class="o">=</span> <span class="s1">&#39;includeDeprecated=true&#39;</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">includeDeprecated</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;keyword&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">keyword</span> <span class="o">=</span> <span class="s1">&#39;keyword=&#39;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;keyword&#39;</span><span class="p">]</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;cpeMatchString&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">cpeMatchString</span> <span class="o">=</span> <span class="s1">&#39;cpeMatchString=&#39;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;cpeMatchString&#39;</span><span class="p">]</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cpeMatchString</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;cves&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;cves&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">cves</span> <span class="o">=</span> <span class="s1">&#39;addOns=cves&#39;</span>
+                <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cves</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;cves parameter can only be boolean True.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;limit&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="s1">&#39;resultsPerPage=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5000</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Limit parameter must be between 1 and 5000&#39;</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">parameters</span>
+
+    <span class="c1"># Build the URL for the request</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">__buildCPECall</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># Send the GET request for the JSON and convert to dictionary</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">__get</span><span class="p">(</span><span class="s1">&#39;cpe&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">cpes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Generates the CVEs into objects for easy referencing and appends them to self.cves</span>
+    <span class="k">for</span> <span class="n">eachCPE</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">][</span><span class="s1">&#39;cpes&#39;</span><span class="p">]:</span>
+        <span class="n">cpe</span> <span class="o">=</span> <span class="n">__convert</span><span class="p">(</span><span class="s1">&#39;cpe&#39;</span><span class="p">,</span> <span class="n">eachCPE</span><span class="p">)</span>
+        <span class="n">cpe</span><span class="o">.</span><span class="n">getvars</span><span class="p">()</span> <span class="c1"># Generates cpe.title and cpe.name</span>
+        <span class="n">cpes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cpe</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cpes</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">NVDLib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CVE.html">CVE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CPE.html">CPE</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Brad Riley.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
