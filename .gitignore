@@ -132,4 +132,4 @@ dmypy.json
 cython_debug/
 
 # VSCode
-.vscode/
+.vscode/*
