@@ -23,14 +23,20 @@ $ pip install nvdlib
 
 ### Demo
 ```python
-import nvdlib
+>>> import nvdlib
 
 # Perform the search with the known cpeName
-cves = nvdlib.searchCVE(cpeName='cpe:2.3:a:apache:tomcat:7.0.67:*:*:*:*:*:*:*', limit = 5)
+>>> cves = nvdlib.searchCVE(cpeName='cpe:2.3:a:apache:tomcat:7.0.67:*:*:*:*:*:*:*', limit = 5)
 
-# Pull data from the CVE object.
-for eachCVE in cves:
-    print(eachCVE.id + ' - ' + eachCVE.score[0] + ' - ' + eachCVE.score[1])
+# Pull CVE ID, score, and CVSS version of the score from the object.
+>>> for eachCVE in cves:
+>>>     print(eachCVE.id + ' - ' + eachCVE.score[0] + ' - ' + eachCVE.score[1])
+
+CVE-2021-30640 - 6.5 - V3
+CVE-2019-12418 - 7.0 - V3
+CVE-2020-1938 - 9.8 - V3
+CVE-2021-25329 - 7.0 - V3
+CVE-2021-24122 - 5.9 - V3
 ```
 
 
