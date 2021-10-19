@@ -9,6 +9,7 @@ setup(
     packages=find_packages(include=['nvdlib']),
     version='0.5.1',
     install_requires = ['requests'],
+    python_requires='>3.7.9',
     description='National Vulnerability Database CPE/CVE API Library',
     author='Vehemont',
     author_email="brad@nvdlib.com",
