@@ -7,7 +7,7 @@ README = (HERE / "README.md").read_text()
 setup(
     name='nvdlib',
     packages=find_packages(include=['nvdlib']),
-    version='0.5.0',
+    version='0.5.1',
     install_requires = ['requests'],
     description='National Vulnerability Database CPE/CVE API Library',
     author='Vehemont',
