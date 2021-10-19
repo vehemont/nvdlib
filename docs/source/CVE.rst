@@ -44,7 +44,7 @@ the CVEs the search had found.
 
 .. note::
    Search has no limits by default, therefore if a search returns a 
-   large amount of results, it may cause delays for the request to complete.
+   large amount of results it may cause delays for the request to complete.
 
 The NIST NVD API will block requests if they are sent too quickly in
 an attempt to reduce the possibility of a DOS event. Therefore rate limiting
