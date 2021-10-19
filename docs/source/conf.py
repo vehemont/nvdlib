@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath('../../'))
 # -- Project information -----------------------------------------------------
 
 project = 'NVDLib'
-copyright = '2021, Brad Riley'
-author = 'Brad Riley'
+copyright = '2021'
+author = 'Vehemont'
 
 # The full version, including alpha/beta/rc tags
 release = '0.5.0'
