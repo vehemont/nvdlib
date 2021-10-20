@@ -5,7 +5,7 @@
 [![Written](https://img.shields.io/badge/Python%203.8.3-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen)](https://pypi.org/project/nvdlib/)
 [![Documentation Status](https://readthedocs.org/projects/nvdlib/badge/?version=latest)](https://nvdlib.readthedocs.io/en/latest/?badge=latest)
 
-**NVDlib** is a Python library that allows you to interface with the [NIST National Vulnerability Database](https://nvd.nist.gov/) (NVD) and pull vulnerabilities (CVEs) and Common Platform Enumeration (CPEs) into easily accessible objects.
+**NVDlib** is a Python library that allows you to interface with the [NIST National Vulnerability Database](https://nvd.nist.gov/) (NVD) and pull vulnerabilities (CVEs) and [Common Platform Enumeration](https://nvd.nist.gov/products/cpe) (CPEs) into easily accessible objects.
 
 
 ### Features
