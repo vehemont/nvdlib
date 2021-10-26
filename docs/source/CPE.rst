@@ -12,6 +12,8 @@ Here is an example search with a keyword and a limit of 2 results then iterate t
 
 .. code-block:: python
 
+    import nvdlib
+    
     r = nvdlib.searchCPE(keyword = 'Microsoft Exchange', limit = 2)
     for eachCPE in r:
         print(eachCPE.name)
