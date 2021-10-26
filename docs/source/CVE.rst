@@ -14,7 +14,7 @@ You can also use this to iterate through a list of CVE IDs if you have a list of
 
 Begin by importing NVDLib:
    
-   >>> import requests
+   >>> import nvdlib
 
 Lets grab CVE-2017-0144.
 
