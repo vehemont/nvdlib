@@ -14,7 +14,7 @@ You can also use this to iterate through a list of CVE IDs if you have a list of
 
 Begin by importing NVDLib:
    
-   >>> import requests
+   >>> import nvdlib
 
 Lets grab CVE-2017-0144.
 
@@ -28,13 +28,13 @@ Here is a method to print the version 3 CVSS severity.
 
 .. autofunction:: nvdlib.cve.getCVE
 
-Below is all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
-I recommend printing some of the values to get an idea of what they will return.
+Below are all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
+I recommend printing some of the values to get an idea of what they will return. You can see what the JSON API response looks like here
+https://nvd.nist.gov/developers/vulnerabilities
 
 .. _cve:
 .. autoclass:: nvdlib.classes.CVE
    :members:
-
 
 Searching CVEs
 ------------
@@ -44,7 +44,7 @@ the CVEs the search had found.
 
 .. note::
    Search has no limits by default, therefore if a search returns a 
-   large amount of results, it may cause delays for the request to complete.
+   large amount of results it may cause delays for the request to complete.
 
 The NIST NVD API will block requests if they are sent too quickly in
 an attempt to reduce the possibility of a DOS event. Therefore rate limiting

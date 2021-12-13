@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>NVDLib: NIST National Vulnerability Database API Wrapper &mdash; NVDLib 0.5.0 documentation</title>
+  <title>NVDLib: NIST National Vulnerability Database API Wrapper &mdash; NVDLib 0.5.2 documentation</title>
   
 
   
@@ -25,6 +25,7 @@
   
 
   
+    <link rel="canonical" href="nvdlib.com/index.html" />
 
   
   <!--[if lt IE 9]>
@@ -165,7 +166,7 @@
             
   <div class="section" id="nvdlib-nist-national-vulnerability-database-api-wrapper">
 <h1>NVDLib: NIST National Vulnerability Database API Wrapper<a class="headerlink" href="#nvdlib-nist-national-vulnerability-database-api-wrapper" title="Permalink to this headline">¶</a></h1>
-<p>Release 0.5.0</p>
+<p>Release 0.5.2</p>
 <a class="reference external image-reference" href="https://pypi.org/project/nvdlib/"><img alt="License Badge" src="https://img.shields.io/github/license/bradleeriley/nvdlib" /></a>
 <img alt="https://img.shields.io/badge/Python%203.8.3-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen" src="https://img.shields.io/badge/Python%203.8.3-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen" />
 <a class="reference external image-reference" href="https://nvdlib.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/nvdlib/badge/?version=latest" /></a>
@@ -173,7 +174,7 @@
 <hr class="docutils" />
 <p>Demo:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">nvdlib</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">nvdlib</span><span class="o">.</span><span class="n">getCVE</span><span class="p">(</span><span class="s1">&#39;CVE-2021-26855&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">nvdlib</span><span class="o">.</span><span class="n">getCVE</span><span class="p">(</span><span class="s1">&#39;CVE-2021-26855&#39;</span><span class="p">,</span> <span class="n">cpe_dict</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">v3severity</span> <span class="o">+</span> <span class="s1">&#39; - &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">v3score</span><span class="p">))</span>
 <span class="go">CRITICAL - 9.8</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">cve</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">description_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
@@ -265,7 +266,7 @@ or <a class="reference external" href="https://nvd.nist.gov/products/cpe">Common
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Brad Riley.
+        &#169; Copyright 2021.
 
     </p>
   </div>
