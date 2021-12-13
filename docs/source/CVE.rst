@@ -100,3 +100,16 @@ Get the CVE IDs, score, and URL of a specific CPE name:
    r = nvdlib.searchCVE(cpeName = 'cpe:2.3:a:microsoft:exchange_server:5.0:-:*:*:*:*:*:*')
    for eachCVE in r:
       print(eachCVE.id, str(eachCVE.score[0]), eachCVE.url)
+
+Grab the CPE names that match a CVE.
+
+.. note:: CPE names will only be returned if 'cpe_dict = True' is passed to the search as a parameter.
+
+.. code-block:: python
+
+   r = nvdlib.searchCVE(cpeName = 'cpe:2.3:a:microsoft:exchange_server:2013:cumulative_update_11:*:*:*:*:*:*', keyword = '1ArcServe', exactMatch = True, cpe_dict = True)
+   for eachCVE in r:
+      config = eachCVE.configurations.nodes
+      for eachNode in config:
+         for eachCpe in eachNode.cpe_match:
+               print(eachCpe.cpe23Uri)
