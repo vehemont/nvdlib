@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>CVE &mdash; NVDLib 0.5.0 documentation</title>
+  <title>CVE &mdash; NVDLib 0.5.2 documentation</title>
   
 
   
@@ -25,6 +25,7 @@
   
 
   
+    <link rel="canonical" href="nvdlib.com/CVE.html" />
 
   
   <!--[if lt IE 9]>
@@ -178,7 +179,7 @@ This is useful if you know the CVE but you need to know something about it such 
 publish date, etc.</p>
 <p>You can also use this to iterate through a list of CVE IDs if you have a list of known CVE IDs.</p>
 <p>Begin by importing NVDLib:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">requests</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">nvdlib</span>
 </pre></div>
 </div>
 <p>Lets grab CVE-2017-0144.</p>
@@ -205,8 +206,9 @@ Here is a method to print the version 3 CVSS severity.</p>
 </dl>
 </dd></dl>
 
-<p>Below is all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
-I recommend printing some of the values to get an idea of what they will return.</p>
+<p>Below are all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
+I recommend printing some of the values to get an idea of what they will return. You can see what the JSON API response looks like here
+<a class="reference external" href="https://nvd.nist.gov/developers/vulnerabilities">https://nvd.nist.gov/developers/vulnerabilities</a></p>
 <span class="target" id="id1"></span><dl class="py class">
 <dt class="sig sig-object py" id="nvdlib.classes.CVE">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">nvdlib.classes.</span></span><span class="sig-name descname"><span class="pre">CVE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nvdlib/classes.html#CVE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nvdlib.classes.CVE" title="Permalink to this definition">¶</a></dt>
@@ -244,7 +246,7 @@ the CVEs the search had found.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Search has no limits by default, therefore if a search returns a
-large amount of results, it may cause delays for the request to complete.</p>
+large amount of results it may cause delays for the request to complete.</p>
 </div>
 <p>The NIST NVD API will block requests if they are sent too quickly in
 an attempt to reduce the possibility of a DOS event. Therefore rate limiting
@@ -350,7 +352,7 @@ All of the parameters can be mixed together in any order.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Brad Riley.
+        &#169; Copyright 2021.
 
     </p>
   </div>

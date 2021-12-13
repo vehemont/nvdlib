@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>CPE &mdash; NVDLib 0.5.0 documentation</title>
+  <title>CPE &mdash; NVDLib 0.5.2 documentation</title>
   
 
   
@@ -25,6 +25,7 @@
   
 
   
+    <link rel="canonical" href="nvdlib.com/CPE.html" />
 
   
   <!--[if lt IE 9]>
@@ -175,7 +176,9 @@
 CPE match strings are allowed, meaning if partial strings are known, you can search for all possible
 CPE names.</p>
 <p>Here is an example search with a keyword and a limit of 2 results then iterate through said CPE names.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">nvdlib</span><span class="o">.</span><span class="n">searchCPE</span><span class="p">(</span><span class="n">keyword</span> <span class="o">=</span> <span class="s1">&#39;Microsoft Exchange&#39;</span><span class="p">,</span> <span class="n">limit</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">nvdlib</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">nvdlib</span><span class="o">.</span><span class="n">searchCPE</span><span class="p">(</span><span class="n">keyword</span> <span class="o">=</span> <span class="s1">&#39;Microsoft Exchange&#39;</span><span class="p">,</span> <span class="n">limit</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">eachCPE</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">eachCPE</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
@@ -267,7 +270,7 @@ for said matching CPEs, and print their CVE IDs.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Brad Riley.
+        &#169; Copyright 2021.
 
     </p>
   </div>

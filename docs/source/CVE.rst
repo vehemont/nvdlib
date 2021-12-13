@@ -28,13 +28,13 @@ Here is a method to print the version 3 CVSS severity.
 
 .. autofunction:: nvdlib.cve.getCVE
 
-Below is all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
-I recommend printing some of the values to get an idea of what they will return.
+Below are all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
+I recommend printing some of the values to get an idea of what they will return. You can see what the JSON API response looks like here
+https://nvd.nist.gov/developers/vulnerabilities
 
 .. _cve:
 .. autoclass:: nvdlib.classes.CVE
    :members:
-
 
 Searching CVEs
 ------------

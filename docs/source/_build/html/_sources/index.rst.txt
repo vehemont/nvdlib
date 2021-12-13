@@ -6,7 +6,7 @@
 NVDLib: NIST National Vulnerability Database API Wrapper
 ===================================
 
-Release 0.5.0
+Release 0.5.2
 
 .. image:: https://img.shields.io/github/license/bradleeriley/nvdlib
    :target: https://pypi.org/project/nvdlib/
@@ -25,7 +25,7 @@ Release 0.5.0
 Demo::
 
    >>> import nvdlib
-   >>> r = nvdlib.getCVE('CVE-2021-26855', False)
+   >>> r = nvdlib.getCVE('CVE-2021-26855', cpe_dict = False)
    >>> print(r.v3severity + ' - ' + str(r.v3score))
    CRITICAL - 9.8
    >>> print(r.cve.description.description_data[0].value)
