@@ -1,5 +1,5 @@
 
-![NVDLib](docs/source/logo.png?raw=true "NVDLib")
+![NVDLib](docs/source/logo.png?raw=true "NVDLib" | width=250)
 
 ## Simple NIST NVD API wrapper library
 
