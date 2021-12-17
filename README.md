@@ -1,4 +1,6 @@
-# NVDLib
+
+![NVDLib](docs/source/logo.png?raw=true "NVDLib")
+
 ## Simple NIST NVD API wrapper library
 
 ![License](https://img.shields.io/github/license/bradleeriley/nvdlib) 
