@@ -1,5 +1,5 @@
 
-<img src="docs/source/logo.png" width=300 align=right>
+<img src="docs/source/logo.png" width=300 align=left>
 
 ## Simple NIST NVD API wrapper library
 
