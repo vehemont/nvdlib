@@ -18,7 +18,15 @@ Begin by importing NVDLib:
 
 Lets grab CVE-2017-0144.
 
-   >>> r = nvdlib.getCVE('CVE-2017-0144', cpe_dict = False)
+   >>> r = nvdlib.getCVE('CVE-2017-0144')
+
+Example with an API key (insert your own API key).
+
+   >>> r = nvdlib.getCVE('CVE-2017-0144', key='xxxxxx-xxxxx-xxxx-xxxx-xxxxxxxxxx')
+
+.. note:: | Due to rate limiting restrictions by NIST, a request will take 6 seconds with no API key. 
+    | Requests with an API key take 0.6 seconds per request.
+    | Get a NIST NVD API key here (free): https://nvd.nist.gov/developers/request-an-api-key
 
 From this point you are able to retrieve any information on the CVE.
 Here is a method to print the version 3 CVSS severity.
@@ -29,7 +37,7 @@ Here is a method to print the version 3 CVSS severity.
 .. autofunction:: nvdlib.cve.getCVE
 
 Below are all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
-I recommend printing some of the values to get an idea of what they will return. You can see what the JSON API response looks like here
+I recommend printing some of the values to get an idea of what they will return. You can see what the JSON API response looks like and more details here
 https://nvd.nist.gov/developers/vulnerabilities
 
 .. _cve:
@@ -41,16 +49,6 @@ Searching CVEs
 
 Searching for CVEs will return a list containing the objects of all of
 the CVEs the search had found. 
-
-.. note::
-   Search has no limits by default, therefore if a search returns a 
-   large amount of results it may cause delays for the request to complete.
-
-The NIST NVD API will block requests if they are sent too quickly in
-an attempt to reduce the possibility of a DOS event. Therefore rate limiting
-of the API is included in the library. It is miniscule rate limiting (usually
-0.1 seconds), but when combined with thousands of requests, you may notice a
-delay.
 
 Example search for all vulnerabilities for Microsoft Exchange 2013, cumulative_update_11 and a limit of two:
    >>> r = nvdlib.searchCVE(cpeName = 'cpe:2.3:a:microsoft:exchange_server:2013:cumulative_update_11:*:*:*:*:*:*', limit = 2)
@@ -72,12 +70,15 @@ SearchCVE Examples:
 ------------
 
 The arguments are not positional. SearchCVE will build the request based on what is passed to it. 
-All of the parameters can be mixed together in any order.
+All of the parameters can be mixed together in any order. If a value is not passed to the function,
+it is assumed to be false and will not be added to the filter.
 
 
-Filter by publication end date, keyword, and version 3 severity of critical:
+Filter by publication start and end date, keyword, version 3 severity of critical, and an API key to allow for faster requests:
 
->>> r = nvdlib.searchCVE(pubEndDate = '2019-01-01 00:00', keyword = 'Microsoft Exchange', cvssV3Severity = 'Critical')
+.. note:: There is a maximum 120 day range when using date ranges.
+
+>>> r = nvdlib.searchCVE(pubStartDate = '2021-09-08 00:00', pubEndDate = '2021-12-01 00:00', keyword = 'Microsoft Exchange', cvssV3Severity = 'Critical', key='xxxxx-xxxxxx-xxxxxxx')
 
 Filter for publications between 2019-06-02 and 2019-06-08:
 

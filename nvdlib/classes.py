@@ -3,6 +3,12 @@ import json
 class CPE:
     """JSON dump class for CPEs
 
+    :var name: CPE URI name
+    :vartype name: str
+
+    :var title: The first title result of the CPE.
+    :vartype title: str
+
     :var deprecated: Indicates whether CPE has been deprecated
     :vartype deprecated: bool
 

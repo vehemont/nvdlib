@@ -63,8 +63,12 @@ Features:
  * Dump data into objects to be accessible easily as class attributes. 
 
 
-For more information on the NIST NVD API for CPE and CVEs, see the documentation here: 
+For more information on the NIST NVD API for CPE and CVEs, see the documentation here:
 https://nvd.nist.gov/General/News/New-NVD-CVE-CPE-API-and-SOAP-Retirement
+
+.. note:: NVDLib version 0.5.2 now includes `NIST NVD rate limiting recommendations <https://nvd.nist.gov/developers>`_. Requests will now sleep for 6 seconds to 
+   complete with no API key. Requests with an API key will sleep 0.6 seconds. 
+   Get an API key here (free): https://nvd.nist.gov/developers/request-an-api-key
 
 Navigation:
 ----------------

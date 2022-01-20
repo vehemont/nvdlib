@@ -4,11 +4,15 @@ CPE
 Search CPE
 ------------
 
-Searching for CPEs is very similar to searching for CVEs albeit less parameters. 
+Searching for CPEs is similar to searching for CVEs albeit less parameters. 
 CPE match strings are allowed, meaning if partial strings are known, you can search for all possible
-CPE names.
+CPE names. Like searching CVEs, the parameters are not positional.
 
 Here is an example search with a keyword and a limit of 2 results then iterate through said CPE names.
+
+.. note:: | Due to rate limiting restrictions by NIST, a request will take 6 seconds with no API key. 
+    | Requests with an API key take 0.6 seconds per request.
+    | Get a NIST NVD API key here (free): https://nvd.nist.gov/developers/request-an-api-key
 
 .. code-block:: python
 
@@ -38,7 +42,7 @@ for said matching CPEs, and print their CVE IDs.
 
 .. code-block:: python 
     
-    r = nvdlib.searchCPE(cpeMatchString = 'cpe:2.3:a:microsoft:exchange_server:2013:', cves = True)
+    r = nvdlib.searchCPE(cpeMatchString='cpe:2.3:a:microsoft:exchange_server:2013:', cves=True, key='xxxxxx-xxxxx-xxxx-xxxx-xxxxxxxxxx')
     for eachCPE in r:
         for eachVuln in eachCPE.vulnerabilities:
             print(eachVuln)
@@ -46,11 +50,12 @@ for said matching CPEs, and print their CVE IDs.
 
 Filter for CPE names modfied between 2019-01-01 and 2021-01-01 with the keyword of PHP.
 
-.. note:: *len(r)* will return how many CPE entries were found in the result.
+.. note:: | Maximum 120 days between a date.
+    | *len(r)* will return how many CPE entries were found in the result.
 
 .. code-block:: python
 
-    r = nvdlib.searchCPE(modStartDate = '2019-01-01 00:00', modEndDate = '2020-01-01 00:00', keyword = 'PHP')
+    r = nvdlib.searchCPE(modStartDate='2019-01-01 00:00', modEndDate='2020-01-01 00:00', keyword='PHP')
     print(len(r))
 
     5992
