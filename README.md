@@ -16,7 +16,7 @@
 - Search the NVD for CVEs using all parameters allowed by the NVD API. Including search criteria such as CVE publish and modification date, keywords, severity, score, or CPE name.
 - Search CPE names by keywords, CPE match strings, or modification dates. Then pull the CVE ID's that are relevant to those CPEs. 
 - Retrieve details on individual CVEs, their relevant CPE names, and more.
-
+- Built in rate limiting according to [NIST NVD recommendations](https://nvd.nist.gov/developers). <br> Get an API key (https://nvd.nist.gov/developers/request-an-api-key) to allow for 0.6 seconds between requests. Otherwise it is 6 seconds between requests.
 
 ### Install
 ```bash
@@ -27,19 +27,14 @@ $ pip install nvdlib
 ### Demo
 ```python
 >>> import nvdlib
-
-# Perform the search with the known cpeName
->>> cves = nvdlib.searchCVE(cpeName='cpe:2.3:a:apache:tomcat:7.0.67:*:*:*:*:*:*:*', limit = 5)
-
-# Pull CVE ID, score, and CVSS version of the score from the object.
->>> for eachCVE in cves:
->>>     print(eachCVE.id + ' - ' + eachCVE.score[0] + ' - ' + eachCVE.score[1])
-
-CVE-2021-30640 - 6.5 - V3
-CVE-2019-12418 - 7.0 - V3
-CVE-2020-1938 - 9.8 - V3
-CVE-2021-25329 - 7.0 - V3
-CVE-2021-24122 - 5.9 - V3
+>>> r = nvdlib.getCVE('CVE-2021-26855')
+>>> print(r.v3severity + ' - ' + str(r.v3score))
+   CRITICAL - 9.8
+>>> print(r.cve.description.description_data[0].value)
+   Microsoft Exchange Server Remote Code Execution Vulnerability This CVE ID is unique from CVE-2021-26412, 
+   CVE-2021-26854, CVE-2021-26857, CVE-2021-26858, CVE-2021-27065, CVE-2021-27078.
+>>> print(r.v3vector)
+   CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H 
 ```
 
 

@@ -4,10 +4,17 @@ import time
 from json.decoder import JSONDecodeError
 
 
-def __get(product, parameters, kwargs):
+def __get(product, parameters, limit, key, verbose):
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
 
     searchCriteria = '&'.join(parameters)
+
+    # NIST 6 second rate limit recommendation on requests without API key - https://nvd.nist.gov/developers
+    # Get a key, its easy.
+    if key:
+        delay = 0.6
+    else:
+        delay = 6 
 
     # Get the default 20 items to see the totalResults and determine pages required.
     if product == 'cve':
@@ -16,6 +23,10 @@ def __get(product, parameters, kwargs):
         link = 'https://services.nvd.nist.gov/rest/json/cpes/1.0?'
     else:
         raise ValueError('Unknown Product')
+    
+    if verbose:
+        print('Filter:\n' + link + searchCriteria)
+
     raw = requests.get(link + searchCriteria, timeout=10)
     
 
@@ -28,11 +39,11 @@ def __get(product, parameters, kwargs):
         print('Attempted search criteria: ' + searchCriteria)
         exit()
     
-    time.sleep(0.1)
+    time.sleep(delay) 
     totalResults = raw['totalResults']
 
     # If a limit is in the search criteria or the total number of results are less than the default 20 that were just requested, return and don't request anymore.
-    if 'limit' in kwargs or totalResults < 20:
+    if limit or totalResults < 20:
         return raw
 
     # If the total results is less than the API limit (Should be 5k but tests shows me 2k), just grab all the results at once.
@@ -51,7 +62,7 @@ def __get(product, parameters, kwargs):
         if product == 'cve':
             for eachPage in range(pages):
                 newCriteria = searchCriteria + '&resultsPerPage=' + str(2000) + '&startIndex=' + str(startIndex)
-                time.sleep(0.1)
+                time.sleep(delay)
                 getData = requests.get(link + newCriteria, timeout=10).json()['result']['CVE_Items']
                 for eachCVE in getData:
                     rawTemp.append(eachCVE.copy())
@@ -61,7 +72,7 @@ def __get(product, parameters, kwargs):
         elif 'cpe':
             for eachPage in range(pages):
                 newCriteria = searchCriteria + '&resultsPerPage=' + str(2000) + '&startIndex=' + str(startIndex)
-                time.sleep(0.1)
+                time.sleep(delay)
                 getData = requests.get(link + newCriteria, timeout=10).json()['result']['cpes']
                 for eachCPE in getData:
                     rawTemp.append(eachCPE.copy())
