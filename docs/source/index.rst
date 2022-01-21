@@ -1,8 +1,6 @@
 NVDLib: NIST National Vulnerability Database API Wrapper
 ===================================
 
-Release 0.5.2
-
 .. image:: https://img.shields.io/github/license/bradleeriley/nvdlib
    :target: https://pypi.org/project/nvdlib/
    :alt: License Badge
