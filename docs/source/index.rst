@@ -20,7 +20,7 @@ Release 0.5.2
 Demo::
 
    >>> import nvdlib
-   >>> r = nvdlib.getCVE('CVE-2021-26855', cpe_dict = False)
+   >>> r = nvdlib.getCVE('CVE-2021-26855')
    >>> print(r.v3severity + ' - ' + str(r.v3score))
    CRITICAL - 9.8
    >>> print(r.cve.description.description_data[0].value)
