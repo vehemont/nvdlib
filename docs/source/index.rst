@@ -1,8 +1,6 @@
 NVDLib: NIST National Vulnerability Database API Wrapper
 ===================================
 
-Release 0.5.2
-
 .. image:: https://img.shields.io/github/license/bradleeriley/nvdlib
    :target: https://pypi.org/project/nvdlib/
    :alt: License Badge
@@ -20,7 +18,7 @@ Release 0.5.2
 Demo::
 
    >>> import nvdlib
-   >>> r = nvdlib.getCVE('CVE-2021-26855', cpe_dict = False)
+   >>> r = nvdlib.getCVE('CVE-2021-26855')
    >>> print(r.v3severity + ' - ' + str(r.v3score))
    CRITICAL - 9.8
    >>> print(r.cve.description.description_data[0].value)
@@ -61,7 +59,7 @@ Features:
 For more information on the NIST NVD API for CPE and CVEs, see the documentation here:
 https://nvd.nist.gov/General/News/New-NVD-CVE-CPE-API-and-SOAP-Retirement
 
-.. note:: NVDLib version 0.5.2 now includes `NIST NVD rate limiting recommendations <https://nvd.nist.gov/developers>`_. Requests will now sleep for 6 seconds to 
+.. note:: NVDLib version 0.5.3 now includes `NIST NVD rate limiting recommendations <https://nvd.nist.gov/developers>`_. Requests will now sleep for 6 seconds to 
    complete with no API key. Requests with an API key will sleep 0.6 seconds. 
    Get an API key here (free): https://nvd.nist.gov/developers/request-an-api-key
 
