@@ -1,5 +1,15 @@
 Release History
 ===============
+0.5.4 (2022-01-24)
+-------------------
+**Bugfixes**
+- Set score on CVEs with no score (due to awaiting analysis) to `None`. This allows for iterating on the score attribute without causing an attribute error.
+```python
+>>> import nvdlib
+>>> r = nvdlib.searchCVE(keyword='log4j', key='xxxxxx-xxxx-xxxx-xxxxx-xxxxxxxx', limit=5)
+>>> print([(x.id + ' ' + str(x.score[0])) for x in r])
+['CVE-2022-23307 9.8', 'CVE-2021-44228 10.0', 'CVE-2022-21704 None', 'CVE-2021-4104 7.5', 'CVE-2022-23302 None']
+```
 
 0.5.3 (2022-01-20)
 -------------------

@@ -138,10 +138,14 @@ class CVE:
             self.v2exploitability = self.impact.baseMetricV2.exploitabilityScore
             self.v2impactScore = self.impact.baseMetricV2.impactScore
         
+        # Prefer the base score version to V3, if it isn't available use V2.
+        # If no score is present, then set it to None.
         if hasattr(self.impact, 'baseMetricV3'):
             self.score = [self.impact.baseMetricV3.cvssV3.baseScore, 'V3']
         elif hasattr(self.impact, 'baseMetricV2'):
             self.score = [self.impact.baseMetricV2.cvssV2.baseScore, 'V2']
+        else:
+            self.score = [None, None]
 
 def __convert(product, CVEID):
     """Convert the JSON response to a referenceable object."""
