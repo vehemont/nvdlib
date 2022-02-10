@@ -1,6 +1,25 @@
 Release History
 ===============
 
+0.5.5 (2022-02-10)
+-------------------
+**Improvements**
+
+Updated CVE attribute `score` to include the severity, also rearranged the list to have the CVSS score version as the first element. This attribute is available on all CVEs and is a simpler way to obtain a score for a CVE without minding the version of the score.
+
+Old:
+```python
+    >>> print(r[0].score)
+    [8.8,'V3']
+```
+
+New:
+```python
+    >>> print(r[0].score)
+    ['V3', 8.8, 'HIGH']
+```
+<br/>
+
 0.5.4 (2022-01-24)
 -------------------
 **Bugfixes**
@@ -11,6 +30,7 @@ Release History
 >>> print([(x.id + ' ' + str(x.score[0])) for x in r])
 ['CVE-2022-23307 9.8', 'CVE-2021-44228 10.0', 'CVE-2022-21704 None', 'CVE-2021-4104 7.5', 'CVE-2022-23302 None']
 ```
+<br/>
 
 0.5.3 (2022-01-20)
 -------------------

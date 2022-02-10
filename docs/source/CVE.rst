@@ -34,6 +34,15 @@ Here is a method to print the version 3 CVSS severity.
    >>> print(r.v3severity)
    HIGH
 
+If you just need a score and severity from a CVE, you can use the `score` attribute that contains a list. This exists 
+on all CVE objects and will prefer version 3 scoring. If version 3 scoring does not exist, it will use version 2. If 
+no scoring exists for the CVE, it will set all values to `None`. The first element is the CVSS version, then score, and severity.
+
+   >>> print(r.score)   
+   ['V3', 8.8, 'HIGH']
+
+| 
+
 .. autofunction:: nvdlib.cve.getCVE
 
 Below are all of the accessible variables within a CVE. Since these are assigned as is from the response of the API,
