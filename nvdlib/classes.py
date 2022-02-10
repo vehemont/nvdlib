@@ -102,6 +102,9 @@ class CVE:
 
     :var v3impactScore: Reflects the direct consequence of a successful exploit.
     :vartype v3impactScore: float
+
+    :var score: Contains the v3 CVSS score (v2 if v3 isn't available) [score, severity, version]. Where score is an int, severity is a string('LOW','MEDIUM','HIGH','CRITICAL'), and version is a string (V3 or V2).
+    :vartype score: list
     """
 
     def __init__(self, dict):
@@ -141,11 +144,11 @@ class CVE:
         # Prefer the base score version to V3, if it isn't available use V2.
         # If no score is present, then set it to None.
         if hasattr(self.impact, 'baseMetricV3'):
-            self.score = [self.impact.baseMetricV3.cvssV3.baseScore, 'V3']
+            self.score = ['V3', self.impact.baseMetricV3.cvssV3.baseScore, self.impact.baseMetricV3.cvssV3.baseSeverity]
         elif hasattr(self.impact, 'baseMetricV2'):
-            self.score = [self.impact.baseMetricV2.cvssV2.baseScore, 'V2']
+            self.score = ['V2', self.impact.baseMetricV2.cvssV2.baseScore, self.impact.baseMetricV2.severity]
         else:
-            self.score = [None, None]
+            self.score = [None, None, None]
 
 def __convert(product, CVEID):
     """Convert the JSON response to a referenceable object."""
