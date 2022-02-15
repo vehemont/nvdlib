@@ -12,15 +12,7 @@ To use NVDLib, first install it using pip:
 
    (.venv) $ pip install nvdlib
 
-Requirements
-----------------
-
-Next, download the Requests library for NVDLib to function. 
-Currently this is the only library required.
-
-.. code-block:: console
-
-   (.venv) $ pip install requests
+This will also install the requests package if you do not already have it installed.
 
 Importing NVDLib
 ----------------

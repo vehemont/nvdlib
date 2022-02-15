@@ -7,8 +7,6 @@ from json.decoder import JSONDecodeError
 def __get(product, parameters, limit, key, verbose):
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
 
-    searchCriteria = '&'.join(parameters)
-
     # NIST 6 second rate limit recommendation on requests without API key - https://nvd.nist.gov/developers
     # Get a key, its easy.
     if key:
@@ -25,9 +23,10 @@ def __get(product, parameters, limit, key, verbose):
         raise ValueError('Unknown Product')
     
     if verbose:
-        print('Filter:\n' + link + searchCriteria)
+        print('Filter:\n' + link)
+        print(parameters)
 
-    raw = requests.get(link + searchCriteria, timeout=10)
+    raw = requests.get(link, params=parameters, timeout=10)
     
 
     try: # Try to convert the request to JSON. If it is not JSON, then print the response and exit.
@@ -36,20 +35,20 @@ def __get(product, parameters, limit, key, verbose):
             raise LookupError(raw['message'])
     except JSONDecodeError:
         print('Invalid search criteria syntax: ' + str(raw))
-        print('Attempted search criteria: ' + searchCriteria)
+        print('Attempted search criteria: ' + parameters)
         exit()
     
     time.sleep(delay) 
     totalResults = raw['totalResults']
 
-    # If a limit is in the search criteria or the total number of results are less than the default 20 that were just requested, return and don't request anymore.
-    if limit or totalResults < 20:
+    # If a limit is in the search criteria or the total number of results are less than or equal to the default 20 that were just requested, return and don't request anymore.
+    if limit or totalResults <= 20:
         return raw
 
     # If the total results is less than the API limit (Should be 5k but tests shows me 2k), just grab all the results at once.
     elif totalResults > 20 and totalResults < 2000:
-        searchCriteria += '&resultsPerPage=' + str(totalResults)
-        raw = requests.get(link + searchCriteria, timeout=10).json()
+        parameters['resultsPerPage'] = str(totalResults)
+        raw = requests.get(link, params=parameters, timeout=10).json()
         return raw
 
     # If the results is more than the API limit, figure out how many pages there are and calculate the number of requests.
@@ -61,9 +60,10 @@ def __get(product, parameters, limit, key, verbose):
         rawTemp = []
         if product == 'cve':
             for eachPage in range(pages):
-                newCriteria = searchCriteria + '&resultsPerPage=' + str(2000) + '&startIndex=' + str(startIndex)
+                parameters['resultsPerPage'] = '2000'
+                parameters['startIndex'] = str(startIndex)
                 time.sleep(delay)
-                getData = requests.get(link + newCriteria, timeout=10).json()['result']['CVE_Items']
+                getData = requests.get(link, params=parameters, timeout=10).json()['result']['CVE_Items']
                 for eachCVE in getData:
                     rawTemp.append(eachCVE.copy())
                 startIndex += 2000
@@ -71,9 +71,10 @@ def __get(product, parameters, limit, key, verbose):
             return raw
         elif 'cpe':
             for eachPage in range(pages):
-                newCriteria = searchCriteria + '&resultsPerPage=' + str(2000) + '&startIndex=' + str(startIndex)
+                parameters['resultsPerPage'] = '2000'
+                parameters['startIndex'] = str(startIndex)
                 time.sleep(delay)
-                getData = requests.get(link + newCriteria, timeout=10).json()['result']['cpes']
+                getData = requests.get(link, params=parameters, timeout=10).json()['result']['cpes']
                 for eachCPE in getData:
                     rawTemp.append(eachCPE.copy())
                 startIndex += 2000
