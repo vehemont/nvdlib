@@ -58,46 +58,48 @@ def searchCPE(modStartDate=False,
         limit,
         key):
 
-        parameters = []
-
+        parameters = {}
         if modStartDate:
-            date = str(datetime.strptime(modStartDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
-            modStartDate = 'modStartDate=' + date
-            parameters.append(modStartDate)
+            if isinstance(modStartDate, datetime):
+                date = modStartDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
+            elif isinstance(modStartDate, str):
+                date = str(datetime.strptime(modStartDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
+            else:
+                raise TypeError('Invalid date syntax: ' + modStartDate)
+            parameters['modStartDate'] = date
 
         if modEndDate:
-            date = str(datetime.strptime(modEndDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
-            modEndDate = 'modEndDate=' + date
-            parameters.append(modEndDate)     
+            if isinstance(modEndDate, datetime):
+                date = modEndDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
+            elif isinstance(modEndDate, str):
+                date = str(datetime.strptime(modEndDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
+            else:
+                raise TypeError('Invalid date syntax: ' + modEndDate)
+            parameters['modEndDate'] = date
         
         if includeDeprecated:
-            includeDeprecated = 'includeDeprecated=true'
-            parameters.append(includeDeprecated)
+            parameters['includeDeprecated'] = True
         
         if keyword:
-            keyword = 'keyword=' + keyword
-            parameters.append(keyword)
+            parameters['keyword'] = keyword
 
         if cpeMatchString:
-            cpeMatchString = 'cpeMatchString=' + cpeMatchString
-            parameters.append(cpeMatchString)
+            parameters['cpeMatchString'] = cpeMatchString
 
         if cves:
             if cves == True:
                 cves = 'addOns=cves'
-                parameters.append(cves)
+                parameters['addOns'] = 'cves'
             else:
                 raise TypeError("cves parameter can only be boolean True.")
 
         if limit:
-            if limit > 5000 or limit < 1:
-                raise ValueError('Limit parameter must be between 1 and 5000')
-            limit = 'resultsPerPage=' + str(limit)
-            parameters.append(limit)
+            if limit > 2000 or limit < 1:
+                raise ValueError('Limit parameter must be between 1 and 2000')
+            parameters['resultsPerPage'] = limit
 
         if key:
-            key = 'apiKey=' + str(key)
-            parameters.append(key)
+            parameters['apiKey'] = key
 
         return parameters
 

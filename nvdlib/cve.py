@@ -25,24 +25,24 @@ def getCVE(CVEID, cpe_dict=False, key=False, verbose=False):
     """
     def __get(CVEID, cpe_dict, key, verbose):
         searchCriteria = 'https://services.nvd.nist.gov/rest/json/cve/1.0/' + CVEID + '?'
+        parameters = {'addOns' : None}
+
         if cpe_dict == True:
-            searchCriteria = searchCriteria + 'addOns=dictionaryCpes'
-            #raw = requests.get(searchCriteria)
+            parameters['addOns'] = 'dictionaryCpes'
         elif type(cpe_dict) != bool:
             raise TypeError("cpe_dict parameter must be boolean True or False.")
+        
         if key: # add the api key to the request
             if type(key) == str:
-                if cpe_dict == True:
-                    searchCriteria = searchCriteria + '&apiKey=' + key
-                else:
-                    searchCriteria = searchCriteria + 'apiKey=' + key
+                parameters['apiKey'] = key
             else:
                 raise TypeError("key parameter must be string.")
         
         if verbose:
             print('Filter:\n' + searchCriteria)
+            print(parameters)
         
-        raw = requests.get(searchCriteria)
+        raw = requests.get(searchCriteria, parameters)
 
         try:
             raw = raw.json()
@@ -170,98 +170,101 @@ def searchCVE(
             limit,
             key):
         
-        parameters = []
+        parameters = {}
         
         if keyword:
-            keyword = 'keyword=' + keyword
-            parameters.append(keyword)
+            parameters['keyword'] = keyword
 
         if pubStartDate:
-            date = str(datetime.strptime(pubStartDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
-            pubStartDate = 'pubStartDate=' + date
-            parameters.append(pubStartDate)
+            if isinstance(pubStartDate, datetime):
+                date = pubStartDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
+            elif isinstance(pubStartDate, str):
+                date = str(datetime.strptime(pubStartDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
+            else:
+                raise TypeError('Invalid date syntax: ' + pubEndDate)
+            parameters['pubStartDate'] = date
         
         if pubEndDate:
-            date = str(datetime.strptime(pubEndDate, '%Y-%m-%d %H:%M').isoformat())  + ':000 UTC-00:00'
-            pubEndDate = 'pubEndDate=' + date
-            parameters.append(pubEndDate)
+            if isinstance(pubEndDate, datetime):
+                date = pubEndDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
+            elif isinstance(pubEndDate, str):
+                date = str(datetime.strptime(pubEndDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
+            else:
+                raise TypeError('Invalid date syntax: ' + pubEndDate)
+            parameters['pubEndDate'] = date
         
         if modStartDate:
-            date = str(datetime.strptime(modStartDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
-            modStartDate = 'modStartDate=' + date
-            parameters.append(modStartDate)
+            if isinstance(modStartDate, datetime):
+                date = modStartDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
+            elif isinstance(modStartDate, str):
+                date = str(datetime.strptime(modStartDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
+            else:
+                raise TypeError('Invalid date syntax: ' + modStartDate)
+            parameters['modStartDate'] = date
 
         if modEndDate:
-            date = str(datetime.strptime(modEndDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
-            modEndDate = 'modEndDate=' + date
-            parameters.append(modEndDate)
+            if isinstance(modEndDate, datetime):
+                date = modEndDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
+            elif isinstance(modEndDate, str):
+                date = str(datetime.strptime(modEndDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
+            else:
+                raise TypeError('Invalid date syntax: ' + modEndDate)
+            parameters['modEndDate'] = date
 
         if includeMatchStringChange:
             if includeMatchStringChange == True:
-                includeMatchStringChange = 'includeMatchStringChange=true'
-                parameters.append(includeMatchStringChange)
+                parameters['includeMatchStringChange'] = True
             else:
                 raise TypeError("includeMatchStringChange parameter can only be boolean True.")
 
         if exactMatch:
             if exactMatch == True:
-                exactMatch = 'isExactMatch=true'
-                parameters.append(exactMatch)
+                parameters['exactMatch'] = True
             else:
                 raise TypeError("exactMatch parameter can only be boolean True.")
 
         if cvssV2Severity:
             cvssV2Severity = cvssV2Severity.upper()
             if cvssV2Severity in ['LOW', 'MEDIUM', 'HIGH']:
-                cvssV2Severity = 'cvssV2Severity=' + cvssV2Severity
-                parameters.append(cvssV2Severity)
+                parameters['cvssV2Severity'] = cvssV2Severity
             else:
                 raise ValueError("cvssV2Severity parameter can only be assigned LOW, MEDIUM, or HIGH value.")
 
         if cvssV3Severity:
             cvssV3Severity = cvssV3Severity.upper()
             if cvssV3Severity in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']:
-                cvssV3Severity = 'cvssV3Severity=' + cvssV3Severity
-                parameters.append(cvssV3Severity)
+                parameters['cvssV3Severity'] = cvssV3Severity
             else:
                 raise ValueError("cvssV3Severity parameter can only be assigned LOW, MEDIUM, HIGH, or CRITICAL value.")
 
         if cvssV2Metrics:
-            cvssV2Metrics = 'cvssV2Metrics=' + cvssV2Metrics
-            parameters.append(cvssV2Metrics)
+            parameters['cvssV2Metrics'] = cvssV2Metrics
         
         if cvssV3Metrics:
-            cvssV3Metrics = 'cvssV3Metrics=' + cvssV3Metrics
-            parameters.append(cvssV3Metrics)
+            parameters['cvssV3Metrics'] = cvssV3Metrics
 
         if cpeMatchString:
-            cpeMatchString = 'cpeMatchString=' + cpeMatchString
-            parameters.append(cpeMatchString)
+            parameters['cpeMatchString'] = cpeMatchString
         
         if cpeName:
-            cpeName = 'cpeName=' + cpeName
-            parameters.append(cpeName)
+            parameters['cpeName'] = cpeName
 
         if cpe_dict:
             if cpe_dict == True:
-                cpe_dict = 'addOns=dictionaryCpes'
-                parameters.append(cpe_dict)
+                parameters['addOns'] = 'dictionaryCpes'
             else:
                 raise TypeError("cpe_dict parameter can only be boolean True.")
 
         if cweId:
-            cweId = 'cweId=' + cweId
-            parameters.append(cweId)
+            parameters['cweId'] = cweId
 
         if limit:
-            if limit > 5000 or limit < 1:
-                raise ValueError('Limit parameter must be between 1 and 5000')
-            limit = 'resultsPerPage=' + str(limit)
-            parameters.append(limit)
+            if limit > 2000 or limit < 1:
+                raise ValueError('Limit parameter must be between 1 and 2000')
+            parameters['resultsPerPage'] = str(limit)
         
         if key:
-            key = 'apiKey=' + str(key)
-            parameters.append(key)
+            parameters['apiKey'] = key
 
         return parameters
 

@@ -1,5 +1,26 @@
 Release History
 ===============
+0.5.6 (2022-02-15)
+-------------------
+**Improvements**
+
+- Added the ability to pass `datetime` objects to searchCVE and searchCPE as mod/pub dates instead of strings. Strings will still work at this time. 
+```python
+>>> end = datetime.datetime.now()
+>>> start = end - datetime.timedelta(days=7)
+>>> r = nvdlib.searchCVE(pubStartDate=start, pubEndDate=end, verbose=True)
+Filter:
+https://services.nvd.nist.gov/rest/json/cves/1.0?pubStartDate=2022-02-08T08:57:26:000 UTC-00:00&pubEndDate=2022-02-15T08:57:26:000 UTC-00:00
+>>> len(r)
+629
+```
+
+
+- Reworked __buildCVECall to utilize a dictionary to pass to __get using requests params argument, instead of building the string from scratch.
+- Added a test framework (courtesy of @calve)
+
+
+
 
 0.5.5 (2022-02-10)
 -------------------
