@@ -91,21 +91,23 @@ def searchCVE(
     """Build and send GET request then return list of objects containing a collection of CVEs.
 
     :param pubStartDate: The pubStartDate and pubEndDate parameters specify the set of CVE that were added to NVD (published) during the period. 
-        Maximum 120 day range. It is not necessary to provide both start and end dates if your goal is to retrieve all CVE after a certain date, or up to a certain date. All times are in UTC 00:00.
-        Example: '2020-06-28 00:00'
-    :type pubStartDate: ISO 8601 date/time
+    
+        Maximum 120 day range. A start and end date is required. All times are in UTC 00:00.
+
+        A datetime object or string can be passed as a date. NVDLib will automatically parse the datetime object into the correct format.
+    
+        String Example: '2020-06-28 00:00'
+    :type pubStartDate: str/datetime obj
 
     
-    :param pubEndDate: Publish end date. Can be used to get all vulnerabilities published up to a specific date and time. All times are in UTC 00:00.
-        Example: '2020-06-28 00:00'
-    :type pubEndDate: ISO 8601 date/time
+    :param pubEndDate: Publish end date. Can be used to get all vulnerabilities published up to a specific date and time. All times are in UTC 00:00. A start and end date is required.
+    :type pubEndDate: str/datetime obj
 
-    :param modStartDate: The modStartDate and modEndDate parameters specify CVE that were subsequently modified. All times are in UTC 00:00.
-        Example: '2020-06-28 00:00'
-    :type modStartDate: ISO 8601 date/time
+    :param modStartDate: The modStartDate and modEndDate parameters specify CVE that were subsequently modified. All times are in UTC 00:00. A start and end date is required.
+    :type modStartDate: str/datetime obj
 
-    :param modEndDate: Modifified end date. Can be used to get all vulnerabilities modfied up to a specific date and time. All times are in UTC 00:00.
-    :type modEndDate: ISO 8601 date/time
+    :param modEndDate: Modifified end date. Can be used to get all vulnerabilities modfied up to a specific date and time. All times are in UTC 00:00. A start and end date is required.
+    :type modEndDate: str/datetime obj
 
     :param includeMatchStringChange: Retrieve vulnerabilities where CPE names changed during the time period. This returns 
         vulnerabilities where either the vulnerabilities or the associated product names were modified.
@@ -127,7 +129,7 @@ def searchCVE(
 
     :param cvssV2Metrics / cvssV3Metrics: -- If your application supports CVSS vector strings, use the cvssV2Metric or cvssV3Metrics parameter to
         find vulnerabilities having those score metrics. Partial vector strings are supported.
-    :type cvssV2Metrics / cvssV3Metrics: str
+    :type cvssV2Metrics: str
 
     :param cpeMatchString: -- Use cpeMatchString when you want a broader search against the applicability statements attached to the Vulnerabilities 
         (e.x. find all vulnerabilities attached to a specific product).
