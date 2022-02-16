@@ -14,13 +14,13 @@ https://services.nvd.nist.gov/rest/json/cves/1.0?pubStartDate=2022-02-08T08:57:2
 >>> len(r)
 629
 ```
-
-
 - Reworked __buildCVECall to utilize a dictionary to pass to __get using requests params argument, instead of building the string from scratch.
 - Added a test framework (courtesy of @calve)
 
 
+**Bugfixes**
 
+- Immediately returned results if the total results from a search equals 20, instead of attempting to request a non-existant page.
 
 0.5.5 (2022-02-10)
 -------------------
