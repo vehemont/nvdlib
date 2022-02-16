@@ -50,8 +50,9 @@ for said matching CPEs, and print their CVE IDs.
 
 Filter for CPE names modfied between 2019-01-01 and 2021-01-01 with the keyword of PHP.
 
-.. note:: | Maximum 120 days between a date.
-    | *len(r)* will return how many CPE entries were found in the result.
+.. note:: There is a maximum 120 day range when using date ranges. If searching publication or modified dates, start and end dates are required. A `datetime` object can also be used instead of a string.
+    
+    | *len(r)* will return how many CPE (or CVE) entries were found in the result.
 
 .. code-block:: python
 
@@ -59,3 +60,10 @@ Filter for CPE names modfied between 2019-01-01 and 2021-01-01 with the keyword 
     print(len(r))
 
     5992
+
+Filter for all CPE names modified in the last 30 days using `datetime` objects.
+
+>>> import datetime
+>>> end = datetime.datetime.now()
+>>> start = end - datetime.timedelta(days=30)
+>>> r = nvdlib.searchCPE(modStartDate=start, modEndDate=end)

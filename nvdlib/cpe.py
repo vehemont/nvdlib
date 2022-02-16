@@ -15,13 +15,15 @@ def searchCPE(modStartDate=False,
         verbose=False):
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
-    :param modStartDate: CPE modification start date
-    :type modStartDate: ISO 8601 date/time
-        Example: '2020-06-28 00:00'
-        Maximum 120 day range
+    :param modStartDate: CPE modification start date. Maximum 120 day range. A start and end date is required. All times are in UTC 00:00.
+
+        A datetime object or string can be passed as a date. NVDLib will automatically parse the datetime object into the correct format.
+
+        String Example: '2020-06-28 00:00'
+    :type modStartDate: str/datetime obj
 
     :param modEndDate: CPE modification end date
-    :type modEndDate: ISO 8601 date/time
+    :type modEndDate: str/datetime obj
         Example: '2020-06-28 00:00'
 
     :param includeDeprecated: Include deprecated CPE names that have been replaced.
@@ -34,6 +36,7 @@ def searchCPE(modStartDate=False,
     :type cpeMatchString: str
 
     :param cves: Return vulnerabilities. 
+
         **Warning**: This parameter may incur large amounts of results causing delays.
     :type cves: bool True
 

@@ -82,12 +82,18 @@ The arguments are not positional. SearchCVE will build the request based on what
 All of the parameters can be mixed together in any order. If a value is not passed to the function,
 it is assumed to be false and will not be added to the filter.
 
+.. note:: There is a maximum 120 day range when using date ranges. If searching publication or modified dates, start and end dates are required. A `datetime` object can also be used instead of a string.
 
 Filter by publication start and end date, keyword, version 3 severity of critical, and an API key to allow for faster requests:
 
-.. note:: There is a maximum 120 day range when using date ranges.
-
 >>> r = nvdlib.searchCVE(pubStartDate = '2021-09-08 00:00', pubEndDate = '2021-12-01 00:00', keyword = 'Microsoft Exchange', cvssV3Severity = 'Critical', key='xxxxx-xxxxxx-xxxxxxx')
+
+Get all CVEs in the last 7 days using a datetime object and use an API key.
+
+>>> import datetime
+>>> end = datetime.datetime.now()
+>>> start = end - datetime.timedelta(days=7)
+>>> r = nvdlib.searchCVE(pubStartDate=start, pubEndDate=end, key='xxxxx-xxxxxx-xxxxxxx')
 
 Filter for publications between 2019-06-02 and 2019-06-08:
 
