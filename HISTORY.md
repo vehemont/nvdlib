@@ -1,5 +1,14 @@
 Release History
 ===============
+
+0.5.7 (2022-05-18)
+-------------------
+**Bugfixes**
+
+- Update get.py by @GamehunterKaan in https://github.com/vehemont/nvdlib/pull/4
+    - Update request timeout in `get.py` to 30 seconds from 10 seconds because most api requests take longer than 10 seconds.
+    - Update exception message from paramaters to str(paramaters) to prevent TypeErrors.
+
 0.5.6 (2022-02-15)
 -------------------
 **Improvements**
