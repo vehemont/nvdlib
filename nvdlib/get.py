@@ -26,7 +26,7 @@ def __get(product, parameters, limit, key, verbose):
         print('Filter:\n' + link)
         print(parameters)
 
-    raw = requests.get(link, params=parameters, timeout=10)
+    raw = requests.get(link, params=parameters, timeout=30)
     
 
     try: # Try to convert the request to JSON. If it is not JSON, then print the response and exit.
@@ -35,7 +35,7 @@ def __get(product, parameters, limit, key, verbose):
             raise LookupError(raw['message'])
     except JSONDecodeError:
         print('Invalid search criteria syntax: ' + str(raw))
-        print('Attempted search criteria: ' + parameters)
+        print('Attempted search criteria: ' + str(parameters))
         exit()
     
     time.sleep(delay) 
@@ -48,7 +48,7 @@ def __get(product, parameters, limit, key, verbose):
     # If the total results is less than the API limit (Should be 5k but tests shows me 2k), just grab all the results at once.
     elif totalResults > 20 and totalResults < 2000:
         parameters['resultsPerPage'] = str(totalResults)
-        raw = requests.get(link, params=parameters, timeout=10).json()
+        raw = requests.get(link, params=parameters, timeout=30).json()
         return raw
 
     # If the results is more than the API limit, figure out how many pages there are and calculate the number of requests.
@@ -63,7 +63,7 @@ def __get(product, parameters, limit, key, verbose):
                 parameters['resultsPerPage'] = '2000'
                 parameters['startIndex'] = str(startIndex)
                 time.sleep(delay)
-                getData = requests.get(link, params=parameters, timeout=10).json()['result']['CVE_Items']
+                getData = requests.get(link, params=parameters, timeout=30).json()['result']['CVE_Items']
                 for eachCVE in getData:
                     rawTemp.append(eachCVE.copy())
                 startIndex += 2000
@@ -74,7 +74,7 @@ def __get(product, parameters, limit, key, verbose):
                 parameters['resultsPerPage'] = '2000'
                 parameters['startIndex'] = str(startIndex)
                 time.sleep(delay)
-                getData = requests.get(link, params=parameters, timeout=10).json()['result']['cpes']
+                getData = requests.get(link, params=parameters, timeout=30).json()['result']['cpes']
                 for eachCPE in getData:
                     rawTemp.append(eachCPE.copy())
                 startIndex += 2000
