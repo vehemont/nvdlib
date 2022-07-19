@@ -84,6 +84,7 @@ def searchCVE(
             cpeName=False,
             cpe_dict=False,
             cweId=False,
+            sortPublished=False,
             limit=False,
             key=False,
             verbose=False):
@@ -130,6 +131,13 @@ def searchCVE(
         find vulnerabilities having those score metrics. Partial vector strings are supported.
     :type cvssV2Metrics: str
 
+    :param cweId: -- Filter collection by CWE (Common Weakness Enumeration) ID. You can find a list at https://cwe.mitre.org/. A CVE can have multiple CWE IDs assigned to it.
+    :type cweId: str
+
+    :param sortPublished: -- Setting this parameter to true should sort the CVE collection by most recently published instead of the default of most recently modified.
+        **Warning**: YMMV. I have not been able to get this parameter to work as I expect. The NVD developer guide states to use this parameter when searching for large amounts of CVEs.
+    :type sortPublished: bool True
+
     :param cpeMatchString: -- Use cpeMatchString when you want a broader search against the applicability statements attached to the Vulnerabilities 
         (e.x. find all vulnerabilities attached to a specific product).
     :type cpeMatchString: str
@@ -168,6 +176,7 @@ def searchCVE(
             cpeName,
             cpe_dict,
             cweId,
+            sortPublished,
             limit,
             key):
         
@@ -259,6 +268,12 @@ def searchCVE(
         if cweId:
             parameters['cweId'] = cweId
 
+        if sortPublished:
+            if sortPublished == True:
+                parameters['sortOrder'] = 'publishedDate'
+            else:
+                raise TypeError("sortPublished parameter can only be boolean True.")
+
         if limit:
             if limit > 2000 or limit < 1:
                 raise ValueError('Limit parameter must be between 1 and 2000')
@@ -284,6 +299,7 @@ def searchCVE(
             cpeName,
             cpe_dict,
             cweId,
+            sortPublished,
             limit,
             key)
 
