@@ -1,5 +1,17 @@
 Release History
 ===============
+0.5.8 (2022-07-19)
+-------------------
+**Bugfixes**
+
+- Update get.py and cve.py by @GamehunterKaan in https://github.com/vehemont/nvdlib/pull/5
+    - Removed exit() function that causes the program to abort. Modules shouldn't exit.
+- Updated cve.py `searchCVE` doc string to include the `cweId` parameter.
+
+**Improvements**
+
+- Updated cve.py to include the `sortPublished` parameter that is supposed to sort a CVE collection by published date, rather than the default modified date. In my testing, I have not been able to get this parameter working as expected, and I receive no changes in response with or without the `sortOrder=publishedDate` parameter.  
+I have decided to include the parameter since it is a valid API parameter. The NVD developer guide (https://nvd.nist.gov/developers/vulnerabilities) recommends to use this parameter to prevent missing CVEs when searching for large amounts of CVEs. 
 
 0.5.7 (2022-05-18)
 -------------------
