@@ -1,5 +1,16 @@
 Release History
 ===============
+0.5.9 (2022-09-03)
+-------------------
+**Bugfixes**
+
+- Update `get.py` and `cve.py` to set the request ecoding to `utf-8` to prevent any incorrect decoding of requests.
+
+**Improvements**
+
+- Update `cve.py` to add a request timeout of 30 seconds.  
+- Updated `get.py` to enhance the `verbose=True` parameter to work with `searchCVE` and `searchCPE` and it will now print the parameters with each query to see what page a request is failing on, as utilizing `.raise_for_status()` to raise an HTTPError object if an error occurs during the request (such as 403 forbidden from too many requests).
+
 0.5.8 (2022-07-19)
 -------------------
 **Bugfixes**
