@@ -42,9 +42,10 @@ def getCVE(CVEID, cpe_dict=False, key=False, verbose=False):
             print('Filter:\n' + searchCriteria)
             print(parameters)
         
-        raw = requests.get(searchCriteria, parameters)
+        raw = requests.get(searchCriteria, parameters,timeout=30)
 
         try:
+            raw.encoding = 'utf-8'
             raw = raw.json()
             if 'message' in raw: # If no results were found raise error with the message provided from the API
                 raise LookupError(raw['message'])

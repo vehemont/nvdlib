@@ -12,7 +12,7 @@ def __get(product, parameters, limit, key, verbose):
     if key:
         delay = 0.6
     else:
-        delay = 6 
+        delay = 6
 
     # Get the default 20 items to see the totalResults and determine pages required.
     if product == 'cve':
@@ -62,7 +62,19 @@ def __get(product, parameters, limit, key, verbose):
                 parameters['resultsPerPage'] = '2000'
                 parameters['startIndex'] = str(startIndex)
                 time.sleep(delay)
-                getData = requests.get(link, params=parameters, timeout=30).json()['result']['CVE_Items']
+                if verbose:
+                    print('Filter:\n' + link)
+                    print(parameters)
+                try:
+                    getReq = requests.get(link, params=parameters, timeout=30)
+                    getReq.encoding = 'utf-8'
+                    getData = getReq.json()['result']['CVE_Items']
+                except JSONDecodeError:
+                    print('JSONDecodeError')
+                    print('Something went wrong: ' + str(getReq))
+                    print('Attempted search criteria: ' + str(parameters))
+                    print('URL: ' + getReq.request.url)
+                    getReq.raise_for_status()
                 for eachCVE in getData:
                     rawTemp.append(eachCVE.copy())
                 startIndex += 2000
@@ -73,7 +85,19 @@ def __get(product, parameters, limit, key, verbose):
                 parameters['resultsPerPage'] = '2000'
                 parameters['startIndex'] = str(startIndex)
                 time.sleep(delay)
-                getData = requests.get(link, params=parameters, timeout=30).json()['result']['cpes']
+                if verbose:
+                    print('Filter:\n' + link)
+                    print(parameters)
+                try:
+                    getReq = requests.get(link, params=parameters, timeout=30)
+                    getReq.encoding = 'utf-8'
+                    getData = getReq.json()['result']['CVE_Items']
+                except JSONDecodeError:
+                    print('JSONDecodeError')
+                    print('Something went wrong: ' + str(getReq))
+                    print('Attempted search criteria: ' + str(parameters))
+                    print('URL: ' + getReq.request.url)
+                    getReq.raise_for_status()
                 for eachCPE in getData:
                     rawTemp.append(eachCPE.copy())
                 startIndex += 2000
