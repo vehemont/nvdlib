@@ -4,7 +4,7 @@ Release History
 -------------------
 **Bugfixes**
 
-- Update `get.py` and `cve.py` to set the request ecoding to `utf-8` to prevent any incorrect decoding of requests.
+- Update `get.py` and `cve.py` to set the request encoding to `utf-8` to prevent any incorrect decoding of requests.
 
 **Improvements**
 
