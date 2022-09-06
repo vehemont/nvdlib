@@ -59,3 +59,7 @@ This is my first attempt at creating a library while utilizing all my Python exp
 
 For more information on the NIST NVD API for CPE and CVEs, see the documentation here: 
 https://nvd.nist.gov/General/News/New-NVD-CVE-CPE-API-and-SOAP-Retirement
+
+---
+
+This product uses data from the NVD API but is not endorsed or certified by the NVD.
