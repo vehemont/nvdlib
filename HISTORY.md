@@ -1,5 +1,12 @@
 Release History
 ===============
+
+0.6.0 (2022-09-15)
+-------------------
+**Bugfixes**
+
+- Updated `cve.py` to utilize the correct parameter to allow sorting of CVE collections by date. The parameter is `sortBy` with a value of `publishDate`. By @Smjert in https://github.com/vehemont/nvdlib/pull/8
+
 0.5.9 (2022-09-03)
 -------------------
 **Bugfixes**
