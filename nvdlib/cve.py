@@ -136,7 +136,7 @@ def searchCVE(
     :type cweId: str
 
     :param sortPublished: -- Setting this parameter to true should sort the CVE collection by most recently published instead of the default of most recently modified.
-        The NVD developer guide states to use this parameter when searching for large amounts of CVEs.
+        **The NVD developer guide states to use this parameter when searching for large amounts of CVEs to avoid errors.**
     :type sortPublished: bool True
 
     :param cpeMatchString: -- Use cpeMatchString when you want a broader search against the applicability statements attached to the Vulnerabilities 
