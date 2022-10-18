@@ -230,7 +230,7 @@ def searchCVE(
 
         if exactMatch:
             if exactMatch == True:
-                parameters['exactMatch'] = True
+                parameters['isExactMatch'] = True
             else:
                 raise TypeError("exactMatch parameter can only be boolean True.")
 
