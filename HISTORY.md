@@ -8,7 +8,7 @@ Release History
 - `nvdlib.getCVE()` no longer exists and is now combined into `nvdlib.searchCVE()` using the `cvdId` parameter.
 - `nvdlib.searchCPE()` no longer has the `cves` parameter to pass CVEs. 
 - New parameters for `nvdlib.searchCVE()`
-- For a full list of changes, see the https://nvdlib.com/docs/build/html/v1/changesv1.html
+- For a full list of changes, see the https://nvdlib.com/en/latest/v1/changesv1.html
 
 Happy Halloween! 🎃
 
