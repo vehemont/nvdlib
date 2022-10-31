@@ -1,5 +1,5 @@
 NVDLib: NIST National Vulnerability Database API Wrapper
-===================================
+########################################################
 
 .. image:: https://img.shields.io/github/license/bradleeriley/nvdlib
    :target: https://pypi.org/project/nvdlib/
@@ -18,13 +18,13 @@ NVDLib: NIST National Vulnerability Database API Wrapper
 Demo::
 
    >>> import nvdlib
-   >>> r = nvdlib.getCVE('CVE-2021-26855')
-   >>> print(r.v3severity + ' - ' + str(r.v3score))
+   >>> r = nvdlib.searchCVE(cveId='CVE-2021-26855')[0]
+   >>> print(r.v31severity + ' - ' + str(r.v31score))
    CRITICAL - 9.8
-   >>> print(r.cve.description.description_data[0].value)
+   >>> print(r.descriptions[0].value)
    Microsoft Exchange Server Remote Code Execution Vulnerability This CVE ID is unique from CVE-2021-26412, 
    CVE-2021-26854, CVE-2021-26857, CVE-2021-26858, CVE-2021-27065, CVE-2021-27078.
-   >>> print(r.v3vector)
+   >>> print(r.v31vector)
    CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H 
 
 **NVDLib** is able to pull all data on known CVEs, search the NVD for CVEs 
@@ -32,46 +32,65 @@ or `Common Platform Enumeration (CPE) <https://nvd.nist.gov/products/cpe>`_ name
 
 
 Features:
-----------------
+---------
 
 * Pull data on individual CVEs:
- * CVE ID, description, reference links, CWE.
- * CPE applicability statements and optional CPE names.
- * CVSS severity scores.
- * CVE publication date.
- * CVE modified date.
-
+   * CVE ID, description, reference links, CWE
+   * CPE applicability statements and optional CPE names
+   * CVSS severity scores or metrics
+   * CVE publication date
+   * CVE modified date
 * Search the NVD for CVEs by: 
- * Keywords
- * Publish or modification start/end dates
- * cweID
- * CVSS V2/V3, score, severity, or metrics.
- * CPE match string
- * CPE name.
-
+   * Keywords
+   * Publish or modification start/end dates
+   * cweID
+   * CVSS V2/V3, score, severity, or metrics.
+   * CPE match string/virtual match string
+   * CPE name
+   * US-CERT alerts, KEV Catalog or OVAL
+   * Source identifier
+   * Vulnerable status
 * Search the NVD for CPE names by:
- * Modification start/End dates 
- * Keywords 
- * CPE match string. 
- * Dump data into objects to be accessible easily as class attributes. 
+   * Modification start/End dates 
+   * Keywords 
+   * CPE match string. 
+   * Dump data into objects to be accessible easily as class attributes. 
 
 
 For more information on the NIST NVD API for CPE and CVEs, see the documentation here:
-https://nvd.nist.gov/General/News/New-NVD-CVE-CPE-API-and-SOAP-Retirement
+https://nvd.nist.gov/developers
 
-This product uses data from the NVD API but is not endorsed or certified by the NVD.
-
-.. note:: NVDLib version 0.5.3 now includes `NIST NVD rate limiting recommendations <https://nvd.nist.gov/developers>`_. Requests will now sleep for 6 seconds to 
-   complete with no API key. Requests with an API key will sleep 0.6 seconds. 
+.. note:: NVDLib allows use of an NVD API key to define the delay between requests. NVD recommends sleeping scripts for 6 seconds in between requests. 
+   If no API key is provided, NVDLib will sleep for 6 seconds in between requests by default.
+   
    Get an API key here (free): https://nvd.nist.gov/developers/request-an-api-key
 
 Navigation:
-----------------
+-----------
+
+.. toctree::
+   :maxdepth: 2
+   
+   v2/startedv2
+   v2/CVEv2
+   v2/CPEv2
+
+Version 1 API Documentation (<=0.6.1):
+--------------------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   started
-   CVE
-   CPE
+   v1/changesv1
+   v1/v1
+   
+Updates
+-------
+.. toctree::
+   :maxdepth: 2
+
    release
+
+|
+
+This product uses data from the NVD API but is not endorsed or certified by the NVD.

@@ -1,313 +1,275 @@
-import requests
 import datetime
-import time
 
-from json.decoder import JSONDecodeError
 from datetime import datetime
 from .classes import __convert
 from .get import __get
 
-def getCVE(CVEID, cpe_dict=False, key=False, verbose=False):
-    """Build and send GET request for a single CVE then return object containing CVE attributes.
-
-    :param CVEID: String of the CVE ID of the vulnerability to retrieve more details.
-    :type CVEID: str
-
-    :param cpe_dict: Set this value to true to control whether matching CPE names from the Official Dictionary are included in the response.
-    :type cpe_dict: Bool True
-
-    :param key: NVD API Key. Allows for a request every 0.6 seconds instead of 6 seconds.
-    :type key: str
-
-    :param verbose: Prints the URL request for debugging purposes.
-    :type verbose: bool
-
-    """
-    def __get(CVEID, cpe_dict, key, verbose):
-        searchCriteria = 'https://services.nvd.nist.gov/rest/json/cve/1.0/' + CVEID + '?'
-        parameters = {'addOns' : None}
-
-        if cpe_dict == True:
-            parameters['addOns'] = 'dictionaryCpes'
-        elif type(cpe_dict) != bool:
-            raise TypeError("cpe_dict parameter must be boolean True or False.")
-        
-        if key: # add the api key to the request
-            if type(key) == str:
-                parameters['apiKey'] = key
-            else:
-                raise TypeError("key parameter must be string.")
-        
-        if verbose:
-            print('Filter:\n' + searchCriteria)
-            print(parameters)
-        
-        raw = requests.get(searchCriteria, parameters,timeout=30)
-
-        try:
-            raw.encoding = 'utf-8'
-            raw = raw.json()
-            if 'message' in raw: # If no results were found raise error with the message provided from the API
-                raise LookupError(raw['message'])
-
-        except JSONDecodeError:
-            print('Invalid CVE: ' + str(raw))
-            print('Attempted search for CVE ID : ' + CVEID)
-
-        # NIST 6 second rate limit recommendation on requests without API key - https://nvd.nist.gov/developers
-        # Get a key, its easy.
-        if key:
-            delay = 0.6
-        else:
-            delay = 6
-        time.sleep(delay)
-
-        return raw
-
-    raw = __get(CVEID, cpe_dict, key, verbose)    
-    return __convert('cve', raw['result']['CVE_Items'][0])
-
-
-
 def searchCVE(
-            keyword=False, 
+            cpeName=False,
+            cveId=False,
+            cvssV2Metrics=False,
+            cvssV2Severity=False,
+            cvssV3Metrics=False,
+            cvssV3Severity=False,
+            cweId=False,
+            hasCertAlerts=False,
+            hasCertNotes=False,
+            hasKev=False,
+            hasOval=False,
+            isVulnerable=False,
+            keywordExactMatch=False,
+            keywordSearch=False,
+            lastModStartDate=False, 
+            lastModEndDate=False, 
             pubStartDate=False, 
             pubEndDate=False, 
-            modStartDate=False, 
-            modEndDate=False, 
-            includeMatchStringChange=False, 
-            exactMatch=False,
-            cvssV2Severity=False,
-            cvssV3Severity=False,
-            cvssV2Metrics=False,
-            cvssV3Metrics=False,
-            cpeMatchString=False,
-            cpeName=False,
-            cpe_dict=False,
-            cweId=False,
-            sortPublished=False,
+            sourceIdentifier=False,
+            virtualMatchString=False,
             limit=False,
+            delay=False,
             key=False,
             verbose=False):
-    """Build and send GET request then return list of objects containing a collection of CVEs.
+    """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
-    :param pubStartDate: The pubStartDate and pubEndDate parameters specify the set of CVE that were added to NVD (published) during the period. 
-    
-        Maximum 120 day range. A start and end date is required. All times are in UTC 00:00.
-
-        A datetime object or string can be passed as a date. NVDLib will automatically parse the datetime object into the correct format.
-    
-        String Example: '2020-06-28 00:00'
-    :type pubStartDate: str/datetime obj
-
-    
-    :param pubEndDate: Publish end date. Can be used to get all vulnerabilities published up to a specific date and time. All times are in UTC 00:00. A start and end date is required.
-    :type pubEndDate: str/datetime obj
-
-    :param modStartDate: The modStartDate and modEndDate parameters specify CVE that were subsequently modified. All times are in UTC 00:00. A start and end date is required.
-    :type modStartDate: str/datetime obj
-
-    :param modEndDate: Modifified end date. Can be used to get all vulnerabilities modfied up to a specific date and time. All times are in UTC 00:00. A start and end date is required.
-    :type modEndDate: str/datetime obj
-
-    :param includeMatchStringChange: Retrieve vulnerabilities where CPE names changed during the time period. This returns 
-        vulnerabilities where either the vulnerabilities or the associated product names were modified.
-    :type includeMatchStringChange: bool True
-
-    :param keyword: Word or phrase to search the vulnerability description or reference links.
-    :type keyword: str
-
-    :param exactMatch: If the keyword is a phrase, i.e., contains more than one term, then the isExactMatch parameter may be
-        used to influence the response. Use exactMatch to retrieve records matching the exact phrase.
-        Otherwise, the results contain any record having any of the terms.
-    :type exactMatch: bool True
-
-    :param cvssV2Severity: Find vulnerabilities having a 'LOW', 'MEDIUM', or 'HIGH' version 2 score.
-    :type cvssV2Severity: str
-
-    :param cvssV3Severity: -- Find vulnerabilities having a 'LOW', 'MEDIUM', 'HIGH', or 'CRITICAL' version 3 score.
-    :type cvssV3Severity: str
-
-    :param cvssV2Metrics / cvssV3Metrics: -- If your application supports CVSS vector strings, use the cvssV2Metric or cvssV3Metrics parameter to
-        find vulnerabilities having those score metrics. Partial vector strings are supported.
-    :type cvssV2Metrics: str
-
-    :param cweId: -- Filter collection by CWE (Common Weakness Enumeration) ID. You can find a list at https://cwe.mitre.org/. A CVE can have multiple CWE IDs assigned to it.
-    :type cweId: str
-
-    :param sortPublished: -- Setting this parameter to true should sort the CVE collection by most recently published instead of the default of most recently modified.
-        **The NVD developer guide states to use this parameter when searching for large amounts of CVEs to avoid errors.**
-    :type sortPublished: bool True
-
-    :param cpeMatchString: -- Use cpeMatchString when you want a broader search against the applicability statements attached to the Vulnerabilities 
-        (e.x. find all vulnerabilities attached to a specific product).
-    :type cpeMatchString: str
-
-    :param cpeName: -- Use cpeName when you know what CPE you want to compare against the applicability statements 
-        attached to the vulnerability (i.e. find the vulnerabilities attached to that CPE). 
+    :param cpeName: This value will be compared agains the CPE Match Criteria within a CVE applicability statement. (i.e. find the vulnerabilities attached to that CPE). Partial match strings are allowed.
     :type cpeName: str
 
-    :param cpe_dict: -- Set this value to true to control whether matching CPE from the Official Dictionary for each CVE are included in the response.
+    :param cveId: Returns a single CVE that already exists in the NVD.
+    :type cveId: str
 
-        **Warning:** If your search contains many results, the response will be very large as it will contain every CPE that a vulnerability has, thus resulting in delays.
-    :type cpe_dict: bool True
+    :param cvssV2Metrics: This parameter returns only the CVEs that match the provided CVSSv2 vector string. Either full or partial vector strings may be used. This parameter cannot be used in requests that include cvssV3Metrics.
+    :type cvssV2Metrics: str
 
-    :param limit: -- Custom argument to limit the number of results of the search. Allowed any number between 1 and 2000.
+    :param cvssV2Severity: Find vulnerabilities having a 'LOW', 'MEDIUM', or 'HIGH' version 2 severity.
+    :type cvssV2Severity: str
+
+    :param cvssV3Metrics: This parameter returns only the CVEs that match the provided CVSSv3 vector string. Either full or partial vector strings may be used. This parameter cannot be used in requests that include cvssV2Metrics.
+    :type cvssV3Metrics: str
+
+    :param cvssV3Severity: Find vulnerabilities having a 'LOW', 'MEDIUM', 'HIGH', or 'CRITICAL' version 3 severity.
+    :type cvssV3Severity: str
+
+    :param cweId: Filter collection by CWE (Common Weakness Enumeration) ID. You can find a list at https://cwe.mitre.org/. A CVE can have multiple CWE IDs assigned to it.
+    :type cweId: str
+
+    :param hasCertAlerts: Returns CVE that contain a Technical Alert from US-CERT.
+    :type hasCertAlerts: bool
+
+    :param hasCertNotes: Returns CVE that contain a Vulnerability Note from CERT/CC.
+    :type hasCertNotes: bool
+
+    :param hasOval: Returns CVE that contain information from MITRE's Open Vulnerability and Assessment Language (OVAL) before this transitioned to the Center for Internet Security (CIS).
+    :type hasOval: bool
+
+    :param isVulnerable: Returns CVE associated with a specific CPE, where the CPE is also considered vulnerable. **REQUIRES** `cpeName` parameter. `isVulnerable` is not compatible with `virtualMatchString` parameter.
+    :type isVulnerable: bool    
+
+    :param keywordExactMatch: When `keywordSearch` is used along with `keywordExactmatch`, it will search the NVD for CVEs containing exactly what was passed to `keywordSearch`. **REQUIRES** `keywordSearch`.
+    :type keywordExactMatch: bool
+
+    :param keywordSearch: Searches CVEs where a word or phrase is found in the current description. If passing multiple keywords with a space character in between then each word must exist somewhere in the description, not necessarily together unless `keywordExactMatch=True` is passed to `searchCVE`.
+    :type keywordSearch: str
+
+    :param lastModStartDate: These parameters return only the CVEs that were last modified during the specified period. If a CVE has been modified more recently than the specified period, it will not be included in the response. If filtering by the last modified date, both `lastModStartDate` and `lastModEndDate` are REQUIRED. The maximum allowable range when using any date range parameters is 120 consecutive days.
+    :type lastModStartDate: str,datetime obj
+
+    :param lastModEndDate: Required if using lastModStartDate.
+    :type lastModEndDate: str, datetime obj
+
+    :param pubStartDate: These parameters return only the CVEs that were added to the NVD (i.e., published) during the specified period. If filtering by the published date, both `pubStartDate` and `pubEndDate` are REQUIRED. The maximum allowable range when using any date range parameters is 120 consecutive days.
+    :type pubStartDate: str,datetime obj
+
+    :param pubEndDate: Required if using pubStartDate.
+    :type pubEndDate: str, datetime obj
+
+    :param sourceIdentifier: Returns CVE where the data source of the CVE is the value that is passed to `sourceIdentifier`.
+    :type sourceIdentifier: str
+
+    :param virtualMatchString: A more broad filter compared to `cpeName`. The cpe match string that is passed to `virtualMatchString` is compared against the CPE Match Criteria present on CVE applicability statements.
+    :type virtualMatchString: str
+
+    :param limit: Custom argument to limit the number of results of the search. Allowed any number between 1 and 2000.
     :type limit: int
     
-    :param key: NVD API Key. Allows for a request every 0.6 seconds instead of 6 seconds.
+    :param delay: Can only be used if an API key is provided. This allows the user to define a delay. The delay must be greater than 0.6 seconds. The NVD API recommends scripts sleep for atleast 6 seconds in between requests.
+    :type delay: int
+
+    :param key: NVD API Key. Allows for the user to define a delay. NVD recommends scripts sleep 6 seconds in between requests. If no valid API key is provided, requests are sent with a 6 second delay.
     :type key: str
 
     :param verbose: Prints the URL request for debugging purposes.
     :type verbose: bool    
     """
     def __buildCVECall(
-            keyword, 
+            cpeName,
+            cveId,
+            cvssV2Metrics,
+            cvssV2Severity,
+            cvssV3Metrics,
+            cvssV3Severity,
+            cweId,
+            hasCertAlerts,
+            hasCertNotes,
+            hasKev,
+            hasOval,
+            isVulnerable,
+            keywordExactMatch,
+            keywordSearch,
+            lastModStartDate, 
+            lastModEndDate, 
             pubStartDate, 
             pubEndDate, 
-            modStartDate, 
-            modEndDate, 
-            includeMatchStringChange, 
-            exactMatch,
-            cvssV2Severity,
-            cvssV3Severity,
-            cvssV2Metrics,
-            cvssV3Metrics,
-            cpeMatchString,
-            cpeName,
-            cpe_dict,
-            cweId,
-            sortPublished,
+            sourceIdentifier,
+            virtualMatchString,
             limit,
-            key):
+            delay):
         
         parameters = {}
         
-        if keyword:
-            parameters['keyword'] = keyword
+        if cpeName:
+            parameters['cpeName'] = cpeName
 
-        if pubStartDate:
-            if isinstance(pubStartDate, datetime):
-                date = pubStartDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
-            elif isinstance(pubStartDate, str):
-                date = str(datetime.strptime(pubStartDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
-            else:
-                raise TypeError('Invalid date syntax: ' + pubEndDate)
-            parameters['pubStartDate'] = date
-        
-        if pubEndDate:
-            if isinstance(pubEndDate, datetime):
-                date = pubEndDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
-            elif isinstance(pubEndDate, str):
-                date = str(datetime.strptime(pubEndDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
-            else:
-                raise TypeError('Invalid date syntax: ' + pubEndDate)
-            parameters['pubEndDate'] = date
-        
-        if modStartDate:
-            if isinstance(modStartDate, datetime):
-                date = modStartDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
-            elif isinstance(modStartDate, str):
-                date = str(datetime.strptime(modStartDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
-            else:
-                raise TypeError('Invalid date syntax: ' + modStartDate)
-            parameters['modStartDate'] = date
+        if cveId:
+            parameters['cveId'] = cveId
 
-        if modEndDate:
-            if isinstance(modEndDate, datetime):
-                date = modEndDate.replace(microsecond = 0).isoformat() + ':000 UTC-00:00'
-            elif isinstance(modEndDate, str):
-                date = str(datetime.strptime(modEndDate, '%Y-%m-%d %H:%M').isoformat()) + ':000 UTC-00:00'
-            else:
-                raise TypeError('Invalid date syntax: ' + modEndDate)
-            parameters['modEndDate'] = date
-
-        if includeMatchStringChange:
-            if includeMatchStringChange == True:
-                parameters['includeMatchStringChange'] = True
-            else:
-                raise TypeError("includeMatchStringChange parameter can only be boolean True.")
-
-        if exactMatch:
-            if exactMatch == True:
-                parameters['isExactMatch'] = True
-            else:
-                raise TypeError("exactMatch parameter can only be boolean True.")
+        if cvssV2Metrics:
+            parameters['cvssV2Metrics'] = cvssV2Metrics
 
         if cvssV2Severity:
             cvssV2Severity = cvssV2Severity.upper()
             if cvssV2Severity in ['LOW', 'MEDIUM', 'HIGH']:
                 parameters['cvssV2Severity'] = cvssV2Severity
             else:
-                raise ValueError("cvssV2Severity parameter can only be assigned LOW, MEDIUM, or HIGH value.")
+                raise SyntaxError("cvssV2Severity parameter can only be assigned LOW, MEDIUM, or HIGH value.")
+
+        if cvssV3Metrics:
+            parameters['cvssV3Metrics'] = cvssV3Metrics
 
         if cvssV3Severity:
             cvssV3Severity = cvssV3Severity.upper()
             if cvssV3Severity in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']:
                 parameters['cvssV3Severity'] = cvssV3Severity
             else:
-                raise ValueError("cvssV3Severity parameter can only be assigned LOW, MEDIUM, HIGH, or CRITICAL value.")
-
-        if cvssV2Metrics:
-            parameters['cvssV2Metrics'] = cvssV2Metrics
-        
-        if cvssV3Metrics:
-            parameters['cvssV3Metrics'] = cvssV3Metrics
-
-        if cpeMatchString:
-            parameters['cpeMatchString'] = cpeMatchString
-        
-        if cpeName:
-            parameters['cpeName'] = cpeName
-
-        if cpe_dict:
-            if cpe_dict == True:
-                parameters['addOns'] = 'dictionaryCpes'
-            else:
-                raise TypeError("cpe_dict parameter can only be boolean True.")
+                raise SyntaxError("cvssV3Severity parameter can only be assigned LOW, MEDIUM, HIGH, or CRITICAL value.")
 
         if cweId:
-            parameters['cweId'] = cweId
+            parameters['cweId'] = cweId.upper()
 
-        if sortPublished:
-            if sortPublished == True:
-                parameters['sortBy'] = 'publishDate'
+        if hasCertAlerts:
+            parameters['hasCertAlerts'] = None
+        
+        if hasCertNotes:
+            parameters['hasCertNotes'] = None        
+
+        if hasKev:
+            parameters['hasKev'] = None
+
+        if hasOval:
+            parameters['hasOval'] = None
+
+        if isVulnerable:
+            if cpeName:
+                parameters['isVulnerable'] = None
             else:
-                raise TypeError("sortPublished parameter can only be boolean True.")
+                raise SyntaxError('cpeName parameter must be defined if isVulnerable parameter is passed.')
+
+        if keywordExactMatch:
+            if keywordSearch:
+                parameters['keywordExactMatch'] = None
+            else:
+                raise SyntaxError('keywordSearch parameter must be passed if keywordExactMatch is set to True.')
+
+        if keywordSearch:
+            parameters['keywordSearch'] = keywordSearch
+        
+        if lastModStartDate:
+            if isinstance(lastModStartDate, datetime):
+                date = lastModStartDate.isoformat()
+            elif isinstance(lastModStartDate, str):
+                date = datetime.strptime(lastModStartDate, '%Y-%m-%d %H:%M').isoformat()
+            else:
+                raise SyntaxError('Invalid date syntax: ' + lastModStartDate)
+            parameters['lastModStartDate'] = date
+
+        if lastModEndDate:
+            if isinstance(lastModEndDate, datetime):
+                date = lastModEndDate.isoformat()
+            elif isinstance(lastModEndDate, str):
+                date = datetime.strptime(lastModEndDate, '%Y-%m-%d %H:%M').isoformat()
+            else:
+                raise SyntaxError('Invalid date syntax: ' + lastModEndDate)
+            parameters['lastModEndDate'] = date
+
+        if pubStartDate:
+            if isinstance(pubStartDate, datetime):
+                date = pubStartDate.isoformat()
+            elif isinstance(pubStartDate, str):
+                date = datetime.strptime(pubStartDate, '%Y-%m-%d %H:%M').isoformat()
+            else:
+                raise SyntaxError('Invalid date syntax: ' + pubEndDate)
+            parameters['pubStartDate'] = date
+        
+        if pubEndDate:
+            if isinstance(pubEndDate, datetime):
+                date = pubEndDate.isoformat()
+            elif isinstance(pubEndDate, str):
+                date = datetime.strptime(pubEndDate, '%Y-%m-%d %H:%M').isoformat()
+            else:
+                raise SyntaxError('Invalid date syntax: ' + pubEndDate)
+            parameters['pubEndDate'] = date
+
+        if sourceIdentifier:
+            parameters['sourceIdentifier'] = sourceIdentifier
+        
+        if virtualMatchString:
+            parameters['virtualMatchString'] = virtualMatchString
 
         if limit:
             if limit > 2000 or limit < 1:
-                raise ValueError('Limit parameter must be between 1 and 2000')
+                raise SyntaxError('Limit parameter must be between 1 and 2000')
             parameters['resultsPerPage'] = str(limit)
-        
+
         if key:
-            parameters['apiKey'] = key
+            headers = {'content-type': 'application/json', 'apiKey': key}
+        else:
+            headers = {'content-type': 'application/json'}
 
-        return parameters
+        if delay and key:
+            if delay < 0.6:
+                raise SyntaxError('Delay parameter must be greater than 0.6 seconds with an API key. NVD API recommends several seconds.')
+        elif delay and key == False:
+            raise SyntaxError('Key parameter must be present to define a delay. Requests are delayed 6 seconds without an API key by default.')
 
-    parameters = __buildCVECall(keyword, 
+        return parameters, headers
+
+    parameters, headers = __buildCVECall(
+            cpeName,
+            cveId,
+            cvssV2Metrics,
+            cvssV2Severity,
+            cvssV3Metrics,
+            cvssV3Severity,
+            cweId,
+            hasCertAlerts,
+            hasCertNotes,
+            hasKev,
+            hasOval,
+            isVulnerable,
+            keywordExactMatch,
+            keywordSearch,
+            lastModStartDate, 
+            lastModEndDate, 
             pubStartDate, 
             pubEndDate, 
-            modStartDate, 
-            modEndDate, 
-            includeMatchStringChange, 
-            exactMatch,
-            cvssV2Severity,
-            cvssV3Severity,
-            cvssV2Metrics,
-            cvssV3Metrics,
-            cpeMatchString,
-            cpeName,
-            cpe_dict,
-            cweId,
-            sortPublished,
+            sourceIdentifier,
+            virtualMatchString,
             limit,
-            key)
+            delay)
 
     # raw is the raw dictionary response.
-    raw = __get('cve', parameters, limit, key, verbose)
+    raw = __get('cve', headers, parameters, limit, verbose, delay)
     cves = []
     # Generates the CVEs into objects for easy access and appends them to self.cves
-    for eachCVE in raw['result']['CVE_Items']:
-        cves.append(__convert('cve', eachCVE))
+    for eachCVE in raw['vulnerabilities']:
+        cves.append(__convert('cve', eachCVE['cve']))
     return cves

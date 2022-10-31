@@ -4,30 +4,24 @@ import time
 from json.decoder import JSONDecodeError
 
 
-def __get(product, parameters, limit, key, verbose):
+def __get(product, headers, parameters, limit, verbose, delay):
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
 
-    # NIST 6 second rate limit recommendation on requests without API key - https://nvd.nist.gov/developers
-    # Get a key, its easy.
-    if key:
-        delay = 0.6
-    else:
-        delay = 6
-
-    # Get the default 20 items to see the totalResults and determine pages required.
+    # Get the default 2000 items to see the totalResults and determine pages required.
     if product == 'cve':
-        link = 'https://services.nvd.nist.gov/rest/json/cves/1.0?'
+        link = 'https://services.nvd.nist.gov/rest/json/cves/2.0?'
     elif product == 'cpe':
-        link = 'https://services.nvd.nist.gov/rest/json/cpes/1.0?'
-    else:
-        raise ValueError('Unknown Product')
+        link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
     
+    # Requests doesn't really work with dictionary parameters that have no value like `isVulnerable`. The workaround is to just pass a string instead.
+    # This joins the parameters into a string with '&' and if a key contains a value then it will join the values with '='
+    stringParams = '&'.join([k if v is None else f"{k}={v}" for k, v in parameters.items()])
     if verbose:
-        print('Filter:\n' + link)
-        print(parameters)
-
-    raw = requests.get(link, params=parameters, timeout=30)
+        print('Filter:\n' + link + stringParams)
     
+    raw = requests.get(link, params=stringParams, headers=headers, timeout=30)
+    raw.encoding = 'utf-8'
+    raw.raise_for_status()
 
     try: # Try to convert the request to JSON. If it is not JSON, then print the response and exit.
         raw = raw.json() 
@@ -36,70 +30,47 @@ def __get(product, parameters, limit, key, verbose):
     except JSONDecodeError:
         print('Invalid search criteria syntax: ' + str(raw))
         print('Attempted search criteria: ' + str(parameters))
-    
+        
+    if delay == False:
+        delay = 6
     time.sleep(delay) 
+    
+    # If a limit is in the search criteria or the total number of results are less than or equal to the default 2000 that were just requested, return and don't request anymore.
     totalResults = raw['totalResults']
-
-    # If a limit is in the search criteria or the total number of results are less than or equal to the default 20 that were just requested, return and don't request anymore.
-    if limit or totalResults <= 20:
-        return raw
-
-    # If the total results is less than the API limit (Should be 5k but tests shows me 2k), just grab all the results at once.
-    elif totalResults > 20 and totalResults < 2000:
-        parameters['resultsPerPage'] = str(totalResults)
-        raw = requests.get(link, params=parameters, timeout=30).json()
+    if limit or totalResults <= 2000:
         return raw
 
     # If the results is more than the API limit, figure out how many pages there are and calculate the number of requests.
-    # Send a request starting at startIndex = 0, then get the next page and ask for 2000 more results at the 2000th index result until all results have been grabbed.
-    # Add each ['CVE_Items'] list from each page to the end of the first request. Effectively creates one data point.
+    # Use the page we already grabbed, then send a request starting at startIndex = 2000, then get the next page and ask for 2000 more results at the 2000th index result until all results have been grabbed.
+    # Add each ['vulnerabilities'] or ['products'] list from each page to the end of the first request. Effectively creates one data point.
     elif totalResults > 2000:
-        pages = (totalResults // 2000) + 1
-        startIndex = 0
-        rawTemp = []
+        pages = (totalResults // 2000) 
+        startIndex = 2000
         if product == 'cve':
-            for eachPage in range(pages):
-                parameters['resultsPerPage'] = '2000'
-                parameters['startIndex'] = str(startIndex)
+            path = 'vulnerabilities'
+        else:
+            path = 'products'
+
+        rawTemp = raw[path]
+
+        for eachPage in range(pages):
+            parameters['resultsPerPage'] = '2000'
+            parameters['startIndex'] = str(startIndex)
+            stringParams = '&'.join([k if v is None else f"{k}={v}" for k, v in parameters.items()])
+            if verbose:
+                print('Filter:\n' + link + stringParams)
+            try:
+                getReq = requests.get(link, params=stringParams, headers=headers, timeout=30)
+                getReq.encoding = 'utf-8'
+                getData = getReq.json()[path]
                 time.sleep(delay)
-                if verbose:
-                    print('Filter:\n' + link)
-                    print(parameters)
-                try:
-                    getReq = requests.get(link, params=parameters, timeout=30)
-                    getReq.encoding = 'utf-8'
-                    getData = getReq.json()['result']['CVE_Items']
-                except JSONDecodeError:
-                    print('JSONDecodeError')
-                    print('Something went wrong: ' + str(getReq))
-                    print('Attempted search criteria: ' + str(parameters))
-                    print('URL: ' + getReq.request.url)
-                    getReq.raise_for_status()
-                for eachCVE in getData:
-                    rawTemp.append(eachCVE.copy())
-                startIndex += 2000
-            raw['result']['CVE_Items'] = rawTemp
-            return raw
-        elif 'cpe':
-            for eachPage in range(pages):
-                parameters['resultsPerPage'] = '2000'
-                parameters['startIndex'] = str(startIndex)
-                time.sleep(delay)
-                if verbose:
-                    print('Filter:\n' + link)
-                    print(parameters)
-                try:
-                    getReq = requests.get(link, params=parameters, timeout=30)
-                    getReq.encoding = 'utf-8'
-                    getData = getReq.json()['result']['CVE_Items']
-                except JSONDecodeError:
-                    print('JSONDecodeError')
-                    print('Something went wrong: ' + str(getReq))
-                    print('Attempted search criteria: ' + str(parameters))
-                    print('URL: ' + getReq.request.url)
-                    getReq.raise_for_status()
-                for eachCPE in getData:
-                    rawTemp.append(eachCPE.copy())
-                startIndex += 2000
-            raw['result']['cpes'] = rawTemp
-            return raw
+            except JSONDecodeError:
+                print('JSONDecodeError')
+                print('Something went wrong: ' + str(getReq))
+                print('Attempted search criteria: ' + str(stringParams))
+                print('URL: ' + getReq.request.url)
+                getReq.raise_for_status()
+            rawTemp.extend(getData)
+            startIndex += 2000
+        raw[path] = rawTemp
+        return raw

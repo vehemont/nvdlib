@@ -27,14 +27,14 @@ $ pip install nvdlib
 ### Demo
 ```python
 >>> import nvdlib
->>> r = nvdlib.getCVE('CVE-2021-26855')
->>> print(r.v3severity + ' - ' + str(r.v3score))
-   CRITICAL - 9.8
->>> print(r.cve.description.description_data[0].value)
-   Microsoft Exchange Server Remote Code Execution Vulnerability This CVE ID is unique from CVE-2021-26412, 
-   CVE-2021-26854, CVE-2021-26857, CVE-2021-26858, CVE-2021-27065, CVE-2021-27078.
->>> print(r.v3vector)
-   CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H 
+>>> r = nvdlib.searchCVE(cveId='CVE-2021-26855')[0]
+>>> print(r.v31severity + ' - ' + str(r.v31score))
+CRITICAL - 9.8
+>>> print(r.descriptions[0].value)
+Microsoft Exchange Server Remote Code Execution Vulnerability This CVE ID is unique from CVE-2021-26412, 
+CVE-2021-26854, CVE-2021-26857, CVE-2021-26858, CVE-2021-27065, CVE-2021-27078.
+>>> print(r.v31vector)
+CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H 
 ```
 
 
@@ -50,8 +50,6 @@ $ pytest
 ### Documentation
 
 https://nvdlib.com
-
-
 
 #### More information
 

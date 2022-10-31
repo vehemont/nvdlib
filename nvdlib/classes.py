@@ -3,26 +3,23 @@ import json
 class CPE:
     """JSON dump class for CPEs
 
-    :var name: CPE URI name
-    :vartype name: str
-
-    :var title: The first title result of the CPE.
-    :vartype title: str
-
     :var deprecated: Indicates whether CPE has been deprecated
     :vartype deprecated: bool
 
-    :var cpe23Uri: The CPE name
-    :vartype cpe23Uri: str
+    :var cpeName: CPE URI name
+    :vartype name: str
+
+    :var cpeNameId: CPE UUID
+    :vartype cpeNameId: str
 
     :var lastModifiedDate: CPE modification date
     :vartype lastModifiedDate: 
 
-    :var titles: Human-readable CPE titles
-    :vartype titles: dict
+    :var created: CPE creation date
+    :vartype created: str
 
-    :var refs: Reference links.
-    :vartype refs: dict
+    :var titles: List of available titles for the CPE
+    :vartype title: list
 
     :var deprecatedBy: If deprecated=true, one or more CPE that replace this one
     :vartype deprecatedby: list
@@ -31,8 +28,8 @@ class CPE:
     :vartype vulnerabilities: list
     """
 
-    def __init__(self, dict):
-        vars(self).update(dict)
+    def __init__(self, response):
+        vars(self).update(response)
 
     def __repr__(self):
         return str(self.__dict__)
@@ -44,42 +41,66 @@ class CPE:
         yield 5
         yield from list(self.__dict__.keys())
 
-    def getvars(self):
-        self.title = self.titles[0].title
-        self.name = self.cpe23Uri
-
 
 class CVE:
     """JSON dump class for CVEs
-
-    :var cve: CVE ID, description, reference links, CWE.
-    :vartype cve: dict
-
-    :var configurations: CPE applicability statements and optional CPE names.
-    :vartype  configurations: dict
-
-    :var impact: CVSS severity scores
-    :vartype impact: dict
-
-    :var publishedDate: CVE publication date
-    :vartype publishedDate: ISO 8601 date/time format including time zone.
-
-    :var lastModifiedDate: CVE modified date
-    :vartype lastModifiedDate: ISO 8601 date/time format including time zone.
-
+        For more information the values returned from a CVE, please visit https://nvd.nist.gov/developers/vulnerabilities
+    
     :var id: CVE ID
     :vartype id: str
 
+    :var sourceIdentifier: Contact who reported the vulnerability.
+    :vartype sourceIdentifier: str
+
+    :var published: CVE publication date. ISO 8601 date/time format.
+    :vartype published: str
+
+    :var lastModified: CVE modified date. ISO 8601 date/time format.
+    :vartype lastModified: str
+
+    :var vulnStatus: CVE modified status.
+    :vartype vulnStatus: str
+
+    :var exploitAdd: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
+    :vartype exploitAdd: str
+
+    :var actionDue: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
+    :vartype actionDue: str
+
+    :var requiredAction: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
+    :vartype requiredAction: str
+
+    :var descriptions: CVE descriptions. Includes other languages.
+    :vartype descriptions: list
+
+    :var metrics: Class attribute containing scoring lists (cvssMetricV31 / V30 / V2).
+    :vartype metrics: class
+
+    :var weaknesses: Contains relevant CWE information.
+    :vartype weaknesses: list
+
+    :var configurations: List containing usually a single element of CPE information.
+    :vartype configuration: list
+
+    :var references: CVE reference links
+    :vartype references: list
+
     :var cwe: Common Weakness Enumeration Specification (CWE)
-    :vartype cwe: str
+    :vartype cwe: list
 
     :var url: Link to additional details on nvd.nist.gov for that CVE.
     :vartype url: str
 
-    :var v3score: List that contains V3 or V2 CVSS score (float 1 - 10) as index 0 and the version that score was taken from as index 1.
+    :var cpe: Common Platform Enumeration (CPE) assigned to the CVE.
+    :vartype cpe: list
+
+    :var metrics: CVSS metrics. Some CVEs may not have v2/v3 scores or none at all.
+    :vartype metrics: dict
+
+    :var v30score: List that contains V3.0 CVSS score (float 1 - 10) as index 0 and the version that score was taken from as index 1.
     :vartype v3score: list
 
-    :var v2vector: Version two of the CVSS score represented as a vector string, a compressed textual representation of the values used to derive the score.
+    :var v2vector: Version two of the CVSS score represented as a vector string, a compressed textual representation of the values used to derive the score. Example: 'AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H'
     :vartype v2vector: str
 
     :var v3vector: Version three of the CVSS score represented as a vector string.
@@ -91,10 +112,10 @@ class CVE:
     :var v3severity: LOW, MEDIUM, HIGH, CRITICAL.
     :vartype v3severity: str
 
-    :var v2exploitability: Reflects the ease and technical means by which the vulnerability can be exploited.
+    :var v2exploitability: Version 2 CVSS exploitability. Reflects the ease and technical means by which the vulnerability can be exploited.
     :vartype v2exploitability: float 
 
-    :var v3exploitability: Reflects the ease and technical means by which the vulnerability can be exploited.
+    :var v3exploitability: Version 3 CVSS exploitability. Reflects the ease and technical means by which the vulnerability can be exploited.
     :vartype v3exploitability: float 
 
     :var v2impactScore: Reflects the direct consequence of a successful exploit.
@@ -107,8 +128,11 @@ class CVE:
     :vartype score: list
     """
 
-    def __init__(self, dict):
-        vars(self).update(dict)
+    def __init__(self, response):
+        vars(self).update(response)
+
+    def __str__(self):
+        return str(self.__dict__)
 
     def __repr__(self):
         return str(self.__dict__)
@@ -120,33 +144,52 @@ class CVE:
         yield 5
         yield from list(self.__dict__.keys())
 
+
     def getvars(self):
+        try:
+            self.cpe = [x.cpeMatch[0] for x in self.configurations[0].nodes]
+        except AttributeError:
+            pass
         
-        self.id = self.cve.CVE_data_meta.ID 
-        """ ID of the CVE """
-        self.cwe = self.cve.problemtype.problemtype_data
-        self.url = 'https://nvd.nist.gov/vuln/detail/' + self.id
+        try:
+            self.cwe = [x.description[0] for x in self.weaknesses]
+        except AttributeError:
+            pass
 
-        if hasattr(self.impact, 'baseMetricV3'):
-            self.v3score = self.impact.baseMetricV3.cvssV3.baseScore
-            self.v3vector = self.impact.baseMetricV3.cvssV3.vectorString
-            self.v3severity = self.impact.baseMetricV3.cvssV3.baseSeverity
-            self.v3exploitability = self.impact.baseMetricV3.exploitabilityScore
-            self.v3impactScore = self.impact.baseMetricV3.impactScore
+        try:
+            self.url = 'https://nvd.nist.gov/vuln/detail/' + self.id
+        except:
+            pass
+        
+        if hasattr(self.metrics, 'cvssMetricV31'):
+            self.v31score = self.metrics.cvssMetricV31[0].cvssData.baseScore
+            self.v31vector = self.metrics.cvssMetricV31[0].cvssData.vectorString
+            self.v31severity = self.metrics.cvssMetricV31[0].cvssData.baseSeverity
+            self.v31exploitability = self.metrics.cvssMetricV31[0].exploitabilityScore
+            self.v31impactScore = self.metrics.cvssMetricV31[0].impactScore
 
-        if hasattr(self.impact, 'baseMetricV2'):
-            self.v2score = self.impact.baseMetricV2.cvssV2.baseScore
-            self.v2vector = self.impact.baseMetricV2.cvssV2.vectorString
-            self.v2severity = self.impact.baseMetricV2.severity
-            self.v2exploitability = self.impact.baseMetricV2.exploitabilityScore
-            self.v2impactScore = self.impact.baseMetricV2.impactScore
+        if hasattr(self.metrics, 'cvssMetricV30'):
+            self.v30score = self.metrics.cvssMetricV30[0].cvssData.baseScore
+            self.v30vector = self.metrics.cvssMetricV30[0].cvssData.vectorString
+            self.v30severity = self.metrics.cvssMetricV30[0].cvssData.baseSeverity
+            self.v30exploitability = self.metrics.cvssMetricV30[0].exploitabilityScore
+            self.v30impactScore = self.metrics.cvssMetricV30[0].impactScore        
+
+        if hasattr(self.metrics, 'cvssMetricV2'):
+            self.v2score = self.metrics.cvssMetricV2[0].cvssData.baseScore
+            self.v2vector = self.metrics.cvssMetricV2[0].cvssData.vectorString
+            self.v2severity = self.metrics.cvssMetricV2[0].cvssData.baseSeverity
+            self.v2exploitability = self.metrics.cvssMetricV2[0].exploitabilityScore
+            self.v2impactScore = self.metrics.cvssMetricV2[0].impactScore
         
         # Prefer the base score version to V3, if it isn't available use V2.
         # If no score is present, then set it to None.
-        if hasattr(self.impact, 'baseMetricV3'):
-            self.score = ['V3', self.impact.baseMetricV3.cvssV3.baseScore, self.impact.baseMetricV3.cvssV3.baseSeverity]
-        elif hasattr(self.impact, 'baseMetricV2'):
-            self.score = ['V2', self.impact.baseMetricV2.cvssV2.baseScore, self.impact.baseMetricV2.severity]
+        if hasattr(self.metrics, 'cvssMetricV31'):
+            self.score = ['V31', self.v31score, self.v31severity]
+        elif hasattr(self.metrics, 'cvssMetricV30'):
+            self.score = ['V30', self.v30score, self.v30severity]
+        elif hasattr(self.metrics, 'cvssMetricV2'):
+            self.score = ['V2', self.v2score, self.v2severity]
         else:
             self.score = [None, None, None]
 

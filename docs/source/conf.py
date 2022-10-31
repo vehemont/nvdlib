@@ -18,11 +18,11 @@ sys.path.insert(0, os.path.abspath('../../'))
 # -- Project information -----------------------------------------------------
 
 project = 'NVDLib'
-copyright = '2021'
+copyright = '2022'
 author = 'Vehemont'
 
 # The full version, including alpha/beta/rc tags
-release = '0.6.1'
+release = '0.7.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -50,11 +50,14 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'renku'
+html_theme = 'insegel'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 html_baseurl = 'nvdlib.com'
+
+master_doc = "index"
+html_logo = "_static/logo_small.png"

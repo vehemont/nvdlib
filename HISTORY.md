@@ -1,12 +1,22 @@
 Release History
 ===============
 
+0.7.0 (2022-10-31)
+-------------------
+
+- Overhauled NVDLib to utilize the new version of the NVD API (version 2).
+- `nvdlib.getCVE()` no longer exists and is now combined into `nvdlib.searchCVE()` using the `cvdId` parameter.
+- `nvdlib.searchCPE()` no longer has the `cves` parameter to pass CVEs. 
+- New parameters for `nvdlib.searchCVE()`
+- For a full list of changes, see the https://nvdlib.com/docs/build/html/v1/changesv1.html
+
+Happy Halloween! 🎃
+
 0.6.1 (2022-10-18)
 -------------------
 **Bugfixes**
 
 - Updated `cve.py` to utilize the correct parameter to allow sorting by exact match. The parameter is `isExactMatch` with a value of `True`. The argument used in `searchCVE` is still `exactMatch` with a value of `True`, NVDLib will now use the correct parameter when building the search query.
-
 
 0.6.0 (2022-09-15)
 -------------------
