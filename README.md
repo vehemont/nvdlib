@@ -13,7 +13,7 @@
 
 ### Features
 
-- Search the NVD for CVEs using all parameters allowed by the NVD API (only version 1.0 right now). Including search criteria such as CVE publish and modification date, keywords, severity, score, or CPE name.
+- Search the NVD for CVEs using all parameters allowed by the NVD API (recently updated to utilize version 2 of the API). Including search criteria such as CVE publish and modification date, keywords, severity, score, or CPE name.
 - Search CPE names by keywords, CPE match strings, or modification dates. Then pull the CVE ID's that are relevant to those CPEs. 
 - Retrieve details on individual CVEs, their relevant CPE names, and more.
 - Built in rate limiting according to [NIST NVD recommendations](https://nvd.nist.gov/developers). <br> Get an API key (https://nvd.nist.gov/developers/request-an-api-key) to allow for 0.6 seconds between requests. Otherwise it is 6 seconds between requests.
