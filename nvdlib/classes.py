@@ -178,7 +178,7 @@ class CVE:
         if hasattr(self.metrics, 'cvssMetricV2'):
             self.v2score = self.metrics.cvssMetricV2[0].cvssData.baseScore
             self.v2vector = self.metrics.cvssMetricV2[0].cvssData.vectorString
-            self.v2severity = self.metrics.cvssMetricV2[0].cvssData.baseSeverity
+            self.v2severity = self.metrics.cvssMetricV2[0].baseSeverity
             self.v2exploitability = self.metrics.cvssMetricV2[0].exploitabilityScore
             self.v2impactScore = self.metrics.cvssMetricV2[0].impactScore
         

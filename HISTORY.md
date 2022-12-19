@@ -1,6 +1,12 @@
 Release History
 ===============
 
+0.7.1 (2022-12-19)
+-------------------
+**Bugfixes**
+
+- Fixed the location of `baseSeverity`. The `baseSeverity` attribute had its location changed and caused lookups with a CVSS version 2 score to fail. 
+
 0.7.0 (2022-10-31)
 -------------------
 
