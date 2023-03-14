@@ -1,4 +1,5 @@
 import datetime
+import urllib.parse
 
 from datetime import datetime
 from .get import __get
@@ -73,6 +74,7 @@ def searchCPE(
             parameters['cpeNameId'] = cpeNameId
 
         if cpeMatchString:
+            cpeMatchString = urllib.parse.quote_plus(cpeMatchString, encoding='utf-8')
             parameters['cpeMatchString'] = cpeMatchString
 
         if keywordExactMatch:

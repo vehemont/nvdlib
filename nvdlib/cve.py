@@ -1,4 +1,5 @@
 import datetime
+import urllib.parse
 
 from datetime import datetime
 from .classes import __convert
@@ -20,10 +21,15 @@ def searchCVE(
             keywordExactMatch=False,
             keywordSearch=False,
             lastModStartDate=False, 
-            lastModEndDate=False, 
+            lastModEndDate=False,
+            noRejected=False,
             pubStartDate=False, 
             pubEndDate=False, 
             sourceIdentifier=False,
+            versionEnd=False,
+            versionEndType=False,
+            versionStart=False,
+            versionStartType=False,
             virtualMatchString=False,
             limit=False,
             delay=False,
@@ -76,6 +82,9 @@ def searchCVE(
     :param lastModEndDate: Required if using lastModStartDate.
     :type lastModEndDate: str, datetime obj
 
+    :param noRejected: Filters out all CVEs that are in a reject or rejected status. Searches without this parameter include rejected CVEs.
+    :type noRejected: bool
+
     :param pubStartDate: These parameters return only the CVEs that were added to the NVD (i.e., published) during the specified period. If filtering by the published date, both `pubStartDate` and `pubEndDate` are REQUIRED. The maximum allowable range when using any date range parameters is 120 consecutive days.
     :type pubStartDate: str,datetime obj
 
@@ -84,6 +93,18 @@ def searchCVE(
 
     :param sourceIdentifier: Returns CVE where the data source of the CVE is the value that is passed to `sourceIdentifier`.
     :type sourceIdentifier: str
+
+    :param versionEnd: Must be combined with `versionEndType` and `virtualMatchString`. Returns only the CVEs associated with CPEs in specific version ranges.
+    :type versionEnd: str
+
+    :param versionEndType: Must be combined with `versionStartType` and `virtualMatchString`. Valid values are `including` or `excluding`. Denotes to include the specified version in `versionEnd`, or exclude it.
+    :type versionEnd: str
+
+    :param versionStart: Must be combined with `versionStartType` and `virtualMatchString`. Returns only CVEs with specific versions. Requests that include `versionStart` cannot include a version component in the `virtualMatchString`.
+    :type versionStart: str
+
+    :param versionStartType: Must be combined with `versionStartType` and `virtualMatchString`. Valid values are `including` or `excluding`. Denotes to include the specified version in `versionStart`, or exclude it.
+`   :param versionStartType: str
 
     :param virtualMatchString: A more broad filter compared to `cpeName`. The cpe match string that is passed to `virtualMatchString` is compared against the CPE Match Criteria present on CVE applicability statements.
     :type virtualMatchString: str
@@ -116,10 +137,15 @@ def searchCVE(
             keywordExactMatch,
             keywordSearch,
             lastModStartDate, 
-            lastModEndDate, 
+            lastModEndDate,
+            noRejected,
             pubStartDate, 
             pubEndDate, 
             sourceIdentifier,
+            versionEnd,
+            versionEndType,
+            versionStart,
+            versionStartType,
             virtualMatchString,
             limit,
             delay):
@@ -127,12 +153,14 @@ def searchCVE(
         parameters = {}
         
         if cpeName:
+            cpeName = urllib.parse.quote_plus(cpeName, encoding='utf-8')
             parameters['cpeName'] = cpeName
 
         if cveId:
             parameters['cveId'] = cveId
 
         if cvssV2Metrics:
+            cvssV2Metrics = urllib.parse.quote_plus(cvssV2Metrics, encoding='utf-8')
             parameters['cvssV2Metrics'] = cvssV2Metrics
 
         if cvssV2Severity:
@@ -143,6 +171,7 @@ def searchCVE(
                 raise SyntaxError("cvssV2Severity parameter can only be assigned LOW, MEDIUM, or HIGH value.")
 
         if cvssV3Metrics:
+            cvssV3Metrics = urllib.parse.quote_plus(cvssV3Metrics, encoding='utf-8')
             parameters['cvssV3Metrics'] = cvssV3Metrics
 
         if cvssV3Severity:
@@ -199,6 +228,9 @@ def searchCVE(
             else:
                 raise SyntaxError('Invalid date syntax: ' + lastModEndDate)
             parameters['lastModEndDate'] = date
+        
+        if noRejected:
+            parameters['noRejected'] = None
 
         if pubStartDate:
             if isinstance(pubStartDate, datetime):
@@ -222,7 +254,28 @@ def searchCVE(
             parameters['sourceIdentifier'] = sourceIdentifier
         
         if virtualMatchString:
+            virtualMatchString = urllib.parse.quote_plus(virtualMatchString, encoding='utf-8')
             parameters['virtualMatchString'] = virtualMatchString
+
+        if versionEnd or versionEndType:
+            if versionEnd and versionEndType and virtualMatchString:
+                if versionEndType not in ['including', 'excluding']:
+                    raise SyntaxError('versionEnd parameter must be either "included" or "excluded".')
+                else:
+                    parameters['versionEnd'] = str(versionEnd)
+                    parameters['versionEndType'] = versionEndType
+            else:
+                raise SyntaxError('If versionEnd is used, all three parameters versionEnd, versionEndType, and virtualMatchString are required.')
+        
+        if versionStart or versionStartType:
+            if versionStart and versionStartType and virtualMatchString:
+                if versionStartType not in ['including', 'excluding']:
+                    raise SyntaxError('versionStart parameter must be either "included" or "excluded".')
+                else:
+                    parameters['versionStart'] = str(versionStart)
+                    parameters['versionStartType'] = versionStartType
+            else:
+                raise SyntaxError('If versionStart is used, all three parameters versionStart, versionStartType, and virtualMatchString are required.')       
 
         if limit:
             if limit > 2000 or limit < 1:
@@ -258,10 +311,15 @@ def searchCVE(
             keywordExactMatch,
             keywordSearch,
             lastModStartDate, 
-            lastModEndDate, 
+            lastModEndDate,
+            noRejected,
             pubStartDate, 
             pubEndDate, 
             sourceIdentifier,
+            versionEnd,
+            versionEndType,
+            versionStart,
+            versionStartType,
             virtualMatchString,
             limit,
             delay)

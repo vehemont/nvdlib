@@ -1,6 +1,19 @@
 Release History
 ===============
 
+0.7.2 (2023-03-14)
+-------------------
+**Bugfixes**
+
+- Fixed parsing of CPEs names to allow special characters with CPE names to function correctly. 
+- Fixed PyTest data, tests are passing now.
+
+**Enhancements**
+
+- Added newer parameters to `nvdlib.searchCVE()`.
+    - noRejected - Filter out CVEs that have a status of rejected.
+    - versionEnd / versionEndType / versionStart / versionStartType - Used with virtualMatchString to provide filters based on versions within CPE names
+
 0.7.1 (2022-12-19)
 -------------------
 **Bugfixes**

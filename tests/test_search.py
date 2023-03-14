@@ -68,7 +68,8 @@ def test_paginated_search_cve():
     """Test a nvdlib.searchCVE() call with paginated results."""
     mock_nvd()
     results = nvdlib.searchCVE(
-        pubStartDate="2022-02-10 00:00", pubEndDate="2022-02-11 00:00"
+        pubStartDate="2022-02-10 00:00", pubEndDate="2022-02-11 00:00",
+        verbose=True
     )
     assert len(results) == 47
     assert results[0].id == "CVE-2021-25992"
@@ -79,8 +80,7 @@ def test_search_cve_returns_a_cve():
     """Test a nvdlib.searchCVE() result is actually a CVE object"""
     mock_nvd()
     results = nvdlib.searchCVE(
-        pubStartDate="2022-02-10 00:00", pubEndDate="2022-02-11 00:00"
+        pubStartDate="2022-02-10 00:00", pubEndDate="2022-02-11 00:00",
+        verbose=True
     )
     assert isinstance(results[1], nvdlib.classes.CVE)
-    # not sure why this test fails :/
-    # assert results[1] == nvdlib.getCVE("CVE-2022-24646")
