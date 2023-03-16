@@ -98,7 +98,7 @@ def searchCVE(
     :type versionEnd: str
 
     :param versionEndType: Must be combined with `versionStartType` and `virtualMatchString`. Valid values are `including` or `excluding`. Denotes to include the specified version in `versionEnd`, or exclude it.
-    :type versionEnd: str
+    :type versionEndType: str
 
     :param versionStart: Must be combined with `versionStartType` and `virtualMatchString`. Returns only CVEs with specific versions. Requests that include `versionStart` cannot include a version component in the `virtualMatchString`.
     :type versionStart: str
