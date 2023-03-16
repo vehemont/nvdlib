@@ -97,13 +97,13 @@ def searchCVE(
     :param versionEnd: Must be combined with `versionEndType` and `virtualMatchString`. Returns only the CVEs associated with CPEs in specific version ranges.
     :type versionEnd: str
 
-    :param versionEndType: Must be combined with `versionStartType` and `virtualMatchString`. Valid values are `including` or `excluding`. Denotes to include the specified version in `versionEnd`, or exclude it.
+    :param versionEndType: Must be combined with `versionEnd` and `virtualMatchString`. Valid values are `including` or `excluding`. Denotes to include the specified version in `versionEnd`, or exclude it.
     :type versionEndType: str
 
     :param versionStart: Must be combined with `versionStartType` and `virtualMatchString`. Returns only CVEs with specific versions. Requests that include `versionStart` cannot include a version component in the `virtualMatchString`.
     :type versionStart: str
 
-    :param versionStartType: Must be combined with `versionStartType` and `virtualMatchString`. Valid values are `including` or `excluding`. Denotes to include the specified version in `versionStart`, or exclude it.
+    :param versionStartType: Must be combined with `versionStart` and `virtualMatchString`. Valid values are `including` or `excluding`. Denotes to include the specified version in `versionStart`, or exclude it.
     :type versionStartType: str
 
     :param virtualMatchString: A more broad filter compared to `cpeName`. The cpe match string that is passed to `virtualMatchString` is compared against the CPE Match Criteria present on CVE applicability statements.
