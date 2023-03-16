@@ -104,7 +104,7 @@ def searchCVE(
     :type versionStart: str
 
     :param versionStartType: Must be combined with `versionStartType` and `virtualMatchString`. Valid values are `including` or `excluding`. Denotes to include the specified version in `versionStart`, or exclude it.
-    :param versionStartType: str
+    :type versionStartType: str
 
     :param virtualMatchString: A more broad filter compared to `cpeName`. The cpe match string that is passed to `virtualMatchString` is compared against the CPE Match Criteria present on CVE applicability statements.
     :type virtualMatchString: str
