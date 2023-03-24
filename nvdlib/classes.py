@@ -133,8 +133,8 @@ class CVE:
     :var v2exploitability: Version 2 CVSS exploitability. Reflects the ease and technical means by which the vulnerability can be exploited. Optional, some CVEs may not contain version 2 CVSS scoring.
     :vartype v2exploitability: float 
 
-    :var v3impactScore: Version 3.1 of impact score. Reflects the direct consequence of a successful exploit. Optional, some CVEs may not contain version 3.1 CVSS scoring.
-    :vartype v3impactScore: float
+    :var v31impactScore: Version 3.1 of impact score. Reflects the direct consequence of a successful exploit. Optional, some CVEs may not contain version 3.1 CVSS scoring.
+    :vartype v31impactScore: float
     
     :var v30impactScore: Version 3.0 of impact score. Reflects the direct consequence of a successful exploit. Optional, some CVEs may not contain version 3.0 CVSS scoring.
     :vartype v30impactScore: float
