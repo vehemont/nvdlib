@@ -97,34 +97,52 @@ class CVE:
     :var metrics: CVSS metrics. Some CVEs may not have v2/v3 scores or none at all.
     :vartype metrics: dict
 
-    :var v30score: List that contains V3.0 CVSS score (float 1 - 10) as index 0 and the version that score was taken from as index 1.
-    :vartype v3score: list
+    :var v31score: Integer that contains V3.1 CVSS score (float 1 - 10). Optional, some CVEs may not contain version 3.1 CVSS scoring.
+    :vartype v31score: int
+    
+    :var v30score: Integer that contains V3.0 CVSS score (float 1 - 10) Optional, some CVEs may not contain version 3.0 CVSS scoring.
+    :vartype v30score: int
+    
+    :var v2score: Integer that contains V2 CVSS score (float 1 - 10) Optional, some CVEs may not contain version 2 CVSS scoring.
+    :vartype v2score: int
 
-    :var v2vector: Version two of the CVSS score represented as a vector string, a compressed textual representation of the values used to derive the score. Example: 'AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H'
+    :var v31vector: Version 3.1 of the CVSS score represented as a vector string. Optional, some CVEs may not contain version 3.1 CVSS scoring.
+    :vartype v31vector: str
+
+    :var v30vector: Version 3.0 of the CVSS score represented as a vector string. Optional, some CVEs may not contain version 3.0 CVSS scoring.
+    :vartype v30vector: str
+
+    :var v2vector: Version 2 of the CVSS score represented as a vector string, a compressed textual representation of the values used to derive the score. Example: 'AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H'. Optional, some CVEs may not contain version 2 CVSS scoring.
     :vartype v2vector: str
 
-    :var v3vector: Version three of the CVSS score represented as a vector string.
-    :vartype v3vector: str
+    :var v31severity: LOW, MEDIUM, HIGH, CRITICAL. Optional, some CVEs may not contain version 3.1 CVSS scoring.
+    :vartype v31severity: str
 
-    :var v2severity: LOW, MEDIUM, HIGH (Critical is only available for v3).
+    :var v30severity: LOW, MEDIUM, HIGH, CRITICAL. Optional, some CVEs may not contain version 3.0 CVSS scoring.
+    :vartype v30severity: str
+
+    :var v2severity: LOW, MEDIUM, HIGH (Critical is only available for v3). Optional, some CVEs may not contain version 2 CVSS scoring.
     :vartype v2severity: str
 
-    :var v3severity: LOW, MEDIUM, HIGH, CRITICAL.
-    :vartype v3severity: str
+    :var v31exploitability: Version 3.1 CVSS exploitability. Reflects the ease and technical means by which the vulnerability can be exploited. Optional, some CVEs may not contain version 3.1 CVSS scoring.
+    :vartype v31exploitability: float 
 
-    :var v2exploitability: Version 2 CVSS exploitability. Reflects the ease and technical means by which the vulnerability can be exploited.
+    :var v30exploitability: Version 3.0 CVSS exploitability. Reflects the ease and technical means by which the vulnerability can be exploited. Optional, some CVEs may not contain version 3.0 CVSS scoring.
+    :vartype v30exploitability: float 
+
+    :var v2exploitability: Version 2 CVSS exploitability. Reflects the ease and technical means by which the vulnerability can be exploited. Optional, some CVEs may not contain version 2 CVSS scoring.
     :vartype v2exploitability: float 
 
-    :var v3exploitability: Version 3 CVSS exploitability. Reflects the ease and technical means by which the vulnerability can be exploited.
-    :vartype v3exploitability: float 
+    :var v3impactScore: Version 3.1 of impact score. Reflects the direct consequence of a successful exploit. Optional, some CVEs may not contain version 3.1 CVSS scoring.
+    :vartype v3impactScore: float
+    
+    :var v30impactScore: Version 3.0 of impact score. Reflects the direct consequence of a successful exploit. Optional, some CVEs may not contain version 3.0 CVSS scoring.
+    :vartype v30impactScore: float
 
-    :var v2impactScore: Reflects the direct consequence of a successful exploit.
+    :var v2impactScore: Version 2 of impact score. Reflects the direct consequence of a successful exploit. Optional, some CVEs may not contain version 2 CVSS scoring.
     :vartype v2impactScore: float
 
-    :var v3impactScore: Reflects the direct consequence of a successful exploit.
-    :vartype v3impactScore: float
-
-    :var score: Contains the v3 CVSS score (v2 if v3 isn't available) [score, severity, version]. Where score is an int, severity is a string('LOW','MEDIUM','HIGH','CRITICAL'), and version is a string (V3 or V2).
+    :var score: Contains the CVSS score of the latest CVSS version (3.1 > 3.0 > 2). Where score is an int, severity is a string('LOW','MEDIUM','HIGH','CRITICAL'), and version is a string (V3.1, V3.0, or V2).
     :vartype score: list
     """
 
