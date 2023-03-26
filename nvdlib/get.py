@@ -31,7 +31,7 @@ def __get(product, headers, parameters, limit, verbose, delay):
         print('Invalid search criteria syntax: ' + str(raw))
         print('Attempted search criteria: ' + str(parameters))
         
-    if delay == False:
+    if not delay:
         delay = 6
     time.sleep(delay) 
     
