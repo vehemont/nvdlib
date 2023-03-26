@@ -218,7 +218,7 @@ def searchCVE(
                 date = datetime.strptime(lastModStartDate, '%Y-%m-%d %H:%M').isoformat()
             else:
                 raise SyntaxError('Invalid date syntax: ' + lastModStartDate)
-            parameters['lastModStartDate'] = date
+            parameters['lastModStartDate'] = date.replace('+', '%2B')
 
         if lastModEndDate:
             if isinstance(lastModEndDate, datetime):
@@ -227,7 +227,7 @@ def searchCVE(
                 date = datetime.strptime(lastModEndDate, '%Y-%m-%d %H:%M').isoformat()
             else:
                 raise SyntaxError('Invalid date syntax: ' + lastModEndDate)
-            parameters['lastModEndDate'] = date
+            parameters['lastModEndDate'] = date.replace('+', '%2B')
         
         if noRejected:
             parameters['noRejected'] = None
@@ -239,7 +239,7 @@ def searchCVE(
                 date = datetime.strptime(pubStartDate, '%Y-%m-%d %H:%M').isoformat()
             else:
                 raise SyntaxError('Invalid date syntax: ' + pubEndDate)
-            parameters['pubStartDate'] = date
+            parameters['pubStartDate'] = date.replace('+', '%2B')
         
         if pubEndDate:
             if isinstance(pubEndDate, datetime):
@@ -248,7 +248,7 @@ def searchCVE(
                 date = datetime.strptime(pubEndDate, '%Y-%m-%d %H:%M').isoformat()
             else:
                 raise SyntaxError('Invalid date syntax: ' + pubEndDate)
-            parameters['pubEndDate'] = date
+            parameters['pubEndDate'] = date.replace('+', '%2B')
 
         if sourceIdentifier:
             parameters['sourceIdentifier'] = sourceIdentifier
