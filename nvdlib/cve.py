@@ -290,7 +290,7 @@ def searchCVE(
         if delay and key:
             if delay < 0.6:
                 raise SyntaxError('Delay parameter must be greater than 0.6 seconds with an API key. NVD API recommends several seconds.')
-        elif delay and key == False:
+        elif delay and not key == False:
             raise SyntaxError('Key parameter must be present to define a delay. Requests are delayed 6 seconds without an API key by default.')
 
         return parameters, headers
