@@ -6,17 +6,17 @@ from .get import __get
 from .classes import __convert
 
 def searchCPE(
-        cpeNameId=False,
-        cpeMatchString=False,
-        keywordExactMatch=False,
-        keywordSearch=False,
-        lastModStartDate=False,
-        lastModEndDate=False,
-        matchCriteriaId=False,
-        limit=False,
-        key=False,
-        delay=False,
-        verbose=False):
+        cpeNameId=None,
+        cpeMatchString=None,
+        keywordExactMatch=None,
+        keywordSearch=None,
+        lastModStartDate=None,
+        lastModEndDate=None,
+        matchCriteriaId=None,
+        limit=None,
+        key=None,
+        delay=None,
+        verbose=None):
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
     :param cpeNameId: Returns a specific CPE record using its UUID. If a correctly formatted UUID is passed but it does not exist, it will return empty results. The UUID is the `cpeNameId` value when searching CPE.

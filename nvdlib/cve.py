@@ -6,35 +6,35 @@ from .classes import __convert
 from .get import __get
 
 def searchCVE(
-            cpeName=False,
-            cveId=False,
-            cvssV2Metrics=False,
-            cvssV2Severity=False,
-            cvssV3Metrics=False,
-            cvssV3Severity=False,
-            cweId=False,
-            hasCertAlerts=False,
-            hasCertNotes=False,
-            hasKev=False,
-            hasOval=False,
-            isVulnerable=False,
-            keywordExactMatch=False,
-            keywordSearch=False,
-            lastModStartDate=False, 
-            lastModEndDate=False,
-            noRejected=False,
-            pubStartDate=False, 
-            pubEndDate=False, 
-            sourceIdentifier=False,
-            versionEnd=False,
-            versionEndType=False,
-            versionStart=False,
-            versionStartType=False,
-            virtualMatchString=False,
-            limit=False,
-            delay=False,
-            key=False,
-            verbose=False):
+            cpeName=None,
+            cveId=None,
+            cvssV2Metrics=None,
+            cvssV2Severity=None,
+            cvssV3Metrics=None,
+            cvssV3Severity=None,
+            cweId=None,
+            hasCertAlerts=None,
+            hasCertNotes=None,
+            hasKev=None,
+            hasOval=None,
+            isVulnerable=None,
+            keywordExactMatch=None,
+            keywordSearch=None,
+            lastModStartDate=None,
+            lastModEndDate=None,
+            noRejected=None,
+            pubStartDate=None,
+            pubEndDate=None,
+            sourceIdentifier=None,
+            versionEnd=None,
+            versionEndType=None,
+            versionStart=None,
+            versionStartType=None,
+            virtualMatchString=None,
+            limit=None,
+            delay=None,
+            key=None,
+            verbose=None):
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
     :param cpeName: This value will be compared agains the CPE Match Criteria within a CVE applicability statement. (i.e. find the vulnerabilities attached to that CPE). Partial match strings are allowed.
@@ -290,7 +290,7 @@ def searchCVE(
         if delay and key:
             if delay < 0.6:
                 raise SyntaxError('Delay parameter must be greater than 0.6 seconds with an API key. NVD API recommends several seconds.')
-        elif delay and key == False:
+        elif delay and not key:
             raise SyntaxError('Key parameter must be present to define a delay. Requests are delayed 6 seconds without an API key by default.')
 
         return parameters, headers
