@@ -93,7 +93,7 @@ def searchCPE(
                 date = datetime.strptime(lastModStartDate, '%Y-%m-%d %H:%M').isoformat()
             else:
                 raise SyntaxError('Invalid date syntax: ' + lastModStartDate)
-            parameters['lastModStartDate'] = date
+            parameters['lastModStartDate'] = date.replace('+', '%2B')
 
         if lastModEndDate:
             if isinstance(lastModEndDate, datetime):
@@ -102,7 +102,7 @@ def searchCPE(
                 date = datetime.strptime(lastModEndDate, '%Y-%m-%d %H:%M').isoformat()
             else:
                 raise SyntaxError('Invalid date syntax: ' + lastModEndDate)
-            parameters['lastModEndDate'] = date
+            parameters['lastModEndDate'] = date.replace('+', '%2B')
 
         if matchCriteriaId:
             parameters['matchCriteriaId'] = matchCriteriaId
