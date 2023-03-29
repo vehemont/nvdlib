@@ -6,7 +6,7 @@ Release History
 
 **Bugfixes**
 
-- Merged #24. When using a datetime object in parameters like `pubEndDate`, NVDLib will now replace the `+` character used to denote the time zone with `%2B` in the string of parameters, preventing a 404 error and per the NVD API documentation. Normally this is done automatically within requests, but NVDLib passes the parameters as a string rather than a dictionary natively within requests. 
+- Merged #22. When using a datetime object in parameters like `pubEndDate`, NVDLib will now replace the `+` character used to denote the time zone with `%2B` in the string of parameters, preventing a 404 error and per the NVD API documentation. Normally this is done automatically within requests, but NVDLib passes the parameters as a string rather than a dictionary natively within requests. 
 
 **Enhancements**
 - Merged #23. Set the optional parameters in `searchCVE` and `searchCPE` to `None` instead of `False`. Helps out with linters and type assignment mismatches.
