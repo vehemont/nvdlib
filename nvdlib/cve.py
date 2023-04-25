@@ -3,38 +3,39 @@ import urllib.parse
 
 from datetime import datetime
 from .classes import __convert
-from .get import __get
+from .get import __get, __get_with_generator
+
 
 def searchCVE(
-            cpeName=None,
-            cveId=None,
-            cvssV2Metrics=None,
-            cvssV2Severity=None,
-            cvssV3Metrics=None,
-            cvssV3Severity=None,
-            cweId=None,
-            hasCertAlerts=None,
-            hasCertNotes=None,
-            hasKev=None,
-            hasOval=None,
-            isVulnerable=None,
-            keywordExactMatch=None,
-            keywordSearch=None,
-            lastModStartDate=None,
-            lastModEndDate=None,
-            noRejected=None,
-            pubStartDate=None,
-            pubEndDate=None,
-            sourceIdentifier=None,
-            versionEnd=None,
-            versionEndType=None,
-            versionStart=None,
-            versionStartType=None,
-            virtualMatchString=None,
-            limit=None,
-            delay=None,
-            key=None,
-            verbose=None):
+        cpeName=None,
+        cveId=None,
+        cvssV2Metrics=None,
+        cvssV2Severity=None,
+        cvssV3Metrics=None,
+        cvssV3Severity=None,
+        cweId=None,
+        hasCertAlerts=None,
+        hasCertNotes=None,
+        hasKev=None,
+        hasOval=None,
+        isVulnerable=None,
+        keywordExactMatch=None,
+        keywordSearch=None,
+        lastModStartDate=None,
+        lastModEndDate=None,
+        noRejected=None,
+        pubStartDate=None,
+        pubEndDate=None,
+        sourceIdentifier=None,
+        versionEnd=None,
+        versionEndType=None,
+        versionStart=None,
+        versionStartType=None,
+        virtualMatchString=None,
+        limit=None,
+        delay=None,
+        key=None,
+        verbose=None):
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
     :param cpeName: This value will be compared agains the CPE Match Criteria within a CVE applicability statement. (i.e. find the vulnerabilities attached to that CPE). Partial match strings are allowed.
@@ -111,7 +112,7 @@ def searchCVE(
 
     :param limit: Custom argument to limit the number of results of the search. Allowed any number between 1 and 2000.
     :type limit: int
-    
+
     :param delay: Can only be used if an API key is provided. This allows the user to define a delay. The delay must be greater than 0.6 seconds. The NVD API recommends scripts sleep for atleast 6 seconds in between requests.
     :type delay: int
 
@@ -121,208 +122,36 @@ def searchCVE(
     :param verbose: Prints the URL request for debugging purposes.
     :type verbose: bool    
     """
-    def __buildCVECall(
-            cpeName,
-            cveId,
-            cvssV2Metrics,
-            cvssV2Severity,
-            cvssV3Metrics,
-            cvssV3Severity,
-            cweId,
-            hasCertAlerts,
-            hasCertNotes,
-            hasKev,
-            hasOval,
-            isVulnerable,
-            keywordExactMatch,
-            keywordSearch,
-            lastModStartDate, 
-            lastModEndDate,
-            noRejected,
-            pubStartDate, 
-            pubEndDate, 
-            sourceIdentifier,
-            versionEnd,
-            versionEndType,
-            versionStart,
-            versionStartType,
-            virtualMatchString,
-            limit,
-            delay):
-        
-        parameters = {}
-        
-        if cpeName:
-            cpeName = urllib.parse.quote_plus(cpeName, encoding='utf-8')
-            parameters['cpeName'] = cpeName
-
-        if cveId:
-            parameters['cveId'] = cveId
-
-        if cvssV2Metrics:
-            cvssV2Metrics = urllib.parse.quote_plus(cvssV2Metrics, encoding='utf-8')
-            parameters['cvssV2Metrics'] = cvssV2Metrics
-
-        if cvssV2Severity:
-            cvssV2Severity = cvssV2Severity.upper()
-            if cvssV2Severity in ['LOW', 'MEDIUM', 'HIGH']:
-                parameters['cvssV2Severity'] = cvssV2Severity
-            else:
-                raise SyntaxError("cvssV2Severity parameter can only be assigned LOW, MEDIUM, or HIGH value.")
-
-        if cvssV3Metrics:
-            cvssV3Metrics = urllib.parse.quote_plus(cvssV3Metrics, encoding='utf-8')
-            parameters['cvssV3Metrics'] = cvssV3Metrics
-
-        if cvssV3Severity:
-            cvssV3Severity = cvssV3Severity.upper()
-            if cvssV3Severity in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']:
-                parameters['cvssV3Severity'] = cvssV3Severity
-            else:
-                raise SyntaxError("cvssV3Severity parameter can only be assigned LOW, MEDIUM, HIGH, or CRITICAL value.")
-
-        if cweId:
-            parameters['cweId'] = cweId.upper()
-
-        if hasCertAlerts:
-            parameters['hasCertAlerts'] = None
-        
-        if hasCertNotes:
-            parameters['hasCertNotes'] = None        
-
-        if hasKev:
-            parameters['hasKev'] = None
-
-        if hasOval:
-            parameters['hasOval'] = None
-
-        if isVulnerable:
-            if cpeName:
-                parameters['isVulnerable'] = None
-            else:
-                raise SyntaxError('cpeName parameter must be defined if isVulnerable parameter is passed.')
-
-        if keywordExactMatch:
-            if keywordSearch:
-                parameters['keywordExactMatch'] = None
-            else:
-                raise SyntaxError('keywordSearch parameter must be passed if keywordExactMatch is set to True.')
-
-        if keywordSearch:
-            parameters['keywordSearch'] = keywordSearch
-        
-        if lastModStartDate:
-            if isinstance(lastModStartDate, datetime):
-                date = lastModStartDate.isoformat()
-            elif isinstance(lastModStartDate, str):
-                date = datetime.strptime(lastModStartDate, '%Y-%m-%d %H:%M').isoformat()
-            else:
-                raise SyntaxError('Invalid date syntax: ' + lastModStartDate)
-            parameters['lastModStartDate'] = date.replace('+', '%2B')
-
-        if lastModEndDate:
-            if isinstance(lastModEndDate, datetime):
-                date = lastModEndDate.isoformat()
-            elif isinstance(lastModEndDate, str):
-                date = datetime.strptime(lastModEndDate, '%Y-%m-%d %H:%M').isoformat()
-            else:
-                raise SyntaxError('Invalid date syntax: ' + lastModEndDate)
-            parameters['lastModEndDate'] = date.replace('+', '%2B')
-        
-        if noRejected:
-            parameters['noRejected'] = None
-
-        if pubStartDate:
-            if isinstance(pubStartDate, datetime):
-                date = pubStartDate.isoformat()
-            elif isinstance(pubStartDate, str):
-                date = datetime.strptime(pubStartDate, '%Y-%m-%d %H:%M').isoformat()
-            else:
-                raise SyntaxError('Invalid date syntax: ' + pubEndDate)
-            parameters['pubStartDate'] = date.replace('+', '%2B')
-        
-        if pubEndDate:
-            if isinstance(pubEndDate, datetime):
-                date = pubEndDate.isoformat()
-            elif isinstance(pubEndDate, str):
-                date = datetime.strptime(pubEndDate, '%Y-%m-%d %H:%M').isoformat()
-            else:
-                raise SyntaxError('Invalid date syntax: ' + pubEndDate)
-            parameters['pubEndDate'] = date.replace('+', '%2B')
-
-        if sourceIdentifier:
-            parameters['sourceIdentifier'] = sourceIdentifier
-        
-        if virtualMatchString:
-            virtualMatchString = urllib.parse.quote_plus(virtualMatchString, encoding='utf-8')
-            parameters['virtualMatchString'] = virtualMatchString
-
-        if versionEnd or versionEndType:
-            if versionEnd and versionEndType and virtualMatchString:
-                if versionEndType not in ['including', 'excluding']:
-                    raise SyntaxError('versionEnd parameter must be either "included" or "excluded".')
-                else:
-                    parameters['versionEnd'] = str(versionEnd)
-                    parameters['versionEndType'] = versionEndType
-            else:
-                raise SyntaxError('If versionEnd is used, all three parameters versionEnd, versionEndType, and virtualMatchString are required.')
-        
-        if versionStart or versionStartType:
-            if versionStart and versionStartType and virtualMatchString:
-                if versionStartType not in ['including', 'excluding']:
-                    raise SyntaxError('versionStart parameter must be either "included" or "excluded".')
-                else:
-                    parameters['versionStart'] = str(versionStart)
-                    parameters['versionStartType'] = versionStartType
-            else:
-                raise SyntaxError('If versionStart is used, all three parameters versionStart, versionStartType, and virtualMatchString are required.')       
-
-        if limit:
-            if limit > 2000 or limit < 1:
-                raise SyntaxError('Limit parameter must be between 1 and 2000')
-            parameters['resultsPerPage'] = str(limit)
-
-        if key:
-            headers = {'content-type': 'application/json', 'apiKey': key}
-        else:
-            headers = {'content-type': 'application/json'}
-
-        if delay and key:
-            if delay < 0.6:
-                raise SyntaxError('Delay parameter must be greater than 0.6 seconds with an API key. NVD API recommends several seconds.')
-        elif delay and not key:
-            raise SyntaxError('Key parameter must be present to define a delay. Requests are delayed 6 seconds without an API key by default.')
-
-        return parameters, headers
 
     parameters, headers = __buildCVECall(
-            cpeName,
-            cveId,
-            cvssV2Metrics,
-            cvssV2Severity,
-            cvssV3Metrics,
-            cvssV3Severity,
-            cweId,
-            hasCertAlerts,
-            hasCertNotes,
-            hasKev,
-            hasOval,
-            isVulnerable,
-            keywordExactMatch,
-            keywordSearch,
-            lastModStartDate, 
-            lastModEndDate,
-            noRejected,
-            pubStartDate, 
-            pubEndDate, 
-            sourceIdentifier,
-            versionEnd,
-            versionEndType,
-            versionStart,
-            versionStartType,
-            virtualMatchString,
-            limit,
-            delay)
+        cpeName,
+        cveId,
+        cvssV2Metrics,
+        cvssV2Severity,
+        cvssV3Metrics,
+        cvssV3Severity,
+        cweId,
+        hasCertAlerts,
+        hasCertNotes,
+        hasKev,
+        hasOval,
+        isVulnerable,
+        keywordExactMatch,
+        keywordSearch,
+        lastModStartDate,
+        lastModEndDate,
+        noRejected,
+        pubStartDate,
+        pubEndDate,
+        sourceIdentifier,
+        versionEnd,
+        versionEndType,
+        versionStart,
+        versionStartType,
+        virtualMatchString,
+        limit,
+        delay,
+        key)
 
     # raw is the raw dictionary response.
     raw = __get('cve', headers, parameters, limit, verbose, delay)
@@ -331,3 +160,265 @@ def searchCVE(
     for eachCVE in raw['vulnerabilities']:
         cves.append(__convert('cve', eachCVE['cve']))
     return cves
+
+
+def searchCVE_V2(
+        cpeName=None,
+        cveId=None,
+        cvssV2Metrics=None,
+        cvssV2Severity=None,
+        cvssV3Metrics=None,
+        cvssV3Severity=None,
+        cweId=None,
+        hasCertAlerts=None,
+        hasCertNotes=None,
+        hasKev=None,
+        hasOval=None,
+        isVulnerable=None,
+        keywordExactMatch=None,
+        keywordSearch=None,
+        lastModStartDate=None,
+        lastModEndDate=None,
+        noRejected=None,
+        pubStartDate=None,
+        pubEndDate=None,
+        sourceIdentifier=None,
+        versionEnd=None,
+        versionEndType=None,
+        versionStart=None,
+        versionStartType=None,
+        virtualMatchString=None,
+        limit=None,
+        delay=None,
+        key=None,
+        verbose=None):
+
+    parameters, headers = __buildCVECall(
+        cpeName,
+        cveId,
+        cvssV2Metrics,
+        cvssV2Severity,
+        cvssV3Metrics,
+        cvssV3Severity,
+        cweId,
+        hasCertAlerts,
+        hasCertNotes,
+        hasKev,
+        hasOval,
+        isVulnerable,
+        keywordExactMatch,
+        keywordSearch,
+        lastModStartDate,
+        lastModEndDate,
+        noRejected,
+        pubStartDate,
+        pubEndDate,
+        sourceIdentifier,
+        versionEnd,
+        versionEndType,
+        versionStart,
+        versionStartType,
+        virtualMatchString,
+        limit,
+        delay,
+        key)
+
+    for batch in __get_with_generator('cve', headers, parameters, limit,
+                                      verbose, delay):
+        cves = []
+        for eachCVE in batch['vulnerabilities']:
+            cves.append(__convert('cve', eachCVE['cve']))
+        yield cves
+
+
+def __buildCVECall(
+        cpeName,
+        cveId,
+        cvssV2Metrics,
+        cvssV2Severity,
+        cvssV3Metrics,
+        cvssV3Severity,
+        cweId,
+        hasCertAlerts,
+        hasCertNotes,
+        hasKev,
+        hasOval,
+        isVulnerable,
+        keywordExactMatch,
+        keywordSearch,
+        lastModStartDate,
+        lastModEndDate,
+        noRejected,
+        pubStartDate,
+        pubEndDate,
+        sourceIdentifier,
+        versionEnd,
+        versionEndType,
+        versionStart,
+        versionStartType,
+        virtualMatchString,
+        limit,
+        delay,
+        key):
+
+    parameters = {}
+
+    if cpeName:
+        cpeName = urllib.parse.quote_plus(cpeName, encoding='utf-8')
+        parameters['cpeName'] = cpeName
+
+    if cveId:
+        parameters['cveId'] = cveId
+
+    if cvssV2Metrics:
+        cvssV2Metrics = urllib.parse.quote_plus(
+            cvssV2Metrics, encoding='utf-8')
+        parameters['cvssV2Metrics'] = cvssV2Metrics
+
+    if cvssV2Severity:
+        cvssV2Severity = cvssV2Severity.upper()
+        if cvssV2Severity in ['LOW', 'MEDIUM', 'HIGH']:
+            parameters['cvssV2Severity'] = cvssV2Severity
+        else:
+            raise SyntaxError(
+                "cvssV2Severity parameter can only be assigned LOW, MEDIUM, or HIGH value.")
+
+    if cvssV3Metrics:
+        cvssV3Metrics = urllib.parse.quote_plus(
+            cvssV3Metrics, encoding='utf-8')
+        parameters['cvssV3Metrics'] = cvssV3Metrics
+
+    if cvssV3Severity:
+        cvssV3Severity = cvssV3Severity.upper()
+        if cvssV3Severity in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']:
+            parameters['cvssV3Severity'] = cvssV3Severity
+        else:
+            raise SyntaxError(
+                "cvssV3Severity parameter can only be assigned LOW, MEDIUM, HIGH, or CRITICAL value.")
+
+    if cweId:
+        parameters['cweId'] = cweId.upper()
+
+    if hasCertAlerts:
+        parameters['hasCertAlerts'] = None
+
+    if hasCertNotes:
+        parameters['hasCertNotes'] = None
+
+    if hasKev:
+        parameters['hasKev'] = None
+
+    if hasOval:
+        parameters['hasOval'] = None
+
+    if isVulnerable:
+        if cpeName:
+            parameters['isVulnerable'] = None
+        else:
+            raise SyntaxError(
+                'cpeName parameter must be defined if isVulnerable parameter is passed.')
+
+    if keywordExactMatch:
+        if keywordSearch:
+            parameters['keywordExactMatch'] = None
+        else:
+            raise SyntaxError(
+                'keywordSearch parameter must be passed if keywordExactMatch is set to True.')
+
+    if keywordSearch:
+        parameters['keywordSearch'] = keywordSearch
+
+    if lastModStartDate:
+        if isinstance(lastModStartDate, datetime):
+            date = lastModStartDate.isoformat()
+        elif isinstance(lastModStartDate, str):
+            date = datetime.strptime(
+                lastModStartDate, '%Y-%m-%d %H:%M').isoformat()
+        else:
+            raise SyntaxError('Invalid date syntax: ' + lastModStartDate)
+        parameters['lastModStartDate'] = date.replace('+', '%2B')
+
+    if lastModEndDate:
+        if isinstance(lastModEndDate, datetime):
+            date = lastModEndDate.isoformat()
+        elif isinstance(lastModEndDate, str):
+            date = datetime.strptime(
+                lastModEndDate, '%Y-%m-%d %H:%M').isoformat()
+        else:
+            raise SyntaxError('Invalid date syntax: ' + lastModEndDate)
+        parameters['lastModEndDate'] = date.replace('+', '%2B')
+
+    if noRejected:
+        parameters['noRejected'] = None
+
+    if pubStartDate:
+        if isinstance(pubStartDate, datetime):
+            date = pubStartDate.isoformat()
+        elif isinstance(pubStartDate, str):
+            date = datetime.strptime(
+                pubStartDate, '%Y-%m-%d %H:%M').isoformat()
+        else:
+            raise SyntaxError('Invalid date syntax: ' + pubEndDate)
+        parameters['pubStartDate'] = date.replace('+', '%2B')
+
+    if pubEndDate:
+        if isinstance(pubEndDate, datetime):
+            date = pubEndDate.isoformat()
+        elif isinstance(pubEndDate, str):
+            date = datetime.strptime(
+                pubEndDate, '%Y-%m-%d %H:%M').isoformat()
+        else:
+            raise SyntaxError('Invalid date syntax: ' + pubEndDate)
+        parameters['pubEndDate'] = date.replace('+', '%2B')
+
+    if sourceIdentifier:
+        parameters['sourceIdentifier'] = sourceIdentifier
+
+    if virtualMatchString:
+        virtualMatchString = urllib.parse.quote_plus(
+            virtualMatchString, encoding='utf-8')
+        parameters['virtualMatchString'] = virtualMatchString
+
+    if versionEnd or versionEndType:
+        if versionEnd and versionEndType and virtualMatchString:
+            if versionEndType not in ['including', 'excluding']:
+                raise SyntaxError(
+                    'versionEnd parameter must be either "included" or "excluded".')
+            else:
+                parameters['versionEnd'] = str(versionEnd)
+                parameters['versionEndType'] = versionEndType
+        else:
+            raise SyntaxError(
+                'If versionEnd is used, all three parameters versionEnd, versionEndType, and virtualMatchString are required.')
+
+    if versionStart or versionStartType:
+        if versionStart and versionStartType and virtualMatchString:
+            if versionStartType not in ['including', 'excluding']:
+                raise SyntaxError(
+                    'versionStart parameter must be either "included" or "excluded".')
+            else:
+                parameters['versionStart'] = str(versionStart)
+                parameters['versionStartType'] = versionStartType
+        else:
+            raise SyntaxError(
+                'If versionStart is used, all three parameters versionStart, versionStartType, and virtualMatchString are required.')
+
+    if limit:
+        if limit > 2000 or limit < 1:
+            raise SyntaxError('Limit parameter must be between 1 and 2000')
+        parameters['resultsPerPage'] = str(limit)
+
+    if key:
+        headers = {'content-type': 'application/json', 'apiKey': key}
+    else:
+        headers = {'content-type': 'application/json'}
+
+    if delay and key:
+        if delay < 0.6:
+            raise SyntaxError(
+                'Delay parameter must be greater than 0.6 seconds with an API key. NVD API recommends several seconds.')
+    elif delay and not key:
+        raise SyntaxError(
+            'Key parameter must be present to define a delay. Requests are delayed 6 seconds without an API key by default.')
+
+    return parameters, headers
