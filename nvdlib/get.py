@@ -94,8 +94,6 @@ def __get_with_generator(product, headers, parameters, limit,
         if verbose:
             print('Filter:\n' + link + stringParams)
 
-        parameters['resultsPerPage'] = '2000'
-        parameters['startIndex'] = str(startIndex)
         raw = requests.get(link, params=stringParams,
                            headers=headers, timeout=30)
         raw.encoding = 'utf-8'
@@ -108,12 +106,28 @@ def __get_with_generator(product, headers, parameters, limit,
         except JSONDecodeError:
             print('Invalid search criteria syntax: ' + str(raw))
             print('Attempted search criteria: ' + str(parameters))
-
         yield raw
 
         totalResults = raw['totalResults']
-        print(totalResults)
+
         startIndex += 2000
+        parameters['startIndex'] = str(startIndex)
+        parameters['resultsPerPage'] = '2000'
+
+        if verbose and startIndex == 0:
+            if limit:
+                print(f'Query returned {limit} total records')
+            else:
+                print(f'Query returned {totalResults} total records')
+
+        if verbose and not limit:
+            if startIndex < totalResults:
+                print(
+                    f'Getting {product} batch {raw["startIndex"]} to {startIndex}')
+            else:
+                print(
+                    f'Getting {product} batch {raw["startIndex"]} to {totalResults}')
+
         if limit or startIndex > totalResults:
             break
 
