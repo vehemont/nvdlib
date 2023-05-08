@@ -36,13 +36,13 @@ Here is an example of a CPE search with a keyword and a limit of 2 results then 
 .. autoclass:: nvdlib.classes.CPE
 
 
-In addition to `searchCPE` there is also `searchCPE_V2`. This function uses the same parameters as `searchCVE` except creates a generator. This is
+In addition to `searchCPE` there is also `searchCPE_V2`. This function uses the same parameters as `searchCPE` except creates a generator. This is
 useful if the search performed consumes a lot of data and there are memory constraints on the system. It will convert the CVE response one object at a time, 
 instead of attempting to convert the entire data set into memory at once. Here is an example using `next()`.
 
->>> r = nvdlib.searchCVE_V2(keywordSearch='Microsoft Exchange 2010', limit=100)
+>>> r = nvdlib.searchCPE_V2(keywordSearch='Microsoft Exchange 2010', limit=100)
 >>> oneCVE = next(r)
->>> print(oneCVE.id)
+>>> print(oneCVE.cpeName)
 
 CPE Search Examples
 -------------------
