@@ -79,6 +79,14 @@ Below are all of the available parameters when searching for a collection of CVE
 
 |
 
+In addition to `searchCVE` there is also `searchCVE_V2`. This function uses the same parameters as `searchCVE` except creates a generator. This is
+useful if the search performed consumes a lot of data and there are memory constraints on the system. It will convert the CVE response one object at a time, 
+instead of attempting to convert the entire data set into memory at once. Here is an example using `next()`.
+
+>>> r = nvdlib.searchCVE_V2(keywordSearch='Microsoft Exchange 2010', limit=100)
+>>> oneCVE = next(r)
+>>> print(oneCVE.id)
+
 SearchCVE Examples
 ******************
 

@@ -12,29 +12,30 @@ def __get(product, headers, parameters, limit, verbose, delay):
         link = 'https://services.nvd.nist.gov/rest/json/cves/2.0?'
     elif product == 'cpe':
         link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
-    
+
     # Requests doesn't really work with dictionary parameters that have no value like `isVulnerable`. The workaround is to just pass a string instead.
     # This joins the parameters into a string with '&' and if a key contains a value then it will join the values with '='
-    stringParams = '&'.join([k if v is None else f"{k}={v}" for k, v in parameters.items()])
+    stringParams = '&'.join(
+        [k if v is None else f"{k}={v}" for k, v in parameters.items()])
     if verbose:
         print('Filter:\n' + link + stringParams)
-    
+
     raw = requests.get(link, params=stringParams, headers=headers, timeout=30)
     raw.encoding = 'utf-8'
     raw.raise_for_status()
 
-    try: # Try to convert the request to JSON. If it is not JSON, then print the response and exit.
-        raw = raw.json() 
+    try:  # Try to convert the request to JSON. If it is not JSON, then print the response and exit.
+        raw = raw.json()
         if 'message' in raw:
             raise LookupError(raw['message'])
     except JSONDecodeError:
         print('Invalid search criteria syntax: ' + str(raw))
         print('Attempted search criteria: ' + str(parameters))
-        
+
     if not delay:
         delay = 6
-    time.sleep(delay) 
-    
+    time.sleep(delay)
+
     # If a limit is in the search criteria or the total number of results are less than or equal to the default 2000 that were just requested, return and don't request anymore.
     totalResults = raw['totalResults']
     if limit or totalResults <= 2000:
@@ -44,7 +45,7 @@ def __get(product, headers, parameters, limit, verbose, delay):
     # Use the page we already grabbed, then send a request starting at startIndex = 2000, then get the next page and ask for 2000 more results at the 2000th index result until all results have been grabbed.
     # Add each ['vulnerabilities'] or ['products'] list from each page to the end of the first request. Effectively creates one data point.
     elif totalResults > 2000:
-        pages = (totalResults // 2000) 
+        pages = (totalResults // 2000)
         startIndex = 2000
         if product == 'cve':
             path = 'vulnerabilities'
@@ -56,11 +57,13 @@ def __get(product, headers, parameters, limit, verbose, delay):
         for eachPage in range(pages):
             parameters['resultsPerPage'] = '2000'
             parameters['startIndex'] = str(startIndex)
-            stringParams = '&'.join([k if v is None else f"{k}={v}" for k, v in parameters.items()])
+            stringParams = '&'.join(
+                [k if v is None else f"{k}={v}" for k, v in parameters.items()])
             if verbose:
                 print('Filter:\n' + link + stringParams)
             try:
-                getReq = requests.get(link, params=stringParams, headers=headers, timeout=30)
+                getReq = requests.get(
+                    link, params=stringParams, headers=headers, timeout=30)
                 getReq.encoding = 'utf-8'
                 getData = getReq.json()[path]
                 time.sleep(delay)
@@ -74,3 +77,60 @@ def __get(product, headers, parameters, limit, verbose, delay):
             startIndex += 2000
         raw[path] = rawTemp
         return raw
+
+
+def __get_with_generator(product, headers, parameters, limit,
+                         verbose, delay):
+    # Get the default 2000 items to see the totalResults and determine pages required.
+    if product == 'cve':
+        link = 'https://services.nvd.nist.gov/rest/json/cves/2.0?'
+    elif product == 'cpe':
+        link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
+
+    startIndex = 0
+    while True:
+        stringParams = '&'.join(
+            [k if v is None else f"{k}={v}" for k, v in parameters.items()])
+        if verbose:
+            print('Filter:\n' + link + stringParams)
+
+        raw = requests.get(link, params=stringParams,
+                           headers=headers, timeout=30)
+        raw.encoding = 'utf-8'
+        raw.raise_for_status()
+
+        try:  # Try to convert the request to JSON. If it is not JSON, then print the response and exit.
+            raw = raw.json()
+            if 'message' in raw:
+                raise LookupError(raw['message'])
+        except JSONDecodeError:
+            print('Invalid search criteria syntax: ' + str(raw))
+            print('Attempted search criteria: ' + str(parameters))
+        yield raw
+
+        totalResults = raw['totalResults']
+
+        startIndex += 2000
+        parameters['startIndex'] = str(startIndex)
+        parameters['resultsPerPage'] = '2000'
+
+        if verbose and startIndex == 0:
+            if limit:
+                print(f'Query returned {limit} total records')
+            else:
+                print(f'Query returned {totalResults} total records')
+
+        if verbose and not limit:
+            if startIndex < totalResults:
+                print(
+                    f'Getting {product} batch {raw["startIndex"]} to {startIndex}')
+            else:
+                print(
+                    f'Getting {product} batch {raw["startIndex"]} to {totalResults}')
+
+        if limit or startIndex > totalResults:
+            break
+
+        if not delay:
+            delay = 6
+        time.sleep(delay)

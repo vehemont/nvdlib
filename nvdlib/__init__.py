@@ -1,2 +1,2 @@
-from .cve import searchCVE
-from .cpe import searchCPE
+from .cve import searchCVE, searchCVE_V2
+from .cpe import searchCPE, searchCPE_V2
