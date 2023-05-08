@@ -1,6 +1,14 @@
 Release History
 ===============
 
+0.7.4 (2023-05-08)
+-------------------
+
+**Enhancements**
+- Merged #24. Added the new functions for `searchCVE_V2` and `searchCPE_V2`. They have the same arguments as their respective counterparts (`searchCVE` and `searchCPE`), but are defined as a generator instead. Yields after each CVE conversion from the response. This is useful for systems with resource constraints. 
+
+@nthunk single handedly pushed these features. Thank you. 
+
 0.7.3 (2023-03-29)
 -------------------
 
