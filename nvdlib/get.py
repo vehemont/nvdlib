@@ -1,10 +1,12 @@
-import requests
+import asyncio
 import time
-
 from json.decoder import JSONDecodeError
 
+import requests
+from aiohttp import ClientSession
 
-def __get(product, headers, parameters, limit, verbose, delay):
+
+async def __get(session: ClientSession, product, headers, parameters, limit, verbose, delay):
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
 
     # Get the default 2000 items to see the totalResults and determine pages required.
@@ -20,12 +22,10 @@ def __get(product, headers, parameters, limit, verbose, delay):
     if verbose:
         print('Filter:\n' + link + stringParams)
 
-    raw = requests.get(link, params=stringParams, headers=headers, timeout=30)
-    raw.encoding = 'utf-8'
-    raw.raise_for_status()
+    response = await session.get(url=link, params=stringParams, headers=headers, timeout=30)
 
     try:  # Try to convert the request to JSON. If it is not JSON, then print the response and exit.
-        raw = raw.json()
+        raw = await response.json()
         if 'message' in raw:
             raise LookupError(raw['message'])
     except JSONDecodeError:
@@ -34,7 +34,7 @@ def __get(product, headers, parameters, limit, verbose, delay):
 
     if not delay:
         delay = 6
-    time.sleep(delay)
+    await asyncio.sleep(delay)
 
     # If a limit is in the search criteria or the total number of results are less than or equal to the default 2000 that were just requested, return and don't request anymore.
     totalResults = raw['totalResults']
@@ -62,11 +62,11 @@ def __get(product, headers, parameters, limit, verbose, delay):
             if verbose:
                 print('Filter:\n' + link + stringParams)
             try:
-                getReq = requests.get(
-                    link, params=stringParams, headers=headers, timeout=30)
-                getReq.encoding = 'utf-8'
-                getData = getReq.json()[path]
-                time.sleep(delay)
+                getReq = await session.get(
+                    url=link, params=stringParams, headers=headers, timeout=30)
+                all_response = await getReq.json()
+                getData = all_response[path]
+                await asyncio.sleep(delay)
             except JSONDecodeError:
                 print('JSONDecodeError')
                 print('Something went wrong: ' + str(getReq))

@@ -1,11 +1,14 @@
 import urllib.parse
-
 from datetime import datetime
+
+from aiohttp import ClientSession
+
 from .classes import __convert
 from .get import __get, __get_with_generator
 
 
-def searchCVE(
+async def searchCVE(
+        session: ClientSession,
         cpeName=None,
         cveId=None,
         cvssV2Metrics=None,
@@ -153,7 +156,7 @@ def searchCVE(
         key)
 
     # raw is the raw dictionary response.
-    raw = __get('cve', headers, parameters, limit, verbose, delay)
+    raw = await __get(session, 'cve', headers, parameters, limit, verbose, delay)
     cves = []
     # Generates the CVEs into objects for easy access and appends them to self.cves
     for eachCVE in raw['vulnerabilities']:

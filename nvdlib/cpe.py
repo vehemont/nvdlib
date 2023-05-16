@@ -2,11 +2,15 @@ import datetime
 import urllib.parse
 
 from datetime import datetime
+
+from aiohttp import ClientSession
+
 from .get import __get, __get_with_generator
 from .classes import __convert
 
 
-def searchCPE(
+async def searchCPE(
+        session: ClientSession,
         cpeNameId=None,
         cpeMatchString=None,
         keywordExactMatch=None,
@@ -72,7 +76,7 @@ def searchCPE(
         delay)
 
     # Send the GET request for the JSON and convert to dictionary
-    raw = __get('cpe', headers, parameters, limit, verbose, delay)
+    raw = await __get(session, 'cpe', headers, parameters, limit, verbose, delay)
     cpes = []
     # Generates the CVEs into objects for easy referencing and appends them to self.cves
     for eachCPE in raw['products']:

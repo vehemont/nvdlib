@@ -8,7 +8,7 @@ setup(
     name='nvdlib',
     packages=find_packages(include=['nvdlib']),
     version='0.7.4',
-    install_requires = ['requests'],
+    install_requires=['requests==2.28.2', 'aiohttp==3.8.4'],
     extras_require={
         "dev": [
             "responses==0.18.0",
