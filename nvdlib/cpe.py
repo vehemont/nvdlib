@@ -210,7 +210,7 @@ def __buildCPECall(
         parameters['resultsPerPage'] = limit
 
     if key:
-        headers = {'content-type': 'application/json', 'apiKey': key}
+        headers = {'content-type': 'application/json', 'Authorization': f'Bearer {key}'}
     else:
         headers = {'content-type': 'application/json'}
 

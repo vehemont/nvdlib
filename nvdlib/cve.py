@@ -493,7 +493,7 @@ def __buildCVECall(
         parameters['resultsPerPage'] = str(limit)
 
     if key:
-        headers = {'content-type': 'application/json', 'apiKey': key}
+        headers = {'content-type': 'application/json', 'Authorization': f'Bearer {key}'}
     else:
         headers = {'content-type': 'application/json'}
 
