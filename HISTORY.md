@@ -1,6 +1,11 @@
 Release History
 ===============
 
+0.7.5 (2023-10-03)
+-------------------
+**Bugfixes**
+- Merged #30. Added a check if the generator hits 403 rate limit error, instead of breaking the entire generator. Delays twice as long to ensure another 403 isn't hit. 
+
 0.7.4 (2023-05-08)
 -------------------
 
