@@ -1,40 +1,42 @@
 import urllib.parse
 
+from typing import Generator
+from typing import Tuple
 from datetime import datetime
 from .classes import __convert
 from .get import __get, __get_with_generator
 
 
 def searchCVE(
-        cpeName=None,
-        cveId=None,
-        cvssV2Metrics=None,
-        cvssV2Severity=None,
-        cvssV3Metrics=None,
-        cvssV3Severity=None,
-        cweId=None,
-        hasCertAlerts=None,
-        hasCertNotes=None,
-        hasKev=None,
-        hasOval=None,
-        isVulnerable=None,
-        keywordExactMatch=None,
-        keywordSearch=None,
-        lastModStartDate=None,
-        lastModEndDate=None,
-        noRejected=None,
-        pubStartDate=None,
-        pubEndDate=None,
-        sourceIdentifier=None,
-        versionEnd=None,
-        versionEndType=None,
-        versionStart=None,
-        versionStartType=None,
-        virtualMatchString=None,
-        limit=None,
-        delay=None,
-        key=None,
-        verbose=None):
+        cpeName: str = None,
+        cveId: str = None,
+        cvssV2Metrics: str = None,
+        cvssV2Severity: str = None,
+        cvssV3Metrics: str = None,
+        cvssV3Severity: str = None,
+        cweId: str = None,
+        hasCertAlerts: bool = None,
+        hasCertNotes: bool = None,
+        hasKev: bool = None,
+        hasOval: bool = None,
+        isVulnerable: bool = None,
+        keywordExactMatch: bool = None,
+        keywordSearch: str = None,
+        lastModStartDate: Tuple[str, datetime] = None,
+        lastModEndDate: Tuple[str, datetime] = None,
+        noRejected: bool = None,
+        pubStartDate: Tuple[str, datetime] = None,
+        pubEndDate: Tuple[str, datetime] = None,
+        sourceIdentifier: str = None,
+        versionEnd: str = None,
+        versionEndType: str = None,
+        versionStart: str = None,
+        versionStartType: str = None,
+        virtualMatchString: str = None,
+        limit: int = None,
+        delay: int = None,
+        key: str = None,
+        verbose: bool = None) -> list:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
     :param cpeName: This value will be compared agains the CPE Match Criteria within a CVE applicability statement. (i.e. find the vulnerabilities attached to that CPE). Partial match strings are allowed.
@@ -63,6 +65,9 @@ def searchCVE(
 
     :param hasCertNotes: Returns CVE that contain a Vulnerability Note from CERT/CC.
     :type hasCertNotes: bool
+
+    :param hasKev: Returns CVE that appear in CISAs Known Exploited Vulnerabilities (KEV) catalog.
+    :type hasKev: bool
 
     :param hasOval: Returns CVE that contain information from MITRE's Open Vulnerability and Assessment Language (OVAL) before this transitioned to the Center for Internet Security (CIS).
     :type hasOval: bool
@@ -162,35 +167,35 @@ def searchCVE(
 
 
 def searchCVE_V2(
-        cpeName=None,
-        cveId=None,
-        cvssV2Metrics=None,
-        cvssV2Severity=None,
-        cvssV3Metrics=None,
-        cvssV3Severity=None,
-        cweId=None,
-        hasCertAlerts=None,
-        hasCertNotes=None,
-        hasKev=None,
-        hasOval=None,
-        isVulnerable=None,
-        keywordExactMatch=None,
-        keywordSearch=None,
-        lastModStartDate=None,
-        lastModEndDate=None,
-        noRejected=None,
-        pubStartDate=None,
-        pubEndDate=None,
-        sourceIdentifier=None,
-        versionEnd=None,
-        versionEndType=None,
-        versionStart=None,
-        versionStartType=None,
-        virtualMatchString=None,
-        limit=None,
-        delay=None,
-        key=None,
-        verbose=None):
+        cpeName: str = None,
+        cveId: str = None,
+        cvssV2Metrics: str = None,
+        cvssV2Severity: str = None,
+        cvssV3Metrics: str = None,
+        cvssV3Severity: str = None,
+        cweId: str = None,
+        hasCertAlerts: bool = None,
+        hasCertNotes: bool = None,
+        hasKev: bool = None,
+        hasOval: bool = None,
+        isVulnerable: bool = None,
+        keywordExactMatch: bool = None,
+        keywordSearch: str = None,
+        lastModStartDate: Tuple[str, datetime] = None,
+        lastModEndDate: Tuple[str, datetime] = None,
+        noRejected: bool = None,
+        pubStartDate: Tuple[str, datetime] = None,
+        pubEndDate: Tuple[str, datetime] = None,
+        sourceIdentifier: str = None,
+        versionEnd: str = None,
+        versionEndType: str = None,
+        versionStart: str = None,
+        versionStartType: str = None,
+        virtualMatchString: str = None,
+        limit: int = None,
+        delay: int = None,
+        key: str = None,
+        verbose: bool = None) -> Generator[list, None, list]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
     :param cpeName: This value will be compared agains the CPE Match Criteria within a CVE applicability statement. (i.e. find the vulnerabilities attached to that CPE). Partial match strings are allowed.
@@ -219,6 +224,9 @@ def searchCVE_V2(
 
     :param hasCertNotes: Returns CVE that contain a Vulnerability Note from CERT/CC.
     :type hasCertNotes: bool
+
+    :param hasKev: Returns CVE that appear in CISAs Known Exploited Vulnerabilities (KEV) catalog.
+    :type hasKev: bool
 
     :param hasOval: Returns CVE that contain information from MITRE's Open Vulnerability and Assessment Language (OVAL) before this transitioned to the Center for Internet Security (CIS).
     :type hasOval: bool

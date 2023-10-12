@@ -1,23 +1,25 @@
 import datetime
 import urllib.parse
 
+from typing import Generator
+from typing import Tuple
 from datetime import datetime
 from .get import __get, __get_with_generator
 from .classes import __convert
 
 
 def searchCPE(
-        cpeNameId=None,
-        cpeMatchString=None,
-        keywordExactMatch=None,
-        keywordSearch=None,
-        lastModStartDate=None,
-        lastModEndDate=None,
-        matchCriteriaId=None,
-        limit=None,
-        key=None,
-        delay=None,
-        verbose=None):
+        cpeNameId: str = None,
+        cpeMatchString: str = None,
+        keywordExactMatch: bool = None,
+        keywordSearch: str = None,
+        lastModStartDate: Tuple[str, datetime] = None,
+        lastModEndDate: Tuple[str, datetime] = None,
+        matchCriteriaId: str = None,
+        limit: int = None,
+        key: str = None,
+        delay: int = None,
+        verbose: bool = None) -> list:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
     :param cpeNameId: Returns a specific CPE record using its UUID. If a correctly formatted UUID is passed but it does not exist, it will return empty results. The UUID is the `cpeNameId` value when searching CPE.
@@ -42,6 +44,9 @@ def searchCPE(
     :param lastModEndDate: CPE last modification end date. Maximum 120 day range. Must be included with lastModStartDate.
         Example: '2020-06-28 00:00'
     :type lastModEndDate: str/datetime obj
+
+    :param matchCriteriaId: Returns CPE records associated with a match string by its UUID. Requires a properly formatted UUID.
+    :type matchCriteriaId: str
 
     :param limit: Limits the number of results of the search.
     :type limit: int
@@ -82,17 +87,17 @@ def searchCPE(
 
 
 def searchCPE_V2(
-        cpeNameId=None,
-        cpeMatchString=None,
-        keywordExactMatch=None,
-        keywordSearch=None,
-        lastModStartDate=None,
-        lastModEndDate=None,
-        matchCriteriaId=None,
-        limit=None,
-        key=None,
-        delay=None,
-        verbose=None):
+        cpeNameId: str = None,
+        cpeMatchString: str = None,
+        keywordExactMatch: bool = None,
+        keywordSearch: str = None,
+        lastModStartDate: Tuple[str, datetime] = None,
+        lastModEndDate: Tuple[str, datetime] = None,
+        matchCriteriaId: str = None,
+        limit: int = None,
+        key: str = None,
+        delay: int = None,
+        verbose: bool = None) -> Generator[list, None, list]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
     :param cpeNameId: Returns a specific CPE record using its UUID. If a correctly formatted UUID is passed but it does not exist, it will return empty results. The UUID is the `cpeNameId` value when searching CPE.
@@ -117,6 +122,10 @@ def searchCPE_V2(
     :param lastModEndDate: CPE last modification end date. Maximum 120 day range. Must be included with lastModStartDate.
         Example: '2020-06-28 00:00'
     :type lastModEndDate: str/datetime obj
+
+    :param matchCriteriaId: Returns CPE records associated with a match string by its UUID. Requires a properly formatted UUID.
+    :type matchCriteriaId: str
+
 
     :param limit: Limits the number of results of the search.
     :type limit: int
