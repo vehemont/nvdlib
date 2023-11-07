@@ -144,6 +144,31 @@ class CVE:
 
     :var score: Contains the CVSS score of the latest CVSS version (3.1 > 3.0 > 2). Where score is an int, severity is a string('LOW','MEDIUM','HIGH','CRITICAL'), and version is a string (V3.1, V3.0, or V2).
     :vartype score: list
+
+    :var v31attackVector: NETWORK, ADJACENT_NETWORK, LOCAL, PHYSICAL. Present if CVE is scored.
+    :vartype v31attackVector: str
+
+    :var v31attackComplexity: HIGH, LOW. Present if CVE is scored. 
+    :vartype v31attackComplexity: str
+
+    :var v31privilegesRequired: HIGH, LOW, NONE. Present if CVE is scored.
+    :vartype v31privilegesRequired: str
+
+    :var v31userInteraction: NONE, REQUIRED. Present if CVE is scored.
+    :vartype v31userInteraction: str
+
+    :var v31scope: UNCHANGED, CHANGED. Present if CVE is scored.
+    :vartype v31scope: str
+
+    :var v31confidentialityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :vartype v31confidentialityImpact: str
+
+    :var v31integrityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :vartype v31integrityImpact: str
+
+    :var v31availabilityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :vartype v31availabilityImpact: str
+
     """
 
     def __init__(self, response):
@@ -183,6 +208,15 @@ class CVE:
             self.v31score = self.metrics.cvssMetricV31[0].cvssData.baseScore
             self.v31vector = self.metrics.cvssMetricV31[0].cvssData.vectorString
             self.v31severity = self.metrics.cvssMetricV31[0].cvssData.baseSeverity
+            self.v31attackVector = self.metrics.cvssMetricV31[0].cvssData.attackVector
+            self.v31attackComplexity = self.metrics.cvssMetricV31[0].cvssData.attackComplexity
+            self.v31privilegesRequired = self.metrics.cvssMetricV31[0].cvssData.privilegesRequired
+            self.v31userInteraction = self.metrics.cvssMetricV31[0].cvssData.userInteraction
+            self.v31scope = self.metrics.cvssMetricV31[0].cvssData.scope
+            self.v31confidentialityImpact = self.metrics.cvssMetricV31[0].cvssData.confidentialityImpact
+            self.v31integrityImpact = self.metrics.cvssMetricV31[0].cvssData.integrityImpact
+            self.v31availabilityImpact= self.metrics.cvssMetricV31[0].cvssData.availabilityImpact
+
             self.v31exploitability = self.metrics.cvssMetricV31[0].exploitabilityScore
             self.v31impactScore = self.metrics.cvssMetricV31[0].impactScore
 
