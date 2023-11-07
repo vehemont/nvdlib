@@ -148,8 +148,14 @@ class CVE:
     :var v31attackVector: NETWORK, ADJACENT_NETWORK, LOCAL, PHYSICAL. Present if CVE is scored.
     :vartype v31attackVector: str
 
+    :var v2accesVector: NETWORK, ADJACENT_NETWORK, LOCAL. Present if CVE is scored.
+    :vartype v2accesVector: str
+
     :var v31attackComplexity: HIGH, LOW. Present if CVE is scored. 
     :vartype v31attackComplexity: str
+
+    :var v2accessComplexity: HIGH, MEDIUM, LOW. Present if CVE is scored. 
+    :vartype v2accessComplexity: str
 
     :var v31privilegesRequired: HIGH, LOW, NONE. Present if CVE is scored.
     :vartype v31privilegesRequired: str
@@ -163,11 +169,23 @@ class CVE:
     :var v31confidentialityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
     :vartype v31confidentialityImpact: str
 
+    :var v2authentication: MULTIPLE, SINGLE, NONE. Present if CVE is scored.
+    :vartype v2authentication: str
+
+    :var v2confidentialityImpact: NONE, PARTIAL, COMPLETE. Present if CVE is scored.
+    :vartype v2confidentialityImpact: str
+
     :var v31integrityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
     :vartype v31integrityImpact: str
 
+    :var v2integrityImpact: NONE, PARTIAL, COMPLETE. Present if CVE is scored.
+    :vartype v2integrityImpact: str
+
     :var v31availabilityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
     :vartype v31availabilityImpact: str
+
+    :var v2availabilityImpact: NONE, PARTIAL, COMPLETE. Present if CVE is scored.
+    :vartype v2availabilityImpact: str
 
     """
 
@@ -231,6 +249,12 @@ class CVE:
             self.v2score = self.metrics.cvssMetricV2[0].cvssData.baseScore
             self.v2vector = self.metrics.cvssMetricV2[0].cvssData.vectorString
             self.v2severity = self.metrics.cvssMetricV2[0].baseSeverity
+            self.v2accessVector = self.metrics.cvssMetricV2[0].cvssData.accessVector
+            self.v2accessComplexity = self.metrics.cvssMetricV2[0].cvssData.accessComplexity
+            self.v2authentication = self.metrics.cvssMetricV2[0].cvssData.authentication
+            self.v2confidentialityImpact = self.metrics.cvssMetricV2[0].cvssData.confidentialityImpact
+            self.v2integrityImpact = self.metrics.cvssMetricV2[0].cvssData.integrityImpact
+            self.v2availabilityImpact = self.metrics.cvssMetricV2[0].cvssData.availabilityImpact
             self.v2exploitability = self.metrics.cvssMetricV2[0].exploitabilityScore
             self.v2impactScore = self.metrics.cvssMetricV2[0].impactScore
         
