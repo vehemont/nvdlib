@@ -208,7 +208,7 @@ class CVE:
 
     def getvars(self):
         try:
-            self.cpe = [x.cpeMatch[0] for x in self.configurations[0].nodes]
+            self.cpe = self.configurations[0].nodes[0].cpeMatch
         except AttributeError:
             pass
         
