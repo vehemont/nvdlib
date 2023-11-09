@@ -8,7 +8,7 @@ Release History
 
 **Enhancements**
 - Merged #34. Added additional vars for CVEs for easy accessability. 
-- Still working on #34 for supporting type hints, but some have been added. 
+- Still working on #32 for supporting type hints, but some have been added. 
 
 Thanks to @akuster for submitting a PR for these changes.
 
