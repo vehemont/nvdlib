@@ -1,6 +1,18 @@
 Release History
 ===============
 
+0.7.6 (2023-11-09)
+-------------------
+**Bugfixes**
+- Merged #35. Fixed a CPE search not pulling all CPE matches.
+
+**Enhancements**
+- Merged #34. Added additional vars for CVEs for easy accessability. 
+- Still working on #34 for supporting type hints, but some have been added. 
+
+Thanks to @akuster for submitting a PR for these changes.
+
+
 0.7.5 (2023-10-03)
 -------------------
 **Bugfixes**
