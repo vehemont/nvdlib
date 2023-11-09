@@ -148,7 +148,7 @@ class CVE:
     :var v31attackVector: NETWORK, ADJACENT_NETWORK, LOCAL, PHYSICAL. Present if CVE is scored.
     :vartype v31attackVector: str
 
-    :var v2accesVector: NETWORK, ADJACENT_NETWORK, LOCAL. Present if CVE is scored.
+    :var v2accessVector: NETWORK, ADJACENT_NETWORK, LOCAL. Present if CVE is scored.
     :vartype v2accesVector: str
 
     :var v31attackComplexity: HIGH, LOW. Present if CVE is scored. 
