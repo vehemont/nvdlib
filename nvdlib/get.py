@@ -2,7 +2,7 @@ import requests
 import time
 
 from json.decoder import JSONDecodeError
-
+from requests.adapters import HTTPAdapter, Retry
 
 def __get(product, headers, parameters, limit, verbose, delay):
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
@@ -19,8 +19,15 @@ def __get(product, headers, parameters, limit, verbose, delay):
         [k if v is None else f"{k}={v}" for k, v in parameters.items()])
     if verbose:
         print('Filter:\n' + link + stringParams)
+        
 
-    raw = requests.get(link, params=stringParams, headers=headers, timeout=30)
+#    raw = requests.get(link, params=stringParams, headers=headers, timeout=30)    
+
+    s = requests.Session()
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[ 403, 502, 503, 504 ])
+    s.mount('https://', HTTPAdapter(max_retries=retries))
+    raw = s.get(link, params=stringParams, headers=headers, timeout=30)
+    
     raw.encoding = 'utf-8'
     raw.raise_for_status()
 
@@ -62,7 +69,9 @@ def __get(product, headers, parameters, limit, verbose, delay):
             if verbose:
                 print('Filter:\n' + link + stringParams)
             try:
-                getReq = requests.get(
+                getReq = s.get(
+                    link, params=stringParams, headers=headers, timeout=30)
+                #getReq = requests.get(
                     link, params=stringParams, headers=headers, timeout=30)
                 getReq.encoding = 'utf-8'
                 getData = getReq.json()[path]
@@ -71,8 +80,8 @@ def __get(product, headers, parameters, limit, verbose, delay):
                 print('JSONDecodeError')
                 print('Something went wrong: ' + str(getReq))
                 print('Attempted search criteria: ' + str(stringParams))
-                print('URL: ' + getReq.request.url)
-                getReq.raise_for_status()
+                #print('URL: ' + getReq.request.url)
+                #getReq.raise_for_status()
             rawTemp.extend(getData)
             startIndex += 2000
         raw[path] = rawTemp
