@@ -1,8 +1,33 @@
-import requests
 import time
-
 from json.decoder import JSONDecodeError
+
+import requests
 from requests.adapters import HTTPAdapter, Retry
+
+DEFAULT_RETRIES = 5
+DEFAULT_BACKOFF = 0.3
+# https://requests.readthedocs.io/en/latest/user/advanced/#timeouts
+DEFAULT_CONNECT_TIMEOUT = 6.1
+DEFAULT_READ_TIMEOUT = 90
+
+def session_with_retries(max_retries: int = DEFAULT_RETRIES,
+                         backoff_factor: float = DEFAULT_BACKOFF,
+                         proxies: dict = None) -> requests.Session:
+    new_session = requests.Session()
+    retries = Retry(total=max_retries,
+                    connect=max_retries,
+                    read=max_retries,
+                    status=max_retries,
+                    allowed_methods=frozenset(['HEAD', 'GET', 'POST']),
+                    status_forcelist=frozenset([403, 500, 502, 503, 504]),
+                    backoff_factor=backoff_factor,
+                    )
+    retry_adapter = HTTPAdapter(max_retries=retries)
+    new_session.mount('http://', retry_adapter)
+    new_session.mount('https://', retry_adapter)
+    if proxies is not None:
+        new_session.proxies.update(proxies)
+    return new_session
 
 def __get(product, headers, parameters, limit, verbose, delay):
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
@@ -19,15 +44,11 @@ def __get(product, headers, parameters, limit, verbose, delay):
         [k if v is None else f"{k}={v}" for k, v in parameters.items()])
     if verbose:
         print('Filter:\n' + link + stringParams)
-        
 
-#    raw = requests.get(link, params=stringParams, headers=headers, timeout=30)    
+    s = session_with_retries()
+    raw = s.get(link, params=stringParams, headers=headers, 
+                timeout=(DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT))
 
-    s = requests.Session()
-    retries = Retry(total=5, backoff_factor=1, status_forcelist=[ 403, 502, 503, 504 ])
-    s.mount('https://', HTTPAdapter(max_retries=retries))
-    raw = s.get(link, params=stringParams, headers=headers, timeout=30)
-    
     raw.encoding = 'utf-8'
     raw.raise_for_status()
 
@@ -52,7 +73,7 @@ def __get(product, headers, parameters, limit, verbose, delay):
     # Use the page we already grabbed, then send a request starting at startIndex = 2000, then get the next page and ask for 2000 more results at the 2000th index result until all results have been grabbed.
     # Add each ['vulnerabilities'] or ['products'] list from each page to the end of the first request. Effectively creates one data point.
     elif totalResults > 2000:
-        pages = (totalResults // 2000)
+        pages = totalResults // 2000
         startIndex = 2000
         if product == 'cve':
             path = 'vulnerabilities'
@@ -69,10 +90,8 @@ def __get(product, headers, parameters, limit, verbose, delay):
             if verbose:
                 print('Filter:\n' + link + stringParams)
             try:
-                getReq = s.get(
-                    link, params=stringParams, headers=headers, timeout=30)
-                #getReq = requests.get(
-                    link, params=stringParams, headers=headers, timeout=30)
+                getReq = s.get(link, params=stringParams, headers=headers, 
+                               timeout=(DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT))
                 getReq.encoding = 'utf-8'
                 getData = getReq.json()[path]
                 time.sleep(delay)
@@ -80,8 +99,8 @@ def __get(product, headers, parameters, limit, verbose, delay):
                 print('JSONDecodeError')
                 print('Something went wrong: ' + str(getReq))
                 print('Attempted search criteria: ' + str(stringParams))
-                #print('URL: ' + getReq.request.url)
-                #getReq.raise_for_status()
+                print('URL: ' + getReq.request.url)
+                getReq.raise_for_status()
             rawTemp.extend(getData)
             startIndex += 2000
         raw[path] = rawTemp
@@ -103,15 +122,10 @@ def __get_with_generator(product, headers, parameters, limit,
         if verbose:
             print('Filter:\n' + link + stringParams)
         rate_delay = 1
-        while True:
-            raw = requests.get(link, params=stringParams,
-                               headers=headers, timeout=30)
-            if raw.status_code == 403:
-                print(f'Request returned a rate limit error. Retrying in {rate_delay} seconds...')
-                time.sleep(rate_delay)
-                rate_delay *= 2
-            else:
-                break
+
+        s = session_with_retries()
+        raw = s.get(link, params=stringParams,
+                               headers=headers, timeout=(6.1,90))
 
         raw.encoding = 'utf-8'
         raw.raise_for_status()
