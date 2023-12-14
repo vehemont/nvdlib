@@ -213,7 +213,7 @@ class CVE:
             pass
         
         try:
-            self.cwe = [x.description[0] for x in self.weaknesses]
+            self.cwe = [x for w in self.weaknesses for x in w.description]
         except AttributeError:
             pass
 
