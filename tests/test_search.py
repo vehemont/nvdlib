@@ -18,6 +18,10 @@ def mock_nvd():
             "tests/data/CVE-2022-24646.json",
         ),
         (
+            "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2017-7542",
+            "tests/data/CVE-2017-7542.json",
+        ),
+        (
             "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-10T12:00:00",
             "tests/data/simple_search.json",
         ),
@@ -137,3 +141,15 @@ def test_search_cve_returns_a_cve_v2():
         verbose=True
     )]
     assert isinstance(results[1], nvdlib.classes.CVE)
+
+
+@responses.activate
+def test_cve_cwe():
+    """Test that `cwe` was correctly created from `weaknesses`."""
+    mock_nvd()
+    cve = nvdlib.searchCVE(cveId="CVE-2017-7542", verbose=True)[0]
+
+    assert cve.id == "CVE-2017-7542"
+    assert len(cve.cwe) == 3
+    assert len([x for w in cve.weaknesses for x in w.description]) == 3
+    assert cve.cwe == cve.weaknesses[0].description + cve.weaknesses[1].description
