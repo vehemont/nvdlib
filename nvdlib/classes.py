@@ -42,6 +42,44 @@ class CPE:
         yield from list(self.__dict__.keys())
 
 
+class MatchString:
+    """JSON dump class for CPE match strings
+
+    :var matchCriteriaId: UUID match criteria
+    :vartype matchCriteriaId: str
+
+    :var criteria: CPE name
+    :vartype criteria: str
+
+    :var lastModifiedDate: Match string modification date
+    :vartype lastModifiedDate: str
+
+    :var cpeLastModified: CPE modification date
+    :vartype cpeLastModified: str 
+
+    :var created: CPE creation date
+    :vartype created: str
+
+    :var status: CPE active status
+    :vartype status: str
+    
+    :var matches: CPE Names and IDs within the CPE Dictionary that matches the CPE Match Criteria
+    :vartype matches: list
+    """
+
+    def __init__(self, response):
+        vars(self).update(response)
+
+    def __repr__(self):
+        return str(self.__dict__)
+
+    def __len__(self):
+        return len(vars(self))
+
+    def __iter__(self):
+        yield 5
+        yield from list(self.__dict__.keys())
+
 class CVE:
     """JSON dump class for CVEs
         For more information the values returned from a CVE, please visit https://nvd.nist.gov/developers/vulnerabilities

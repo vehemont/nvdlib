@@ -12,6 +12,8 @@ def __get(product, headers, parameters, limit, verbose, delay):
         link = 'https://services.nvd.nist.gov/rest/json/cves/2.0?'
     elif product == 'cpe':
         link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
+    elif product == 'cpeMatch':
+        link = 'https://services.nvd.nist.gov/rest/json/cpematch/2.0?'
 
     # Requests doesn't really work with dictionary parameters that have no value like `isVulnerable`. The workaround is to just pass a string instead.
     # This joins the parameters into a string with '&' and if a key contains a value then it will join the values with '='
@@ -86,7 +88,8 @@ def __get_with_generator(product, headers, parameters, limit,
         link = 'https://services.nvd.nist.gov/rest/json/cves/2.0?'
     elif product == 'cpe':
         link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
-
+    elif product == 'cpeMatch':
+        link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
     startIndex = 0
     while True:
         stringParams = '&'.join(

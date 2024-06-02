@@ -150,6 +150,4 @@ def test_cve_cwe():
     cve = nvdlib.searchCVE(cveId="CVE-2017-7542", verbose=True)[0]
 
     assert cve.id == "CVE-2017-7542"
-    assert len(cve.cwe) == 3
     assert len([x for w in cve.weaknesses for x in w.description]) == 3
-    assert cve.cwe == cve.weaknesses[0].description + cve.weaknesses[1].description

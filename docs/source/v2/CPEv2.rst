@@ -78,3 +78,57 @@ Filter for all CPE names modified in the last 30 days using `datetime` objects.
 >>> end = datetime.datetime.now()
 >>> start = end - datetime.timedelta(days=30)
 >>> r = nvdlib.searchCPE(lastModStartDate=start, lastModEndDate=end)
+
+
+CPE Match Criteria API
+------------
+
+This will allow you to search for CPE Match Strings that you can then use in CPE searches. When you search using this API, it will return a list of `MatchStrings`. I hightly recommend
+playing around with this API to get an understanding of how the responses work.
+
+.. autofunction:: nvdlib.cpe.searchCPEmatch
+
+.. autoclass:: nvdlib.classes.MatchString
+
+
+CPE Match String Search Examples
+-------------------
+
+
+To obtain the CPE match strings for a single CVE and print the `matchCriteriaId` for each match.
+
+.. code-block:: python 
+    
+    r = nvdlib.searchCPEmatch(cveId='CVE-2017-0144')
+    for eachMatchString in r:
+        print(eachMatchString.matchCriteriaId)
+
+Within each `MatchString` element in the response there are the CPE names that match. Here is how we can print them.
+
+.. code-block:: python 
+    
+    r = nvdlib.searchCPEmatch(cveId='CVE-2017-0144')
+    for eachMatchString in r:
+        for eachCPE in eachMatchString.matches:
+        print(eachCPE.cpeName)
+
+We can also filter down this result even further using the other arguments for the Match String API. Here is searching for all match strings for the CVE ID CVE-2017-0144,
+along with only matchStrings that contain `cpe:2.3:o:microsoft:windows_server_2012:*`.
+
+.. code-block:: python 
+    
+    r = nvdlib.searchCPEmatch(cveId='CVE-2017-0144', matchStringSearch='cpe:2.3:o:microsoft:windows_server_2012:*')
+    for eachMatchString in r:
+        for eachCPE in eachMatchString.matches:
+        print(eachCPE.cpeName)
+
+Not that this search would be very useful in reality, but we can also search for a specific `matchCriteriaId` on top of the other two filters. This will search for all 
+CPE match strings for the CVE ID CVE-2017-0144, match strings that contain `cpe:2.3:o:microsoft:windows_server_2012:*`, and that have a `matchCriteriaId` UUID of 'AB506484-7F0C-46BF-8EA6-4FB5AF454CED'. 
+Match criteria is a unique UUID to a match string, so searching for them will only yield a single result. Keep in mind `nvdlib.searchCPEmatch` is still returning a list, so even though there is 
+only one element in the list, you must select element index `0` to access that data of that element.
+
+.. code-block:: python 
+    
+    r = nvdlib.searchCPEmatch(cveId='CVE-2017-0144', matchStringSearch='cpe:2.3:o:microsoft:windows_server_2012:*', matchCriteriaId='AB506484-7F0C-46BF-8EA6-4FB5AF454CED')
+    print(r[0].matchCriteriaId)
+    'AB506484-7F0C-46BF-8EA6-4FB5AF454CED'
