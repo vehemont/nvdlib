@@ -86,6 +86,8 @@ CPE Match Criteria API
 This will allow you to search for CPE Match Strings that you can then use in CPE searches. When you search using this API, it will return a list of `MatchStrings`. I hightly recommend
 playing around with this API to get an understanding of how the responses work.
 
+More information on how to utilize this API can be found on NVD's API page: https://nvd.nist.gov/developers/products
+
 .. autofunction:: nvdlib.cpe.searchCPEmatch
 
 .. autoclass:: nvdlib.classes.MatchString
