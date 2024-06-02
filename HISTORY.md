@@ -7,7 +7,7 @@ Release History
 - Fix cwe attr in CVE by @jobselko in https://github.com/vehemont/nvdlib/pull/39
 
 **Enhancements**
-- Added CPE Match String API with `nvdlib.searchCPEmatch`, check out the documentation at https://nvdlib.com/en/latest/v2/CVEv2.html#CPE-Match-Criteria-API and more information can be found at the NVD API documentation page: https://nvd.nist.gov/developers/products
+- Added CPE Match String API with `nvdlib.searchCPEmatch`, check out the documentation at https://nvdlib.com/en/latest/v2/CPEv2.html#cpe-match-criteria-api and more information can be found at the NVD API documentation page: https://nvd.nist.gov/developers/products
 
 Thanks to @jobselko for submitting a PR to resolve the cwe bug.
 
