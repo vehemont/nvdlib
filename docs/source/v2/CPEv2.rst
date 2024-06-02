@@ -110,7 +110,7 @@ Within each `MatchString` element in the response there are the CPE names that m
     r = nvdlib.searchCPEmatch(cveId='CVE-2017-0144')
     for eachMatchString in r:
         for eachCPE in eachMatchString.matches:
-        print(eachCPE.cpeName)
+            print(eachCPE.cpeName)
 
 We can also filter down this result even further using the other arguments for the Match String API. Here is searching for all match strings for the CVE ID CVE-2017-0144,
 along with only matchStrings that contain `cpe:2.3:o:microsoft:windows_server_2012:*`.
@@ -120,7 +120,7 @@ along with only matchStrings that contain `cpe:2.3:o:microsoft:windows_server_20
     r = nvdlib.searchCPEmatch(cveId='CVE-2017-0144', matchStringSearch='cpe:2.3:o:microsoft:windows_server_2012:*')
     for eachMatchString in r:
         for eachCPE in eachMatchString.matches:
-        print(eachCPE.cpeName)
+            print(eachCPE.cpeName)
 
 Not that this search would be very useful in reality, but we can also search for a specific `matchCriteriaId` on top of the other two filters. This will search for all 
 CPE match strings for the CVE ID CVE-2017-0144, match strings that contain `cpe:2.3:o:microsoft:windows_server_2012:*`, and that have a `matchCriteriaId` UUID of 'AB506484-7F0C-46BF-8EA6-4FB5AF454CED'. 
