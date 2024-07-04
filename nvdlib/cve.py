@@ -122,9 +122,6 @@ def searchCVE(
 
     :param key: NVD API Key. Allows for the user to define a delay. NVD recommends scripts sleep 6 seconds in between requests. If no valid API key is provided, requests are sent with a 6 second delay.
     :type key: str
-
-    :param verbose: Prints the URL request for debugging purposes.
-    :type verbose: bool    
     """
 
     parameters, headers = __buildCVECall(
@@ -158,7 +155,7 @@ def searchCVE(
         key)
 
     # raw is the raw dictionary response.
-    raw = __get('cve', headers, parameters, limit, verbose, delay)
+    raw = __get('cve', headers, parameters, limit, delay)
     cves = []
     # Generates the CVEs into objects for easy access and appends them to self.cves
     for eachCVE in raw['vulnerabilities']:
@@ -281,10 +278,8 @@ def searchCVE_V2(
 
     :param key: NVD API Key. Allows for the user to define a delay. NVD recommends scripts sleep 6 seconds in between requests. If no valid API key is provided, requests are sent with a 6 second delay.
     :type key: str
-
-    :param verbose: Prints the URL request for debugging purposes.
-    :type verbose: bool    
     """
+
     parameters, headers = __buildCVECall(
         cpeName,
         cveId,
@@ -317,8 +312,7 @@ def searchCVE_V2(
 
     # Send the GET request. Get a generator object that returns batched
     # responses converted to dictionaries
-    for batch in __get_with_generator('cve', headers, parameters, limit,
-                                      verbose, delay):
+    for batch in __get_with_generator('cve', headers, parameters, limit, delay):
         for eachCVE in batch['vulnerabilities']:
             yield __convert('cve', eachCVE['cve'])
 

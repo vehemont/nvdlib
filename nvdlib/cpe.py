@@ -56,9 +56,6 @@ def searchCPE(
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
     :type verbose: bool   
-
-    :param verbose: Prints the URL request for debugging purposes.
-    :type verbose: bool
     """
 
 
@@ -77,7 +74,7 @@ def searchCPE(
         delay)
 
     # Send the GET request for the JSON and convert to dictionary
-    raw = __get('cpe', headers, parameters, limit, verbose, delay)
+    raw = __get('cpe', headers, parameters, limit, delay)
     cpes = []
     # Generates the CVEs into objects for easy referencing and appends them to self.cves
     for eachCPE in raw['products']:
@@ -135,9 +132,6 @@ def searchCPE_V2(
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
     :type verbose: bool   
-
-    :param verbose: Prints the URL request for debugging purposes.
-    :type verbose: bool
     """
 
     # Build the URL for the request
@@ -155,8 +149,7 @@ def searchCPE_V2(
 
     # Send the GET request. Get a generator object that returns batched
     # responses converted to dictionaries
-    for batch in __get_with_generator('cpe', headers, parameters, limit,
-                                      verbose, delay):
+    for batch in __get_with_generator('cpe', headers, parameters, limit, delay):
         # Generator object that returns converted CPES
         for eachCPE in batch['products']:
             yield __convert('cpe', eachCPE['cpe'])
@@ -328,9 +321,6 @@ def searchCPEmatch(
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
     :type verbose: bool   
-
-    :param verbose: Prints the URL request for debugging purposes.
-    :type verbose: bool
     """
 
 
@@ -347,7 +337,7 @@ def searchCPEmatch(
         delay)
 
     # Send the GET request for the JSON and convert to dictionary
-    raw = __get('cpeMatch', headers, parameters, limit, verbose, delay)
+    raw = __get('cpeMatch', headers, parameters, limit, delay)
     cpes = []
     # Generates the CVEs into objects for easy referencing and appends them to self.cves
     for eachCPE in raw['matchStrings']:

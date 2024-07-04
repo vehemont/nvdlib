@@ -1,10 +1,12 @@
 import requests
 import time
+import logging
 
 from json.decoder import JSONDecodeError
 
+logger = logging.getLogger(__name__)
 
-def __get(product, headers, parameters, limit, verbose, delay):
+def __get(product, headers, parameters, limit, delay):
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
 
     # Get the default 2000 items to see the totalResults and determine pages required.
@@ -19,20 +21,19 @@ def __get(product, headers, parameters, limit, verbose, delay):
     # This joins the parameters into a string with '&' and if a key contains a value then it will join the values with '='
     stringParams = '&'.join(
         [k if v is None else f"{k}={v}" for k, v in parameters.items()])
-    if verbose:
-        print('Filter:\n' + link + stringParams)
+    logger.debug("Filter:\n%s", link + stringParams)
 
     raw = requests.get(link, params=stringParams, headers=headers, timeout=30)
     raw.encoding = 'utf-8'
     raw.raise_for_status()
 
-    try:  # Try to convert the request to JSON. If it is not JSON, then print the response and exit.
+    try:  # Try to convert the request to JSON. If it is not JSON, then log the response and exit.
         raw = raw.json()
         if 'message' in raw:
             raise LookupError(raw['message'])
     except JSONDecodeError:
-        print('Invalid search criteria syntax: ' + str(raw))
-        print('Attempted search criteria: ' + str(parameters))
+        logger.error("Invalid search criteria syntax: %s", str(raw))
+        logger.error("Attempted search criteria: %s", str(parameters))
 
     if not delay:
         delay = 6
@@ -61,8 +62,7 @@ def __get(product, headers, parameters, limit, verbose, delay):
             parameters['startIndex'] = str(startIndex)
             stringParams = '&'.join(
                 [k if v is None else f"{k}={v}" for k, v in parameters.items()])
-            if verbose:
-                print('Filter:\n' + link + stringParams)
+            logger.debug("Filter:\n%s", link + stringParams)
             try:
                 getReq = requests.get(
                     link, params=stringParams, headers=headers, timeout=30)
@@ -70,10 +70,10 @@ def __get(product, headers, parameters, limit, verbose, delay):
                 getData = getReq.json()[path]
                 time.sleep(delay)
             except JSONDecodeError:
-                print('JSONDecodeError')
-                print('Something went wrong: ' + str(getReq))
-                print('Attempted search criteria: ' + str(stringParams))
-                print('URL: ' + getReq.request.url)
+                logger.error('JSONDecodeError')
+                logger.error('Something went wrong: %s', str(getReq))
+                logger.error('Attempted search criteria: %s', str(stringParams))
+                logger.error('URL: %s', getReq.request.url)
                 getReq.raise_for_status()
             rawTemp.extend(getData)
             startIndex += 2000
@@ -81,8 +81,7 @@ def __get(product, headers, parameters, limit, verbose, delay):
         return raw
 
 
-def __get_with_generator(product, headers, parameters, limit,
-                         verbose, delay):
+def __get_with_generator(product, headers, parameters, limit, delay):
     # Get the default 2000 items to see the totalResults and determine pages required.
     if product == 'cve':
         link = 'https://services.nvd.nist.gov/rest/json/cves/2.0?'
@@ -94,14 +93,13 @@ def __get_with_generator(product, headers, parameters, limit,
     while True:
         stringParams = '&'.join(
             [k if v is None else f"{k}={v}" for k, v in parameters.items()])
-        if verbose:
-            print('Filter:\n' + link + stringParams)
+        logger.debug("Filter:\n%s", link + stringParams)
         rate_delay = 1
         while True:
             raw = requests.get(link, params=stringParams,
                                headers=headers, timeout=30)
             if raw.status_code == 403:
-                print(f'Request returned a rate limit error. Retrying in {rate_delay} seconds...')
+                logger.error("Request returned a rate limit error. Retrying in %f seconds...", rate_delay)
                 time.sleep(rate_delay)
                 rate_delay *= 2
             else:
@@ -110,13 +108,13 @@ def __get_with_generator(product, headers, parameters, limit,
         raw.encoding = 'utf-8'
         raw.raise_for_status()
 
-        try:  # Try to convert the request to JSON. If it is not JSON, then print the response and exit.
+        try:  # Try to convert the request to JSON. If it is not JSON, then log the response and exit.
             raw = raw.json()
             if 'message' in raw:
                 raise LookupError(raw['message'])
         except JSONDecodeError:
-            print('Invalid search criteria syntax: ' + str(raw))
-            print('Attempted search criteria: ' + str(parameters))
+            logger.error("Invalid search criteria syntax: %s", str(raw))
+            logger.error("Attempted search criteria: %s", str(parameters))
         yield raw
 
         totalResults = raw['totalResults']
@@ -125,19 +123,17 @@ def __get_with_generator(product, headers, parameters, limit,
         parameters['startIndex'] = str(startIndex)
         parameters['resultsPerPage'] = '2000'
 
-        if verbose and startIndex == 0:
+        if startIndex == 0:
             if limit:
-                print(f'Query returned {limit} total records')
+                logger.debug("Query returned %d total records", totalResults)
             else:
-                print(f'Query returned {totalResults} total records')
+                logger.debug("Query returned %d total records", totalResults)
 
-        if verbose and not limit:
+        if not limit:
             if startIndex < totalResults:
-                print(
-                    f'Getting {product} batch {raw["startIndex"]} to {startIndex}')
+                logger.debug("Getting %s batch %d to %d", product, raw["startIndex"], startIndex)
             else:
-                print(
-                    f'Getting {product} batch {raw["startIndex"]} to {totalResults}')
+                logger.debug("Getting %s batch %d to %d", product, raw["startIndex"], totalResults)
 
         if limit or startIndex > totalResults:
             break
