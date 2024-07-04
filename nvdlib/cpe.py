@@ -18,7 +18,7 @@ def searchCPE(
         matchCriteriaId: str = None,
         limit: int = None,
         key: str = None,
-        delay: int = None,
+        delay: float = None,
         verbose: bool = None) -> list:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
@@ -55,7 +55,7 @@ def searchCPE(
     :type key: str
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
-    :type verbose: bool   
+    :type delay: float
     """
 
 
@@ -93,7 +93,7 @@ def searchCPE_V2(
         matchCriteriaId: str = None,
         limit: int = None,
         key: str = None,
-        delay: int = None,
+        delay: float = None,
         verbose: bool = None) -> Generator[list, None, list]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
@@ -131,7 +131,7 @@ def searchCPE_V2(
     :type key: str
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
-    :type verbose: bool   
+    :type delay: float
     """
 
     # Build the URL for the request
@@ -289,7 +289,7 @@ def searchCPEmatch(
         matchStringSearch: str = None,
         limit: int = None,
         key: str = None,
-        delay: int = None,
+        delay: float = None,
         verbose: bool = None) -> list:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
@@ -320,10 +320,8 @@ def searchCPEmatch(
     :type key: str
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
-    :type verbose: bool   
+    :type delay: float
     """
-
-
 
     # Build the URL for the request
     parameters, headers = __buildCPEMatchCall(

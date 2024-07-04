@@ -34,7 +34,7 @@ def searchCVE(
         versionStartType: str = None,
         virtualMatchString: str = None,
         limit: int = None,
-        delay: int = None,
+        delay: float = None,
         key: str = None,
         verbose: bool = None) -> list:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
@@ -118,7 +118,7 @@ def searchCVE(
     :type limit: int
 
     :param delay: Can only be used if an API key is provided. This allows the user to define a delay. The delay must be greater than 0.6 seconds. The NVD API recommends scripts sleep for atleast 6 seconds in between requests.
-    :type delay: int
+    :type delay: float
 
     :param key: NVD API Key. Allows for the user to define a delay. NVD recommends scripts sleep 6 seconds in between requests. If no valid API key is provided, requests are sent with a 6 second delay.
     :type key: str
@@ -190,7 +190,7 @@ def searchCVE_V2(
         versionStartType: str = None,
         virtualMatchString: str = None,
         limit: int = None,
-        delay: int = None,
+        delay: float = None,
         key: str = None,
         verbose: bool = None) -> Generator[list, None, list]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
@@ -274,7 +274,7 @@ def searchCVE_V2(
     :type limit: int
 
     :param delay: Can only be used if an API key is provided. This allows the user to define a delay. The delay must be greater than 0.6 seconds. The NVD API recommends scripts sleep for atleast 6 seconds in between requests.
-    :type delay: int
+    :type delay: float
 
     :param key: NVD API Key. Allows for the user to define a delay. NVD recommends scripts sleep 6 seconds in between requests. If no valid API key is provided, requests are sent with a 6 second delay.
     :type key: str
