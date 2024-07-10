@@ -34,6 +34,7 @@ def searchCVE(
         versionStartType: str = None,
         virtualMatchString: str = None,
         limit: int = None,
+        startIndex: int = None,
         delay: int = None,
         key: str = None,
         verbose: bool = None) -> list:
@@ -117,6 +118,9 @@ def searchCVE(
     :param limit: Custom argument to limit the number of results of the search. Allowed any number between 1 and 2000.
     :type limit: int
 
+    :param startIndex: The index to start the search from. By default, the search starts at 0.
+    :type startIndex: int
+
     :param delay: Can only be used if an API key is provided. This allows the user to define a delay. The delay must be greater than 0.6 seconds. The NVD API recommends scripts sleep for atleast 6 seconds in between requests.
     :type delay: int
 
@@ -154,6 +158,7 @@ def searchCVE(
         versionStartType,
         virtualMatchString,
         limit,
+        startIndex,
         delay,
         key)
 
@@ -193,6 +198,7 @@ def searchCVE_V2(
         versionStartType: str = None,
         virtualMatchString: str = None,
         limit: int = None,
+        startIndex: int = None,
         delay: int = None,
         key: str = None,
         verbose: bool = None) -> Generator[list, None, list]:
@@ -276,6 +282,9 @@ def searchCVE_V2(
     :param limit: Custom argument to limit the number of results of the search. Allowed any number between 1 and 2000.
     :type limit: int
 
+    :param startIndex: The index to start the search from. By default, the search starts at 0.
+    :type startIndex: int
+
     :param delay: Can only be used if an API key is provided. This allows the user to define a delay. The delay must be greater than 0.6 seconds. The NVD API recommends scripts sleep for atleast 6 seconds in between requests.
     :type delay: int
 
@@ -312,6 +321,7 @@ def searchCVE_V2(
         versionStartType,
         virtualMatchString,
         limit,
+        startIndex,
         delay,
         key)
 
@@ -350,6 +360,7 @@ def __buildCVECall(
         versionStartType,
         virtualMatchString,
         limit,
+        startIndex,
         delay,
         key):
 
@@ -512,5 +523,10 @@ def __buildCVECall(
     elif delay and not key:
         raise SyntaxError(
             'Key parameter must be present to define a delay. Requests are delayed 6 seconds without an API key by default.')
+
+    if startIndex:
+        parameters['startIndex'] = startIndex
+    else:
+        parameters['startIndex'] = 0
 
     return parameters, headers

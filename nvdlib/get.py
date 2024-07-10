@@ -48,7 +48,7 @@ def __get(product, headers, parameters, limit, verbose, delay):
     # Add each ['vulnerabilities'] or ['products'] list from each page to the end of the first request. Effectively creates one data point.
     elif totalResults > 2000:
         pages = (totalResults // 2000)
-        startIndex = 2000
+        startIndex = parameters['startIndex'] + 2000
         if product == 'cve':
             path = 'vulnerabilities'
         else:
@@ -82,7 +82,7 @@ def __get(product, headers, parameters, limit, verbose, delay):
 
 
 def __get_with_generator(product, headers, parameters, limit,
-                         verbose, delay):
+                       verbose, delay):
     # Get the default 2000 items to see the totalResults and determine pages required.
     if product == 'cve':
         link = 'https://services.nvd.nist.gov/rest/json/cves/2.0?'
@@ -90,7 +90,9 @@ def __get_with_generator(product, headers, parameters, limit,
         link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
     elif product == 'cpeMatch':
         link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
-    startIndex = 0
+
+    startIndex = parameters['startIndex']
+
     while True:
         stringParams = '&'.join(
             [k if v is None else f"{k}={v}" for k, v in parameters.items()])

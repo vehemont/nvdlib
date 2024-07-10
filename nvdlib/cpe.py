@@ -17,15 +17,16 @@ def searchCPE(
         lastModEndDate: Tuple[str, datetime] = None,
         matchCriteriaId: str = None,
         limit: int = None,
+        startIndex: int = 0,
         key: str = None,
         delay: int = None,
         verbose: bool = None) -> list:
     """Build and send GET request then return list of objects containing a collection of CPEs.
-    
+
     :param cpeNameId: Returns a specific CPE record using its UUID. If a correctly formatted UUID is passed but it does not exist, it will return empty results. The UUID is the `cpeNameId` value when searching CPE.
     :type cpeNameId: str
 
-    :param cpeMatchString: Use a partial CPE name to search for other CPE names. 
+    :param cpeMatchString: Use a partial CPE name to search for other CPE names.
     :type cpeMatchString: str
 
     :param keywordExactMatch: Searches metadata within CPE title and reference links for an exact match of the phrase or word passed to it. Must be included with `keywordSearch`.
@@ -51,17 +52,18 @@ def searchCPE(
     :param limit: Limits the number of results of the search.
     :type limit: int
 
+    :param startIndex: The index to start the search from. By default, the search starts at 0.
+    :type startIndex: int
+
     :param key: NVD API Key. Allows for a request every 0.6 seconds instead of 6 seconds.
     :type key: str
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
-    :type verbose: bool   
+    :type verbose: bool
 
     :param verbose: Prints the URL request for debugging purposes.
     :type verbose: bool
     """
-
-
 
     # Build the URL for the request
     parameters, headers = __buildCPECall(
@@ -73,11 +75,12 @@ def searchCPE(
         lastModEndDate,
         matchCriteriaId,
         limit,
+        startIndex,
         key,
         delay)
 
     # Send the GET request for the JSON and convert to dictionary
-    raw = __get('cpe', headers, parameters, limit, verbose, delay)
+    raw = __get('cpe', headers, parameters, limit, verbose, delay,)
     cpes = []
     # Generates the CVEs into objects for easy referencing and appends them to self.cves
     for eachCPE in raw['products']:
@@ -95,15 +98,16 @@ def searchCPE_V2(
         lastModEndDate: Tuple[str, datetime] = None,
         matchCriteriaId: str = None,
         limit: int = None,
+        startIndex: int = 0,
         key: str = None,
         delay: int = None,
         verbose: bool = None) -> Generator[list, None, list]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
-    
+
     :param cpeNameId: Returns a specific CPE record using its UUID. If a correctly formatted UUID is passed but it does not exist, it will return empty results. The UUID is the `cpeNameId` value when searching CPE.
     :type cpeNameId: str
 
-    :param cpeMatchString: Use a partial CPE name to search for other CPE names. 
+    :param cpeMatchString: Use a partial CPE name to search for other CPE names.
     :type cpeMatchString: str
 
     :param keywordExactMatch: Searches metadata within CPE title and reference links for an exact match of the phrase or word passed to it. Must be included with `keywordSearch`.
@@ -126,15 +130,17 @@ def searchCPE_V2(
     :param matchCriteriaId: Returns CPE records associated with a match string by its UUID. Requires a properly formatted UUID.
     :type matchCriteriaId: str
 
-
     :param limit: Limits the number of results of the search.
     :type limit: int
+
+    :param startIndex: The index to start the search from. By default, the search starts at 0.
+    :type startIndex: int
 
     :param key: NVD API Key. Allows for a request every 0.6 seconds instead of 6 seconds.
     :type key: str
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
-    :type verbose: bool   
+    :type verbose: bool
 
     :param verbose: Prints the URL request for debugging purposes.
     :type verbose: bool
@@ -150,6 +156,7 @@ def searchCPE_V2(
         lastModEndDate,
         matchCriteriaId,
         limit,
+        startIndex,
         key,
         delay)
 
@@ -171,6 +178,7 @@ def __buildCPECall(
     lastModEndDate,
     matchCriteriaId,
     limit,
+    startIndex,
     key,
     delay):
 
@@ -188,10 +196,10 @@ def __buildCPECall(
             parameters['keywordExactMatch'] = None
         else:
             raise SyntaxError('keywordSearch parameter must be passed if keywordExactMatch is set to True.')
-    
+
     if keywordSearch:
         parameters['keywordSearch'] = keywordSearch
-    
+
     if lastModStartDate:
         if isinstance(lastModStartDate, datetime):
             date = lastModStartDate.isoformat()
@@ -229,6 +237,11 @@ def __buildCPECall(
     elif delay and not key:
         raise SyntaxError('Key parameter must be present to define a delay. Requests are delayed 6 seconds without an API key by default.')
 
+    if startIndex:
+        parameters['startIndex'] = startIndex
+    else:
+        parameters['startIndex'] = 0
+
     return parameters, headers
 
 def __buildCPEMatchCall(
@@ -238,6 +251,7 @@ def __buildCPEMatchCall(
     matchCriteriaId,
     matchStringSearch,
     limit,
+    startIndex,
     key,
     delay):
 
@@ -245,7 +259,7 @@ def __buildCPEMatchCall(
 
     if cveId:
         parameters['cveId'] = cveId
-    
+
     if lastModStartDate:
         if isinstance(lastModStartDate, datetime):
             date = lastModStartDate.isoformat()
@@ -286,6 +300,11 @@ def __buildCPEMatchCall(
     elif delay and not key:
         raise SyntaxError('Key parameter must be present to define a delay. Requests are delayed 6 seconds without an API key by default.')
 
+    if startIndex:
+        parameters['startIndex'] = startIndex
+    else:
+        parameters['startIndex'] = 0
+
     return parameters, headers
 
 def searchCPEmatch(
@@ -295,11 +314,12 @@ def searchCPEmatch(
         matchCriteriaId: str = None,
         matchStringSearch: str = None,
         limit: int = None,
+        startIndex: int = 0,
         key: str = None,
         delay: int = None,
         verbose: bool = None) -> list:
     """Build and send GET request then return list of objects containing a collection of CPEs.
-    
+
     :param cveId: Returns all matching CPE match strings for a CVE.
     :type cveId: str
 
@@ -323,17 +343,18 @@ def searchCPEmatch(
     :param limit: Limits the number of results of the search.
     :type limit: int
 
+    :param startIndex: The index to start the search from. By default, the search starts at 0.
+    :type startIndex: int
+
     :param key: NVD API Key. Allows for a request every 0.6 seconds instead of 6 seconds.
     :type key: str
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
-    :type verbose: bool   
+    :type verbose: bool
 
     :param verbose: Prints the URL request for debugging purposes.
     :type verbose: bool
     """
-
-
 
     # Build the URL for the request
     parameters, headers = __buildCPEMatchCall(
@@ -343,6 +364,7 @@ def searchCPEmatch(
         matchCriteriaId,
         matchStringSearch,
         limit,
+        startIndex,
         key,
         delay)
 

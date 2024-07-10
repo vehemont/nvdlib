@@ -6,31 +6,31 @@ import json
 def mock_nvd():
     for url, response_file in [
         (
-            "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-45357",
+            "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-45357&startIndex=0",
             "tests/data/CVE-2021-45357.json",
         ),
         (
-            "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-26855",
+            "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-26855&startIndex=0",
             "tests/data/CVE-2021-26855.json",
         ),
         (
-            "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-45357",
+            "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-45357&startIndex=0",
             "tests/data/CVE-2022-24646.json",
         ),
         (
-            "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2017-7542",
+            "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2017-7542&startIndex=0",
             "tests/data/CVE-2017-7542.json",
         ),
         (
-            "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-10T12:00:00",
+            "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-10T12:00:00&startIndex=0",
             "tests/data/simple_search.json",
         ),
         (
-            "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-11T00:00:00",
+            "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-11T00:00:00&startIndex=0",
             "tests/data/search_page_1.json",
         ),
         (
-            "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-11T00:00:00",
+            "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-11T00:00:00&startIndex=0",
             "tests/data/search_full_page.json",
         ),
     ]:
