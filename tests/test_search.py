@@ -42,7 +42,7 @@ def mock_nvd():
 def test_get_cve():
     """Test a nvdlib.searchCVE() call for a single CVE."""
     mock_nvd()
-    cve = nvdlib.searchCVE(cveId="CVE-2021-26855", verbose=True)[0]
+    cve = nvdlib.searchCVE(cveId="CVE-2021-26855")[0]
     assert cve.id == "CVE-2021-26855"
     assert cve.v2severity == "HIGH"
     assert cve.v2exploitability == 10.0
@@ -59,7 +59,7 @@ def test_get_cve():
 def test_get_cve_v2():
     """Test a nvdlib.searchCVE_V2() call for a single CVE."""
     mock_nvd()
-    cve = next(nvdlib.searchCVE_V2(cveId="CVE-2021-26855", verbose=True))
+    cve = next(nvdlib.searchCVE_V2(cveId="CVE-2021-26855"))
     print(cve)
     assert cve.id == "CVE-2021-26855"
     assert cve.v2severity == "HIGH"
@@ -80,7 +80,6 @@ def test_search_cve():
     results = nvdlib.searchCVE(
         pubStartDate="2022-02-10 00:00",
         pubEndDate="2022-02-10 12:00",
-        verbose=True,
     )
     assert len(results) == 2
 
@@ -92,8 +91,7 @@ def test_search_cve_v2():
     mock_nvd()
     results = [r for r in nvdlib.searchCVE_V2(
         pubStartDate="2022-02-10 00:00",
-        pubEndDate="2022-02-10 12:00",
-        verbose=True)]
+        pubEndDate="2022-02-10 12:00")]
     assert len(results) == 2
 
 
@@ -103,7 +101,6 @@ def test_paginated_search_cve():
     mock_nvd()
     results = nvdlib.searchCVE(
         pubStartDate="2022-02-10 00:00", pubEndDate="2022-02-11 00:00",
-        verbose=True
     )
     assert len(results) == 47
     assert results[0].id == "CVE-2021-25992"
@@ -115,8 +112,7 @@ def test_paginated_search_cve_v2():
     """Test a nvdlib.searchCVE_V2() call with paginated results."""
     mock_nvd()
     results = [r for r in nvdlib.searchCVE_V2(
-        pubStartDate="2022-02-10 00:00", pubEndDate="2022-02-11 00:00",
-        verbose=True)]
+        pubStartDate="2022-02-10 00:00", pubEndDate="2022-02-11 00:00")]
     assert len(results) == 47
     assert results[0].id == "CVE-2021-25992"
 
@@ -127,7 +123,6 @@ def test_search_cve_returns_a_cve():
     mock_nvd()
     results = nvdlib.searchCVE(
         pubStartDate="2022-02-10 00:00", pubEndDate="2022-02-11 00:00",
-        verbose=True
     )
     assert isinstance(results[1], nvdlib.classes.CVE)
 
@@ -138,7 +133,6 @@ def test_search_cve_returns_a_cve_v2():
     mock_nvd()
     results = [r for r in nvdlib.searchCVE_V2(
         pubStartDate="2022-02-10 00:00", pubEndDate="2022-02-11 00:00",
-        verbose=True
     )]
     assert isinstance(results[1], nvdlib.classes.CVE)
 
@@ -147,7 +141,7 @@ def test_search_cve_returns_a_cve_v2():
 def test_cve_cwe():
     """Test that `cwe` was correctly created from `weaknesses`."""
     mock_nvd()
-    cve = nvdlib.searchCVE(cveId="CVE-2017-7542", verbose=True)[0]
+    cve = nvdlib.searchCVE(cveId="CVE-2017-7542")[0]
 
     assert cve.id == "CVE-2017-7542"
     assert len([x for w in cve.weaknesses for x in w.description]) == 3
