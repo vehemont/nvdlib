@@ -1,5 +1,20 @@
 Release History
 ===============
+0.7.8 - Ongoing (2024-07-11)
+-------------------
+**Enhancements**
+- Merged https://github.com/vehemont/nvdlib/pull/44
+ - Updated delay parameter to a float.
+ - Removed verbose in favor of the Python logging module.
+
+ To try out the new logging addition, try the simple logger configuration below. It will create a file named "example_NVDLib.log" and will log NVDLib and Requests actions into the file. Syntax errors/HTTP server errors are logging level of "error", URLs requested (similar output to the previous `verbose` parameter) are set to "debug". 
+ ```
+ import logging
+ import nvdlib
+
+ logging.basicConfig(filename='example_NVDLib.log', encoding='utf-8', level=logging.DEBUG)
+r = nvdlib.searchCVE(keywordSearch="Microsoft")
+```
 
 0.7.7 (2024-06-02)
 -------------------
