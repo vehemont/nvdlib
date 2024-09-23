@@ -1,4 +1,6 @@
 import json
+from typing import Any
+
 
 class CPE:
     """JSON dump class for CPEs
@@ -307,7 +309,7 @@ class CVE:
         else:
             self.score = [None, None, None]
 
-def __convert(product, CVEID):
+def __convert(product: str, CVEID: Any):
     """Convert the JSON response to a referenceable object."""
     if product == 'cve':
         vuln = json.loads(json.dumps(CVEID), object_hook= CVE)
