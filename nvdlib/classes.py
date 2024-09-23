@@ -309,12 +309,15 @@ class CVE:
         else:
             self.score = [None, None, None]
 
-def __convert(product: Literal["cve", "cpe", "MatchString"], CVEID: Any) -> Union[CVE, CPE]:
+def __convert(product: Literal["cve", "cpe", "MatchString"], CVEID: Any) -> Union[CVE, CPE, MatchString]:
     """Convert the JSON response to a referenceable object."""
     if product == 'cve':
         vuln = json.loads(json.dumps(CVEID), object_hook= CVE)
         vuln.getvars()
         return vuln
-    else:
+    elif product == 'cpe':
         cpeEntry = json.loads(json.dumps(CVEID), object_hook= CPE)
         return cpeEntry 
+    else:
+        matchString = json.loads(json.dumps(CVEID), object_hook= MatchString)
+        return matchString
