@@ -1,8 +1,8 @@
 import urllib.parse
 
-from typing import Generator, Optional, Union
+from typing import Generator, Optional, Union, List, Tuple, Any, Dict
 from datetime import datetime
-from .classes import __convert
+from .classes import __convert, CVE
 from .get import __get, __get_with_generator
 
 
@@ -36,7 +36,7 @@ def searchCVE(
         delay: Optional[float] = None,
         key: Optional[str] = None,
         verbose: Optional[bool] = None
-) -> list:
+) -> List[CVE]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
     :param cpeName: This value will be compared agains the CPE Match Criteria within a CVE applicability statement. (i.e. find the vulnerabilities attached to that CPE). Partial match strings are allowed.
@@ -193,7 +193,7 @@ def searchCVE_V2(
         delay: Optional[float] = None,
         key: Optional[str] = None,
         verbose: Optional[bool] = None
-) -> Generator[list, None, list]:
+) -> Generator[List[CVE], Tuple[str, Any], None]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
     :param cpeName: This value will be compared agains the CPE Match Criteria within a CVE applicability statement. (i.e. find the vulnerabilities attached to that CPE). Partial match strings are allowed.
@@ -348,7 +348,7 @@ def __buildCVECall(
         delay: Optional[float] = None,
         key: Optional[str] = None,
         verbose: Optional[bool] = None
-):
+) -> Tuple[Dict[str, Union[str, bool, None]], Dict[str, str]]:
 
     parameters = {}
 

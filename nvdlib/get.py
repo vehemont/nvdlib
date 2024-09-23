@@ -1,4 +1,4 @@
-from typing import Literal, Dict, Mapping, Union, Optional, LiteralString
+from typing import Literal, Dict, Mapping, Union, Optional, LiteralString, Generator, Any
 
 import requests
 import time
@@ -14,7 +14,7 @@ def __get(
         parameters: Dict[str, Union[str, LiteralString, int]],
         limit: Optional[int] = None,
         delay: Optional[float] = None
-):
+) -> Dict[str, Any]:
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
 
     # Get the default 2000 items to see the totalResults and determine pages required.
@@ -94,7 +94,8 @@ def __get_with_generator(
         headers: Mapping[str, Union[str, bytes, None]],
         parameters: Dict[str, Union[str, LiteralString, int]],
         limit: Optional[int],
-        delay: float=6):
+        delay: float=6
+) -> Generator[Any, None, None]:
     # Get the default 2000 items to see the totalResults and determine pages required.
     if product == 'cve':
         link = 'https://services.nvd.nist.gov/rest/json/cves/2.0?'

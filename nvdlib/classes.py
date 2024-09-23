@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Union, Literal
 
 
 class CPE:
@@ -309,7 +309,7 @@ class CVE:
         else:
             self.score = [None, None, None]
 
-def __convert(product: str, CVEID: Any):
+def __convert(product: Literal["cve", "cpe", "MatchString"], CVEID: Any) -> Union[CVE, CPE]:
     """Convert the JSON response to a referenceable object."""
     if product == 'cve':
         vuln = json.loads(json.dumps(CVEID), object_hook= CVE)

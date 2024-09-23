@@ -1,10 +1,10 @@
 import datetime
 import urllib.parse
 
-from typing import Generator, Union, Optional
+from typing import Generator, Union, Optional, List, Any, Tuple, LiteralString, Dict
 from datetime import datetime
 from .get import __get, __get_with_generator
-from .classes import __convert
+from .classes import __convert, CPE
 
 
 def searchCPE(
@@ -18,7 +18,7 @@ def searchCPE(
         limit: Optional[int] = None,
         key: Optional[str] = None,
         delay: Optional[float] = None
-) -> list:
+) -> List[CPE]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
     :param cpeNameId: Returns a specific CPE record using its UUID. If a correctly formatted UUID is passed but it does not exist, it will return empty results. The UUID is the `cpeNameId` value when searching CPE.
@@ -93,7 +93,7 @@ def searchCPE_V2(
         limit: Optional[int] = None,
         key: Optional[str] = None,
         delay: Optional[float] = None
-) -> Generator[list, None, list]:
+) -> Generator[CPE, Any, None]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
     :param cpeNameId: Returns a specific CPE record using its UUID. If a correctly formatted UUID is passed but it does not exist, it will return empty results. The UUID is the `cpeNameId` value when searching CPE.
@@ -165,7 +165,7 @@ def __buildCPECall(
         limit: Optional[int] = None,
         key: Optional[str] = None,
         delay: Optional[float] = None
-):
+) -> Tuple[Dict[str, Union[str, bool, LiteralString, int]], Dict[str, str]]:
 
     parameters = {}
 
@@ -233,7 +233,7 @@ def __buildCPEMatchCall(
     limit: Optional[int] = None,
     key: Optional[str] = None,
     delay: Optional[float] = None
-):
+) -> Tuple[Dict[str, Union[str, bool, LiteralString, int]], Dict[str, str]]:
 
     parameters = {}
 
@@ -291,7 +291,7 @@ def searchCPEmatch(
         limit: Optional[int] = None,
         key: Optional[str] = None,
         delay: Optional[float] = None
-) -> list:
+) -> List[CPE]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
     :param cveId: Returns all matching CPE match strings for a CVE.
