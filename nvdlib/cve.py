@@ -389,16 +389,16 @@ def __buildCVECall(
         parameters['cweId'] = cweId.upper()
 
     if hasCertAlerts is not None:
-        parameters['hasCertAlerts'] = None
+        parameters['hasCertAlerts'] = hasCertAlerts
 
     if hasCertNotes is not None:
-        parameters['hasCertNotes'] = None
+        parameters['hasCertNotes'] = hasCertNotes
 
     if hasKev is not None:
-        parameters['hasKev'] = None
+        parameters['hasKev'] = hasKev
 
     if hasOval is not None:
-        parameters['hasOval'] = None
+        parameters['hasOval'] = hasOval
 
     if isVulnerable is not None:
         if cpeName is not None:
