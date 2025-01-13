@@ -186,11 +186,17 @@ class CVE:
     :var v31attackVector: NETWORK, ADJACENT_NETWORK, LOCAL, PHYSICAL. Present if CVE is scored.
     :vartype v31attackVector: str
 
+    :var v30attackVector: NETWORK, ADJACENT_NETWORK, LOCAL, PHYSICAL. Present if CVE is scored.
+    :vartype v30attackVector: str
+
     :var v2accessVector: NETWORK, ADJACENT_NETWORK, LOCAL. Present if CVE is scored.
     :vartype v2accesVector: str
 
     :var v31attackComplexity: HIGH, LOW. Present if CVE is scored. 
     :vartype v31attackComplexity: str
+
+    :var v30attackComplexity: HIGH, LOW. Present if CVE is scored. 
+    :vartype v30attackComplexity: str
 
     :var v2accessComplexity: HIGH, MEDIUM, LOW. Present if CVE is scored. 
     :vartype v2accessComplexity: str
@@ -198,29 +204,47 @@ class CVE:
     :var v31privilegesRequired: HIGH, LOW, NONE. Present if CVE is scored.
     :vartype v31privilegesRequired: str
 
+    :var v30privilegesRequired: HIGH, LOW, NONE. Present if CVE is scored.
+    :vartype v30privilegesRequired: str
+
     :var v31userInteraction: NONE, REQUIRED. Present if CVE is scored.
     :vartype v31userInteraction: str
+
+    :var v30userInteraction: NONE, REQUIRED. Present if CVE is scored.
+    :vartype v30userInteraction: str
 
     :var v31scope: UNCHANGED, CHANGED. Present if CVE is scored.
     :vartype v31scope: str
 
+    :var v30scope: UNCHANGED, CHANGED. Present if CVE is scored.
+    :vartype v30scope: str
+    
     :var v31confidentialityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
     :vartype v31confidentialityImpact: str
 
-    :var v2authentication: MULTIPLE, SINGLE, NONE. Present if CVE is scored.
-    :vartype v2authentication: str
+    :var v30confidentialityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :vartype v30confidentialityImpact: str
 
     :var v2confidentialityImpact: NONE, PARTIAL, COMPLETE. Present if CVE is scored.
     :vartype v2confidentialityImpact: str
 
+    :var v2authentication: MULTIPLE, SINGLE, NONE. Present if CVE is scored.
+    :vartype v2authentication: str
+
     :var v31integrityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
     :vartype v31integrityImpact: str
+
+    :var v30integrityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :vartype v30integrityImpact: str
 
     :var v2integrityImpact: NONE, PARTIAL, COMPLETE. Present if CVE is scored.
     :vartype v2integrityImpact: str
 
     :var v31availabilityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
     :vartype v31availabilityImpact: str
+
+    :var v30availabilityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :vartype v30availabilityImpact: str
 
     :var v2availabilityImpact: NONE, PARTIAL, COMPLETE. Present if CVE is scored.
     :vartype v2availabilityImpact: str
@@ -260,6 +284,11 @@ class CVE:
         except:
             pass
         
+        if hasattr(self.metrics, 'cvssMetricV40'):
+            self.v40score = self.metrics.cvssMetricV40[0].cvssData.baseScore
+            self.v40vector = self.metrics.cvssMetricV40[0].cvssData.vectorString
+            self.v40severity = self.metrics.cvssMetricV40[0].cvssData.baseSeverity
+
         if hasattr(self.metrics, 'cvssMetricV31'):
             self.v31score = self.metrics.cvssMetricV31[0].cvssData.baseScore
             self.v31vector = self.metrics.cvssMetricV31[0].cvssData.vectorString
@@ -280,6 +309,15 @@ class CVE:
             self.v30score = self.metrics.cvssMetricV30[0].cvssData.baseScore
             self.v30vector = self.metrics.cvssMetricV30[0].cvssData.vectorString
             self.v30severity = self.metrics.cvssMetricV30[0].cvssData.baseSeverity
+            self.v30attackVector = self.metrics.cvssMetricV30[0].cvssData.attackVector
+            self.v30attackComplexity = self.metrics.cvssMetricV30[0].cvssData.attackComplexity
+            self.v30privilegesRequired = self.metrics.cvssMetricV30[0].cvssData.privilegesRequired
+            self.v30userInteraction = self.metrics.cvssMetricV30[0].cvssData.userInteraction
+            self.v30scope = self.metrics.cvssMetricV30[0].cvssData.scope
+            self.v30confidentialityImpact= self.metrics.cvssMetricV30[0].cvssData.confidentialityImpact
+            self.v30integrityImpact = self.metrics.cvssMetricV30[0].cvssData.integrityImpact
+            self.v30availabilityImpact= self.metrics.cvssMetricV30[0].cvssData.availabilityImpact
+
             self.v30exploitability = self.metrics.cvssMetricV30[0].exploitabilityScore
             self.v30impactScore = self.metrics.cvssMetricV30[0].impactScore        
 
@@ -298,7 +336,9 @@ class CVE:
         
         # Prefer the base score version to V3, if it isn't available use V2.
         # If no score is present, then set it to None.
-        if hasattr(self.metrics, 'cvssMetricV31'):
+        if hasattr(self.metrics, 'cvssMetricV40'):
+            self.score = ['V40', self.v40score, self.v40severity]
+        elif hasattr(self.metrics, 'cvssMetricV31'):
             self.score = ['V31', self.v31score, self.v31severity]
         elif hasattr(self.metrics, 'cvssMetricV30'):
             self.score = ['V30', self.v30score, self.v30severity]

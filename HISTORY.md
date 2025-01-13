@@ -1,5 +1,11 @@
 Release History
 ===============
+0.7.9 (2025-01-12) - Ongoing
+-------------------
+**Enhancements**
+- Added missing CVSS 3.0 data for `attackVector`, `attackComplexity`, `privilegesRequired`, `userInteraction`, `scope`, `confidentialityImpact`, `integrityImpact`, and `availabilityImpact` as reported from https://github.com/vehemont/nvdlib/issues/48
+- Added basic CVSS 4.0 data: `v40score`, `v40vector`, and `v40severity` in CVEs.
+
 0.7.8 - Ongoing (2024-07-11)
 -------------------
 **Enhancements**
