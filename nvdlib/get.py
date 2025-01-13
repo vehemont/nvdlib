@@ -1,3 +1,5 @@
+from typing import Literal, Dict, Mapping, Union, Optional, LiteralString, Generator, Any
+
 import requests
 import time
 import logging
@@ -6,7 +8,13 @@ from json.decoder import JSONDecodeError
 
 logger = logging.getLogger(__name__)
 
-def __get(product, headers, parameters, limit, delay):
+def __get(
+        product: Literal["cve", "cpe", "cpeMatch"],
+        headers: Mapping[str, Union[str, bytes, None]],
+        parameters: Dict[str, Union[str, LiteralString, int]],
+        limit: Optional[int] = None,
+        delay: Optional[float] = None
+) -> Dict[str, Any]:
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
 
     # Get the default 2000 items to see the totalResults and determine pages required.
@@ -35,13 +43,13 @@ def __get(product, headers, parameters, limit, delay):
         logger.error("Invalid search criteria syntax: %s", str(raw))
         logger.error("Attempted search criteria: %s", str(parameters))
 
-    if not delay:
+    if delay is None:
         delay = 6
     time.sleep(delay)
 
     # If a limit is in the search criteria or the total number of results are less than or equal to the default 2000 that were just requested, return and don't request anymore.
     totalResults = raw['totalResults']
-    if limit or totalResults <= 2000:
+    if limit is not None or totalResults <= 2000:
         return raw
 
     # If the results is more than the API limit, figure out how many pages there are and calculate the number of requests.
@@ -81,7 +89,13 @@ def __get(product, headers, parameters, limit, delay):
         return raw
 
 
-def __get_with_generator(product, headers, parameters, limit, delay):
+def __get_with_generator(
+        product: Literal["cve", "cpe", "cpeMatch"],
+        headers: Mapping[str, Union[str, bytes, None]],
+        parameters: Dict[str, Union[str, LiteralString, int]],
+        limit: Optional[int],
+        delay: float=6
+) -> Generator[Any, None, None]:
     # Get the default 2000 items to see the totalResults and determine pages required.
     if product == 'cve':
         link = 'https://services.nvd.nist.gov/rest/json/cves/2.0?'
@@ -124,20 +138,15 @@ def __get_with_generator(product, headers, parameters, limit, delay):
         parameters['resultsPerPage'] = '2000'
 
         if startIndex == 0:
-            if limit:
-                logger.debug("Query returned %d total records", totalResults)
-            else:
-                logger.debug("Query returned %d total records", totalResults)
+            logger.debug("Query returned %d total records", totalResults)
 
-        if not limit:
+        if limit is None:
             if startIndex < totalResults:
                 logger.debug("Getting %s batch %d to %d", product, raw["startIndex"], startIndex)
             else:
                 logger.debug("Getting %s batch %d to %d", product, raw["startIndex"], totalResults)
 
-        if limit or startIndex > totalResults:
+        if limit is not None or startIndex > totalResults:
             break
 
-        if not delay:
-            delay = 6
         time.sleep(delay)

@@ -1,42 +1,42 @@
 import urllib.parse
 
-from typing import Generator
-from typing import Tuple
+from typing import Generator, Optional, Union, List, Tuple, Any, Dict
 from datetime import datetime
-from .classes import __convert
+from .classes import __convert, CVE
 from .get import __get, __get_with_generator
 
 
 def searchCVE(
-        cpeName: str = None,
-        cveId: str = None,
-        cvssV2Metrics: str = None,
-        cvssV2Severity: str = None,
-        cvssV3Metrics: str = None,
-        cvssV3Severity: str = None,
-        cweId: str = None,
-        hasCertAlerts: bool = None,
-        hasCertNotes: bool = None,
-        hasKev: bool = None,
-        hasOval: bool = None,
-        isVulnerable: bool = None,
-        keywordExactMatch: bool = None,
-        keywordSearch: str = None,
-        lastModStartDate: Tuple[str, datetime] = None,
-        lastModEndDate: Tuple[str, datetime] = None,
-        noRejected: bool = None,
-        pubStartDate: Tuple[str, datetime] = None,
-        pubEndDate: Tuple[str, datetime] = None,
-        sourceIdentifier: str = None,
-        versionEnd: str = None,
-        versionEndType: str = None,
-        versionStart: str = None,
-        versionStartType: str = None,
-        virtualMatchString: str = None,
-        limit: int = None,
-        delay: float = None,
-        key: str = None,
-        verbose: bool = None) -> list:
+        cpeName: Optional[str] = None,
+        cveId: Optional[str] = None,
+        cvssV2Metrics: Optional[str] = None,
+        cvssV2Severity: Optional[str] = None,
+        cvssV3Metrics: Optional[str] = None,
+        cvssV3Severity: Optional[str] = None,
+        cweId: Optional[str] = None,
+        hasCertAlerts: Optional[bool] = None,
+        hasCertNotes: Optional[bool] = None,
+        hasKev: Optional[bool] = None,
+        hasOval: Optional[bool] = None,
+        isVulnerable: Optional[bool] = None,
+        keywordExactMatch: Optional[bool] = None,
+        keywordSearch: Optional[str] = None,
+        lastModStartDate: Optional[Union[str, datetime]] = None,
+        lastModEndDate: Optional[Union[str, datetime]] = None,
+        noRejected: Optional[bool] = None,
+        pubStartDate: Optional[Union[str, datetime]] = None,
+        pubEndDate: Optional[Union[str, datetime]] = None,
+        sourceIdentifier: Optional[str] = None,
+        versionEnd: Optional[str] = None,
+        versionEndType: Optional[str] = None,
+        versionStart: Optional[str] = None,
+        versionStartType: Optional[str] = None,
+        virtualMatchString: Optional[str] = None,
+        limit: Optional[int] = None,
+        delay: Optional[float] = None,
+        key: Optional[str] = None,
+        verbose: Optional[bool] = None
+) -> List[CVE]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
     :param cpeName: This value will be compared agains the CPE Match Criteria within a CVE applicability statement. (i.e. find the vulnerabilities attached to that CPE). Partial match strings are allowed.
@@ -164,35 +164,36 @@ def searchCVE(
 
 
 def searchCVE_V2(
-        cpeName: str = None,
-        cveId: str = None,
-        cvssV2Metrics: str = None,
-        cvssV2Severity: str = None,
-        cvssV3Metrics: str = None,
-        cvssV3Severity: str = None,
-        cweId: str = None,
-        hasCertAlerts: bool = None,
-        hasCertNotes: bool = None,
-        hasKev: bool = None,
-        hasOval: bool = None,
-        isVulnerable: bool = None,
-        keywordExactMatch: bool = None,
-        keywordSearch: str = None,
-        lastModStartDate: Tuple[str, datetime] = None,
-        lastModEndDate: Tuple[str, datetime] = None,
-        noRejected: bool = None,
-        pubStartDate: Tuple[str, datetime] = None,
-        pubEndDate: Tuple[str, datetime] = None,
-        sourceIdentifier: str = None,
-        versionEnd: str = None,
-        versionEndType: str = None,
-        versionStart: str = None,
-        versionStartType: str = None,
-        virtualMatchString: str = None,
-        limit: int = None,
-        delay: float = None,
-        key: str = None,
-        verbose: bool = None) -> Generator[list, None, list]:
+        cpeName: Optional[str] = None,
+        cveId: Optional[str] = None,
+        cvssV2Metrics: Optional[str] = None,
+        cvssV2Severity: Optional[str] = None,
+        cvssV3Metrics: Optional[str] = None,
+        cvssV3Severity: Optional[str] = None,
+        cweId: Optional[str] = None,
+        hasCertAlerts: Optional[bool] = None,
+        hasCertNotes: Optional[bool] = None,
+        hasKev: Optional[bool] = None,
+        hasOval: Optional[bool] = None,
+        isVulnerable: Optional[bool] = None,
+        keywordExactMatch: Optional[bool] = None,
+        keywordSearch: Optional[str] = None,
+        lastModStartDate: Optional[Union[str, datetime]] = None,
+        lastModEndDate: Optional[Union[str, datetime]] = None,
+        noRejected: Optional[bool] = None,
+        pubStartDate: Optional[Union[str, datetime]] = None,
+        pubEndDate: Optional[Union[str, datetime]] = None,
+        sourceIdentifier: Optional[str] = None,
+        versionEnd: Optional[str] = None,
+        versionEndType: Optional[str] = None,
+        versionStart: Optional[str] = None,
+        versionStartType: Optional[str] = None,
+        virtualMatchString: Optional[str] = None,
+        limit: Optional[int] = None,
+        delay: Optional[float] = None,
+        key: Optional[str] = None,
+        verbose: Optional[bool] = None
+) -> Generator[List[CVE], Tuple[str, Any], None]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
     :param cpeName: This value will be compared agains the CPE Match Criteria within a CVE applicability statement. (i.e. find the vulnerabilities attached to that CPE). Partial match strings are allowed.
@@ -318,50 +319,52 @@ def searchCVE_V2(
 
 
 def __buildCVECall(
-        cpeName,
-        cveId,
-        cvssV2Metrics,
-        cvssV2Severity,
-        cvssV3Metrics,
-        cvssV3Severity,
-        cweId,
-        hasCertAlerts,
-        hasCertNotes,
-        hasKev,
-        hasOval,
-        isVulnerable,
-        keywordExactMatch,
-        keywordSearch,
-        lastModStartDate,
-        lastModEndDate,
-        noRejected,
-        pubStartDate,
-        pubEndDate,
-        sourceIdentifier,
-        versionEnd,
-        versionEndType,
-        versionStart,
-        versionStartType,
-        virtualMatchString,
-        limit,
-        delay,
-        key):
+        cpeName: Optional[str] = None,
+        cveId: Optional[str] = None,
+        cvssV2Metrics: Optional[str] = None,
+        cvssV2Severity: Optional[str] = None,
+        cvssV3Metrics: Optional[str] = None,
+        cvssV3Severity: Optional[str] = None,
+        cweId: Optional[str] = None,
+        hasCertAlerts: Optional[bool] = None,
+        hasCertNotes: Optional[bool] = None,
+        hasKev: Optional[bool] = None,
+        hasOval: Optional[bool] = None,
+        isVulnerable: Optional[bool] = None,
+        keywordExactMatch: Optional[bool] = None,
+        keywordSearch: Optional[str] = None,
+        lastModStartDate: Optional[Union[str, datetime]] = None,
+        lastModEndDate: Optional[Union[str, datetime]] = None,
+        noRejected: Optional[bool] = None,
+        pubStartDate: Optional[Union[str, datetime]] = None,
+        pubEndDate: Optional[Union[str, datetime]] = None,
+        sourceIdentifier: Optional[str] = None,
+        versionEnd: Optional[str] = None,
+        versionEndType: Optional[str] = None,
+        versionStart: Optional[str] = None,
+        versionStartType: Optional[str] = None,
+        virtualMatchString: Optional[str] = None,
+        limit: Optional[int] = None,
+        delay: Optional[float] = None,
+        key: Optional[str] = None,
+        verbose: Optional[bool] = None
+) -> Tuple[Dict[str, Union[str, bool, None]], Dict[str, str]]:
 
     parameters = {}
 
-    if cpeName:
+    if cpeName is not None:
         cpeName = urllib.parse.quote_plus(cpeName, encoding='utf-8')
         parameters['cpeName'] = cpeName
 
-    if cveId:
+    if cveId is not None:
         parameters['cveId'] = cveId
 
-    if cvssV2Metrics:
+    if cvssV2Metrics is not None:
         cvssV2Metrics = urllib.parse.quote_plus(
             cvssV2Metrics, encoding='utf-8')
         parameters['cvssV2Metrics'] = cvssV2Metrics
 
-    if cvssV2Severity:
+    if cvssV2Severity is not None:
         cvssV2Severity = cvssV2Severity.upper()
         if cvssV2Severity in ['LOW', 'MEDIUM', 'HIGH']:
             parameters['cvssV2Severity'] = cvssV2Severity
@@ -369,12 +372,12 @@ def __buildCVECall(
             raise SyntaxError(
                 "cvssV2Severity parameter can only be assigned LOW, MEDIUM, or HIGH value.")
 
-    if cvssV3Metrics:
+    if cvssV3Metrics is not None:
         cvssV3Metrics = urllib.parse.quote_plus(
             cvssV3Metrics, encoding='utf-8')
         parameters['cvssV3Metrics'] = cvssV3Metrics
 
-    if cvssV3Severity:
+    if cvssV3Severity is not None:
         cvssV3Severity = cvssV3Severity.upper()
         if cvssV3Severity in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']:
             parameters['cvssV3Severity'] = cvssV3Severity
@@ -382,39 +385,39 @@ def __buildCVECall(
             raise SyntaxError(
                 "cvssV3Severity parameter can only be assigned LOW, MEDIUM, HIGH, or CRITICAL value.")
 
-    if cweId:
+    if cweId is not None:
         parameters['cweId'] = cweId.upper()
 
-    if hasCertAlerts:
-        parameters['hasCertAlerts'] = None
+    if hasCertAlerts is not None:
+        parameters['hasCertAlerts'] = hasCertAlerts
 
-    if hasCertNotes:
-        parameters['hasCertNotes'] = None
+    if hasCertNotes is not None:
+        parameters['hasCertNotes'] = hasCertNotes
 
-    if hasKev:
-        parameters['hasKev'] = None
+    if hasKev is not None:
+        parameters['hasKev'] = hasKev
 
-    if hasOval:
-        parameters['hasOval'] = None
+    if hasOval is not None:
+        parameters['hasOval'] = hasOval
 
-    if isVulnerable:
-        if cpeName:
-            parameters['isVulnerable'] = None
+    if isVulnerable is not None:
+        if cpeName is not None:
+            parameters['isVulnerable'] = isVulnerable
         else:
             raise SyntaxError(
                 'cpeName parameter must be defined if isVulnerable parameter is passed.')
 
-    if keywordExactMatch:
+    if keywordExactMatch is not None:
         if keywordSearch:
-            parameters['keywordExactMatch'] = None
+            parameters['keywordExactMatch'] = keywordExactMatch
         else:
             raise SyntaxError(
                 'keywordSearch parameter must be passed if keywordExactMatch is set to True.')
 
-    if keywordSearch:
+    if keywordSearch is not None:
         parameters['keywordSearch'] = keywordSearch
 
-    if lastModStartDate:
+    if lastModStartDate is not None:
         if isinstance(lastModStartDate, datetime):
             date = lastModStartDate.isoformat()
         elif isinstance(lastModStartDate, str):
@@ -424,7 +427,7 @@ def __buildCVECall(
             raise SyntaxError('Invalid date syntax: ' + lastModStartDate)
         parameters['lastModStartDate'] = date.replace('+', '%2B')
 
-    if lastModEndDate:
+    if lastModEndDate is not None:
         if isinstance(lastModEndDate, datetime):
             date = lastModEndDate.isoformat()
         elif isinstance(lastModEndDate, str):
@@ -434,10 +437,10 @@ def __buildCVECall(
             raise SyntaxError('Invalid date syntax: ' + lastModEndDate)
         parameters['lastModEndDate'] = date.replace('+', '%2B')
 
-    if noRejected:
+    if noRejected is not None:
         parameters['noRejected'] = None
 
-    if pubStartDate:
+    if pubStartDate is not None:
         if isinstance(pubStartDate, datetime):
             date = pubStartDate.isoformat()
         elif isinstance(pubStartDate, str):
@@ -457,19 +460,19 @@ def __buildCVECall(
             raise SyntaxError('Invalid date syntax: ' + pubEndDate)
         parameters['pubEndDate'] = date.replace('+', '%2B')
 
-    if sourceIdentifier:
+    if sourceIdentifier is not None:
         parameters['sourceIdentifier'] = sourceIdentifier
 
-    if virtualMatchString:
+    if virtualMatchString is not None:
         virtualMatchString = urllib.parse.quote_plus(
             virtualMatchString, encoding='utf-8')
         parameters['virtualMatchString'] = virtualMatchString
 
-    if versionEnd or versionEndType:
-        if versionEnd and versionEndType and virtualMatchString:
+    if versionEnd is not None or versionEndType is not None:
+        if versionEnd is not None and versionEndType is not None and virtualMatchString is not None:
             if versionEndType not in ['including', 'excluding']:
                 raise SyntaxError(
-                    'versionEnd parameter must be either "included" or "excluded".')
+                    'versionEnd parameter must be either "including" or "excluding".')
             else:
                 parameters['versionEnd'] = str(versionEnd)
                 parameters['versionEndType'] = versionEndType
@@ -477,11 +480,11 @@ def __buildCVECall(
             raise SyntaxError(
                 'If versionEnd is used, all three parameters versionEnd, versionEndType, and virtualMatchString are required.')
 
-    if versionStart or versionStartType:
+    if versionStart is not None or versionStartType is not None:
         if versionStart and versionStartType and virtualMatchString:
             if versionStartType not in ['including', 'excluding']:
                 raise SyntaxError(
-                    'versionStart parameter must be either "included" or "excluded".')
+                    'versionStart parameter must be either "including" or "excluding".')
             else:
                 parameters['versionStart'] = str(versionStart)
                 parameters['versionStartType'] = versionStartType
@@ -489,21 +492,21 @@ def __buildCVECall(
             raise SyntaxError(
                 'If versionStart is used, all three parameters versionStart, versionStartType, and virtualMatchString are required.')
 
-    if limit:
+    if limit is not None:
         if limit > 2000 or limit < 1:
             raise SyntaxError('Limit parameter must be between 1 and 2000')
         parameters['resultsPerPage'] = str(limit)
 
-    if key:
+    if key is not None:
         headers = {'content-type': 'application/json', 'apiKey': key}
     else:
         headers = {'content-type': 'application/json'}
 
-    if delay and key:
+    if delay is not None and key is not None:
         if delay < 0.6:
             raise SyntaxError(
                 'Delay parameter must be greater than 0.6 seconds with an API key. NVD API recommends several seconds.')
-    elif delay and not key:
+    elif delay is not None and key is None:
         raise SyntaxError(
             'Key parameter must be present to define a delay. Requests are delayed 6 seconds without an API key by default.')
 
