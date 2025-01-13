@@ -5,6 +5,8 @@ Release History
 **Enhancements**
 - Added missing CVSS 3.0 data for `attackVector`, `attackComplexity`, `privilegesRequired`, `userInteraction`, `scope`, `confidentialityImpact`, `integrityImpact`, and `availabilityImpact` as reported from https://github.com/vehemont/nvdlib/issues/48
 - Added basic CVSS 4.0 data: `v40score`, `v40vector`, and `v40severity` in CVEs.
+- Merged https://github.com/vehemont/nvdlib/pull/49 and https://github.com/vehemont/nvdlib/pull/50 to add more type hints and also fixes the MatchString search. Courtesy of @LachJones. 
+- Increased minimum required Python version to `3.11` or later from Python 3.8.3. This opens up some cooler features and fixed a compatibility issue with `LiteralString` not being available until 3.11. 
 
 0.7.8 - Ongoing (2024-07-11)
 -------------------

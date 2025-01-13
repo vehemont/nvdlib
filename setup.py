@@ -15,7 +15,7 @@ setup(
             "pytest==7.0.1",
         ]
     },
-    python_requires='>3.7.9',
+    python_requires='>=3.11.0',
     description='National Vulnerability Database CPE/CVE API Library for Python',
     author='Vehemont',
     author_email="brad@nvdlib.com",
