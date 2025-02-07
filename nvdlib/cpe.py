@@ -17,7 +17,8 @@ def searchCPE(
         matchCriteriaId: Optional[str] = None,
         limit: Optional[int] = None,
         key: Optional[str] = None,
-        delay: Optional[float] = None
+        delay: Optional[float] = None,
+        proxies: Optional[Dict] = None
 ) -> List[CPE]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
@@ -70,10 +71,11 @@ def searchCPE(
         matchCriteriaId,
         limit,
         key,
-        delay)
+        delay
+        )
 
     # Send the GET request for the JSON and convert to dictionary
-    raw = __get('cpe', headers, parameters, limit, delay)
+    raw = __get('cpe', headers, parameters, limit, delay, proxies)
     cpes = []
     # Generates the CVEs into objects for easy referencing and appends them to self.cves
     for eachCPE in raw['products']:
@@ -92,7 +94,8 @@ def searchCPE_V2(
         matchCriteriaId: Optional[str] = None,
         limit: Optional[int] = None,
         key: Optional[str] = None,
-        delay: Optional[float] = None
+        delay: Optional[float] = None,
+        proxies: Optional[Dict] = None
 ) -> Generator[CPE, Any, None]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
@@ -148,7 +151,7 @@ def searchCPE_V2(
 
     # Send the GET request. Get a generator object that returns batched
     # responses converted to dictionaries
-    for batch in __get_with_generator('cpe', headers, parameters, limit, delay):
+    for batch in __get_with_generator('cpe', headers, parameters, limit, delay, proxies):
         # Generator object that returns converted CPES
         for eachCPE in batch['products']:
             yield __convert('cpe', eachCPE['cpe'])

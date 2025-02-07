@@ -35,7 +35,8 @@ def searchCVE(
         limit: Optional[int] = None,
         delay: Optional[float] = None,
         key: Optional[str] = None,
-        verbose: Optional[bool] = None
+        verbose: Optional[bool] = None,
+        proxies: Optional[Dict] = None
 ) -> List[CVE]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
@@ -155,7 +156,7 @@ def searchCVE(
         key)
 
     # raw is the raw dictionary response.
-    raw = __get('cve', headers, parameters, limit, delay)
+    raw = __get('cve', headers, parameters, limit, delay, proxies)
     cves = []
     # Generates the CVEs into objects for easy access and appends them to self.cves
     for eachCVE in raw['vulnerabilities']:
@@ -192,7 +193,8 @@ def searchCVE_V2(
         limit: Optional[int] = None,
         delay: Optional[float] = None,
         key: Optional[str] = None,
-        verbose: Optional[bool] = None
+        verbose: Optional[bool] = None,
+        proxies: Optional[Dict] = None
 ) -> Generator[List[CVE], Tuple[str, Any], None]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
@@ -313,7 +315,7 @@ def searchCVE_V2(
 
     # Send the GET request. Get a generator object that returns batched
     # responses converted to dictionaries
-    for batch in __get_with_generator('cve', headers, parameters, limit, delay):
+    for batch in __get_with_generator('cve', headers, parameters, limit, delay, proxies):
         for eachCVE in batch['vulnerabilities']:
             yield __convert('cve', eachCVE['cve'])
 

@@ -13,7 +13,8 @@ def __get(
         headers: Mapping[str, Union[str, bytes, None]],
         parameters: Dict[str, Union[str, LiteralString, int]],
         limit: Optional[int] = None,
-        delay: Optional[float] = None
+        delay: Optional[float] = None,
+        proxies: Optional[Dict] = None
 ) -> Dict[str, Any]:
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
 
@@ -31,7 +32,7 @@ def __get(
         [k if v is None else f"{k}={v}" for k, v in parameters.items()])
     logger.debug("Filter:\n%s", link + stringParams)
 
-    raw = requests.get(link, params=stringParams, headers=headers, timeout=30)
+    raw = requests.get(link, params=stringParams, headers=headers, timeout=30, proxies=proxies)
     raw.encoding = 'utf-8'
     raw.raise_for_status()
 
@@ -73,7 +74,7 @@ def __get(
             logger.debug("Filter:\n%s", link + stringParams)
             try:
                 getReq = requests.get(
-                    link, params=stringParams, headers=headers, timeout=30)
+                    link, params=stringParams, headers=headers, timeout=30, proxies=proxies)
                 getReq.encoding = 'utf-8'
                 getData = getReq.json()[path]
                 time.sleep(delay)
@@ -111,7 +112,7 @@ def __get_with_generator(
         rate_delay = 1
         while True:
             raw = requests.get(link, params=stringParams,
-                               headers=headers, timeout=30)
+                               headers=headers, timeout=30, proxies=proxies)
             if raw.status_code == 403:
                 logger.error("Request returned a rate limit error. Retrying in %f seconds...", rate_delay)
                 time.sleep(rate_delay)
