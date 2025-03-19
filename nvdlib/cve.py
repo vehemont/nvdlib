@@ -389,16 +389,16 @@ def __buildCVECall(
         parameters['cweId'] = cweId.upper()
 
     if hasCertAlerts is not None:
-        parameters['hasCertAlerts'] = hasCertAlerts
+        parameters['hasCertAlerts'] = None
 
     if hasCertNotes is not None:
-        parameters['hasCertNotes'] = hasCertNotes
+        parameters['hasCertNotes'] = None
 
     if hasKev is not None:
-        parameters['hasKev'] = hasKev
+        parameters['hasKev'] = None
 
     if hasOval is not None:
-        parameters['hasOval'] = hasOval
+        parameters['hasOval'] = None
 
     if isVulnerable is not None:
         if cpeName is not None:
@@ -409,7 +409,7 @@ def __buildCVECall(
 
     if keywordExactMatch is not None:
         if keywordSearch:
-            parameters['keywordExactMatch'] = keywordExactMatch
+            parameters['keywordExactMatch'] = None
         else:
             raise SyntaxError(
                 'keywordSearch parameter must be passed if keywordExactMatch is set to True.')

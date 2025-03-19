@@ -1,5 +1,10 @@
 Release History
 ===============
+0.8.0 (2025-03-19)
+-------------------
+**Bugfixes**
+- Fixed passing the boolean to the URL on hasKev, hasOval, hasCertAlerts, hasCertNotes, and keyworkExactMatch in https://github.com/vehemont/nvdlib/issues/54
+
 0.7.9 (2025-01-13)
 -------------------
 **Enhancements**
