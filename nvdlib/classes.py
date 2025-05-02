@@ -43,6 +43,14 @@ class CPE:
         yield 5
         yield from list(self.__dict__.keys())
 
+    def __getattr__(self, item):
+        try:
+            return self.__dict__[item]
+        except KeyError:
+            classname = type(self).__name__
+            msg = f'{classname!r} object has no attribute {item!r}'
+            raise AttributeError(msg)
+
 
 class MatchString:
     """JSON dump class for CPE match strings
@@ -269,6 +277,13 @@ class CVE:
         yield 5
         yield from list(self.__dict__.keys())
 
+    def __getattr__(self, item):
+        try:
+            return self.__dict__[item]
+        except KeyError:
+            classname = type(self).__name__
+            msg = f'{classname!r} object has no attribute {item!r}'
+            raise AttributeError(msg)
 
     def getvars(self):
         try:
