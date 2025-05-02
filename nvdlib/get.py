@@ -149,4 +149,6 @@ def __get_with_generator(
         if limit is not None or startIndex > totalResults:
             break
 
+        if not isinstance(delay, float):
+            delay = 6
         time.sleep(delay)
