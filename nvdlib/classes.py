@@ -119,31 +119,28 @@ class CVE:
     :vartype requiredAction: str
 
     :var descriptions: CVE descriptions. Includes other languages.
-    :vartype descriptions: list
+    :vartype descriptions: list[CVE] 
 
-    :var metrics: Class attribute containing scoring lists (cvssMetricV31 / V30 / V2).
-    :vartype metrics: class
+    :var metrics: Class attribute containing scoring lists (cvssMetricV4 / V31 / V30 / V2).
+    :vartype metrics: CVE class
 
     :var weaknesses: Contains relevant CWE information.
-    :vartype weaknesses: list
+    :vartype weaknesses: list[CVE]
 
     :var configurations: List containing usually a single element of CPE information.
-    :vartype configuration: list
+    :vartype configuration: list[CVE]
 
     :var references: CVE reference links
-    :vartype references: list
+    :vartype references: list[CVE]
 
     :var cwe: Common Weakness Enumeration Specification (CWE)
-    :vartype cwe: list
+    :vartype cwe: list[dict]
 
     :var url: Link to additional details on nvd.nist.gov for that CVE.
     :vartype url: str
 
     :var cpe: Common Platform Enumeration (CPE) assigned to the CVE.
-    :vartype cpe: list
-
-    :var metrics: CVSS metrics. Some CVEs may not have v2/v3 scores or none at all.
-    :vartype metrics: dict
+    :vartype cpe: list[CVE]
 
     :var v31score: Integer that contains V3.1 CVSS score (float 1 - 10). Optional, some CVEs may not contain version 3.1 CVSS scoring.
     :vartype v31score: int
@@ -191,7 +188,7 @@ class CVE:
     :vartype v2impactScore: float
 
     :var score: Contains the CVSS score of the latest CVSS version (3.1 > 3.0 > 2). Where score is an int, severity is a string('LOW','MEDIUM','HIGH','CRITICAL'), and version is a string (V3.1, V3.0, or V2).
-    :vartype score: list
+    :vartype score: list[str]
 
     :var v31attackVector: NETWORK, ADJACENT_NETWORK, LOCAL, PHYSICAL. Present if CVE is scored.
     :vartype v31attackVector: str
