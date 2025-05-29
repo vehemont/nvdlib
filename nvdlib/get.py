@@ -95,7 +95,8 @@ def __get_with_generator(
         headers: Mapping[str, Union[str, bytes, None]],
         parameters: Dict[str, Union[str, LiteralString, int]],
         limit: Optional[int],
-        delay: float=6
+        delay: float=6,
+        proxies: Optional[Dict] = None
 ) -> Generator[Any, None, None]:
     # Get the default 2000 items to see the totalResults and determine pages required.
     if product == 'cve':
