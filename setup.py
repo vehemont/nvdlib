@@ -7,7 +7,7 @@ README = (HERE / "README.md").read_text()
 setup(
     name='nvdlib',
     packages=find_packages(include=['nvdlib']),
-    version='0.8.0',
+    version='0.8.1',
     install_requires = ['requests'],
     extras_require={
         "dev": [
