@@ -158,6 +158,8 @@ def searchCVE(
     # raw is the raw dictionary response.
     raw = __get('cve', headers, parameters, limit, delay, proxies)
     cves = []
+    if not raw:
+        return cves
     # Generates the CVEs into objects for easy access and appends them to self.cves
     for eachCVE in raw['vulnerabilities']:
         cves.append(__convert('cve', eachCVE['cve']))
@@ -316,6 +318,8 @@ def searchCVE_V2(
     # Send the GET request. Get a generator object that returns batched
     # responses converted to dictionaries
     for batch in __get_with_generator('cve', headers, parameters, limit, delay, proxies):
+        if not batch:
+            continue
         for eachCVE in batch['vulnerabilities']:
             yield __convert('cve', eachCVE['cve'])
 

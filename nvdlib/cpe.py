@@ -77,6 +77,8 @@ def searchCPE(
     # Send the GET request for the JSON and convert to dictionary
     raw = __get('cpe', headers, parameters, limit, delay, proxies)
     cpes = []
+    if not raw:
+        return cpes
     # Generates the CVEs into objects for easy referencing and appends them to self.cves
     for eachCPE in raw['products']:
         cpe = __convert('cpe', eachCPE['cpe'])
@@ -152,6 +154,8 @@ def searchCPE_V2(
     # Send the GET request. Get a generator object that returns batched
     # responses converted to dictionaries
     for batch in __get_with_generator('cpe', headers, parameters, limit, delay, proxies):
+        if not batch:
+            continue
         # Generator object that returns converted CPES
         for eachCPE in batch['products']:
             yield __convert('cpe', eachCPE['cpe'])
@@ -341,6 +345,8 @@ def searchCPEmatch(
     # Send the GET request for the JSON and convert to dictionary
     raw = __get('cpeMatch', headers, parameters, limit, delay)
     cpes = []
+    if not raw:
+        return cpes
     # Generates the CVEs into objects for easy referencing and appends them to self.cves
     for eachCPE in raw['matchStrings']:
         cpe = __convert('MatchString', eachCPE['matchString'])

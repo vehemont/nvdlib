@@ -15,7 +15,7 @@ def __get(
         limit: Optional[int] = None,
         delay: Optional[float] = None,
         proxies: Optional[Dict] = None
-) -> Dict[str, Any]:
+) -> Dict[str, Any] | None:
     """Calculate required pages for multiple requests, send the GET request with the search criteria, return list of CVEs or CPEs objects."""
 
     # Get the default 2000 items to see the totalResults and determine pages required.
@@ -43,6 +43,7 @@ def __get(
     except JSONDecodeError:
         logger.error("Invalid search criteria syntax: %s", str(raw))
         logger.error("Attempted search criteria: %s", str(parameters))
+        return None
 
     if delay is None:
         delay = 6
@@ -66,7 +67,7 @@ def __get(
 
         rawTemp = raw[path]
 
-        for eachPage in range(pages):
+        for _ in range(pages):
             parameters['resultsPerPage'] = '2000'
             parameters['startIndex'] = str(startIndex)
             stringParams = '&'.join(
@@ -84,7 +85,10 @@ def __get(
                 logger.error('Attempted search criteria: %s', str(stringParams))
                 logger.error('URL: %s', getReq.request.url)
                 getReq.raise_for_status()
-            rawTemp.extend(getData)
+                getData = None
+
+            if getData:
+                rawTemp.extend(getData)
             startIndex += 2000
         raw[path] = rawTemp
         return raw
@@ -131,6 +135,10 @@ def __get_with_generator(
         except JSONDecodeError:
             logger.error("Invalid search criteria syntax: %s", str(raw))
             logger.error("Attempted search criteria: %s", str(parameters))
+        if isinstance(raw, requests.Response):
+            # Unable to retrieve the JSON, likely due to an error on the server
+            # side, so exit cleanly here
+            break
         yield raw
 
         totalResults = raw['totalResults']
