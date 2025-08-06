@@ -1,9 +1,10 @@
 import nvdlib
 import responses
 import json
+from unittest.mock import patch
 
 
-def mock_nvd():
+def mock_nvd(bad_json=False):
     for url, response_file in [
         (
             "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-45357",
@@ -34,8 +35,11 @@ def mock_nvd():
             "tests/data/search_full_page.json",
         ),
     ]:
-        with open(response_file) as _f:
-            responses.add(responses.GET, url, json=json.load(_f))
+        if bad_json:
+            responses.add(responses.GET, url, json='{bad json')
+        else:
+            with open(response_file) as _f:
+                responses.add(responses.GET, url, json=json.load(_f))
 
 
 @responses.activate
@@ -145,3 +149,100 @@ def test_cve_cwe():
 
     assert cve.id == "CVE-2017-7542"
     assert len([x for w in cve.weaknesses for x in w.description]) == 3
+
+
+def test_search_cve_handles_get_returning_none():
+    """Test that searchCVE() handles __get() returning None correctly."""
+    with patch('nvdlib.cve.__get') as mock_get:
+        mock_get.return_value = None
+        
+        result = nvdlib.searchCVE(cveId="CVE-2021-26855")
+        
+        assert result == []  # Should return empty list
+        mock_get.assert_called_once()
+
+
+def test_search_cve_v2_handles_get_with_generator_returning_none():
+    """Test that searchCVE_V2() handles __get_with_generator() yielding None correctly."""
+    with patch('nvdlib.cve.__get_with_generator') as mock_get_gen:
+        # Generator that yields None values
+        mock_get_gen.return_value = iter([None, None])
+        
+        result = list(nvdlib.searchCVE_V2(cveId="CVE-2021-26855"))
+        
+        assert result == []  # Should return empty list
+        mock_get_gen.assert_called_once()
+
+
+def test_search_cve_handles_get_returning_none_with_parameters():
+    """Test that searchCVE() with various parameters handles __get() returning None."""
+    with patch('nvdlib.cve.__get') as mock_get:
+        mock_get.return_value = None
+        
+        # Test with multiple parameters
+        result = nvdlib.searchCVE(
+            cveId="CVE-2021-26855",
+            cvssV3Severity="CRITICAL",
+            pubStartDate="2021-01-01 00:00",
+            pubEndDate="2021-12-31 23:59",
+            limit=100
+        )
+        
+        assert result == []  # Should return empty list
+        mock_get.assert_called_once()
+
+
+def test_search_cve_v2_handles_mixed_none_and_valid_batches():
+    """Test that searchCVE_V2() handles mix of None and valid batches correctly."""
+    valid_batch = {
+        'vulnerabilities': [{
+            'cve': {
+                'id': 'CVE-2021-12345',
+                'descriptions': [{'value': 'Test CVE'}],
+                'metrics': {}
+            }
+        }]
+    }
+    
+    with patch('nvdlib.cve.__get_with_generator') as mock_get_gen:
+        # Generator that yields None, valid data, None
+        mock_get_gen.return_value = iter([None, valid_batch, None])
+        
+        result = list(nvdlib.searchCVE_V2(cveId="CVE-2021-12345"))
+        
+        assert len(result) == 1  # Should only process the valid batch
+        assert result[0].id == 'CVE-2021-12345'
+        mock_get_gen.assert_called_once()
+
+
+def test_search_cve_handles_get_returning_empty_dict():
+    """Test that searchCVE() handles __get() returning empty dict correctly.""" 
+    with patch('nvdlib.cve.__get') as mock_get:
+        mock_get.return_value = {}  # Empty dict should be falsy
+        
+        result = nvdlib.searchCVE(cveId="CVE-2021-26855")
+        
+        assert result == []  # Should return empty list
+        mock_get.assert_called_once()
+
+
+def test_search_cve_handles_get_returning_false():
+    """Test that searchCVE() handles __get() returning False correctly."""
+    with patch('nvdlib.cve.__get') as mock_get:
+        mock_get.return_value = False  # Explicit False value
+        
+        result = nvdlib.searchCVE(cveId="CVE-2021-26855")
+        
+        assert result == []  # Should return empty list  
+        mock_get.assert_called_once()
+
+
+def test_search_cve_v2_handles_empty_generator():
+    """Test that searchCVE_V2() handles empty generator correctly."""
+    with patch('nvdlib.cve.__get_with_generator') as mock_get_gen:
+        mock_get_gen.return_value = iter([])  # Empty generator
+        
+        result = list(nvdlib.searchCVE_V2(cveId="CVE-2021-26855"))
+        
+        assert result == []  # Should return empty list
+        mock_get_gen.assert_called_once()
