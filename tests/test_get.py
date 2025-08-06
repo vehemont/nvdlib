@@ -34,6 +34,7 @@ def sample_generator_response_data():
     return {
         'totalResults': 1,
         'startIndex': 0,
+        'resultsPerPage': 1,
         'vulnerabilities': [
             {'cve': {'id': 'CVE-2021-12345', 'descriptions': []}}
         ]
@@ -190,6 +191,7 @@ def test_get_pagination_logic(mock_requests_get, mock_sleep, sample_headers, sam
     # First response with totalResults > 2000
     first_response_data = {
         'totalResults': 3000,
+        'resultsPerPage': 2000,
         'vulnerabilities': [{'cve': {'id': f'CVE-2021-{i}'}} for i in range(2000)]
     }
     
@@ -293,6 +295,7 @@ def test_get_with_generator_pagination(mock_requests_get, mock_sleep, sample_hea
     # First batch
     first_batch = {
         'totalResults': 3000,
+        'resultsPerPage': 2000,
         'startIndex': 0,
         'vulnerabilities': [{'cve': {'id': f'CVE-2021-{i}'}} for i in range(2000)]
     }
@@ -300,6 +303,7 @@ def test_get_with_generator_pagination(mock_requests_get, mock_sleep, sample_hea
     # Second batch
     second_batch = {
         'totalResults': 3000,
+        'resultsPerPage': 2000,
         'startIndex': 2000,
         'vulnerabilities': [{'cve': {'id': f'CVE-2021-{i}'}} for i in range(2000, 3000)]
     }

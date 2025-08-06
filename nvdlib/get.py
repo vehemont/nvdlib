@@ -57,18 +57,20 @@ def __get(
     # If the results is more than the API limit, figure out how many pages there are and calculate the number of requests.
     # Use the page we already grabbed, then send a request starting at startIndex = 2000, then get the next page and ask for 2000 more results at the 2000th index result until all results have been grabbed.
     # Add each ['vulnerabilities'] or ['products'] list from each page to the end of the first request. Effectively creates one data point.
-    elif totalResults > 2000:
-        pages = (totalResults // 2000)
-        startIndex = 2000
+    elif totalResults > raw['resultsPerPage']:
+        pages = (totalResults // raw['resultsPerPage'])
+        startIndex = raw['resultsPerPage']
         if product == 'cve':
             path = 'vulnerabilities'
+        elif product == 'cpeMatch':
+            path = 'matchStrings'
         else:
             path = 'products'
 
         rawTemp = raw[path]
 
         for _ in range(pages):
-            parameters['resultsPerPage'] = '2000'
+            parameters['resultsPerPage'] = raw['resultsPerPage']
             parameters['startIndex'] = str(startIndex)
             stringParams = '&'.join(
                 [k if v is None else f"{k}={v}" for k, v in parameters.items()])
@@ -89,7 +91,7 @@ def __get(
 
             if getData:
                 rawTemp.extend(getData)
-            startIndex += 2000
+            startIndex += raw['resultsPerPage']
         raw[path] = rawTemp
         return raw
 
@@ -143,9 +145,9 @@ def __get_with_generator(
 
         totalResults = raw['totalResults']
 
-        startIndex += 2000
+        startIndex += raw['resultsPerPage']
         parameters['startIndex'] = str(startIndex)
-        parameters['resultsPerPage'] = '2000'
+        parameters['resultsPerPage'] = raw['resultsPerPage']
 
         if startIndex == 0:
             logger.debug("Query returned %d total records", totalResults)
@@ -156,7 +158,7 @@ def __get_with_generator(
             else:
                 logger.debug("Getting %s batch %d to %d", product, raw["startIndex"], totalResults)
 
-        if limit is not None or startIndex > totalResults:
+        if limit is not None or startIndex >= totalResults:
             break
 
         if not isinstance(delay, float):
