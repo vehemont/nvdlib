@@ -1,41 +1,45 @@
 import nvdlib
+import os
 import responses
 import json
 from unittest.mock import patch
+from pathlib import Path
 
 
 def mock_nvd(bad_json=False):
+    this_file_dir = Path(__file__).resolve().parent
     for url, response_file in [
         (
             "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-45357",
-            "tests/data/CVE-2021-45357.json",
+            "data/CVE-2021-45357.json",
         ),
         (
             "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-26855",
-            "tests/data/CVE-2021-26855.json",
+            "data/CVE-2021-26855.json",
         ),
         (
             "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-45357",
-            "tests/data/CVE-2022-24646.json",
+            "data/CVE-2022-24646.json",
         ),
         (
             "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2017-7542",
-            "tests/data/CVE-2017-7542.json",
+            "data/CVE-2017-7542.json",
         ),
         (
             "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-10T12:00:00",
-            "tests/data/simple_search.json",
+            "data/simple_search.json",
         ),
         (
             "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-11T00:00:00",
-            "tests/data/search_page_1.json",
+            "data/search_page_1.json",
         ),
         (
             "https://services.nvd.nist.gov/rest/json/cves/2.0?pubStartDate=2022-02-10T00:00:00&pubEndDate=2022-02-11T00:00:00",
-            "tests/data/search_full_page.json",
+            "data/search_full_page.json",
         ),
     ]:
-        with open(response_file) as _f:
+        response_file_path = os.path.join(this_file_dir, response_file)
+        with open(response_file_path) as _f:
             responses.add(responses.GET, url, json=json.load(_f))
 
 
@@ -88,7 +92,9 @@ def test_search_cve():
 def test_search_cve_v2():
     """Test a simple nvdlib.searchCVE_V2() call."""
     # Mock the generator function since it uses dynamic parameters
-    with open("tests/data/simple_search.json") as f:
+    this_file_dir = Path(__file__).resolve().parent
+    simple_search_path = os.path.join(this_file_dir, "data/simple_search.json")
+    with open(simple_search_path) as f:
         test_data = json.load(f)
     
     with patch('nvdlib.cve.__get_with_generator') as mock_gen:
@@ -115,7 +121,9 @@ def test_paginated_search_cve():
 def test_paginated_search_cve_v2():
     """Test a nvdlib.searchCVE_V2() call with paginated results."""
     # Mock the generator function since it uses dynamic parameters
-    with open("tests/data/search_page_1.json") as f:
+    this_file_dir = Path(__file__).resolve().parent
+    search_page_path = os.path.join(this_file_dir, "data/search_page_1.json")
+    with open(search_page_path) as f:
         test_data = json.load(f)
     
     with patch('nvdlib.cve.__get_with_generator') as mock_gen:
@@ -140,7 +148,9 @@ def test_search_cve_returns_a_cve():
 def test_search_cve_returns_a_cve_v2():
     """Test a nvdlib.searchCVE_V2() result is actually a CVE object"""
     # Mock the generator function since it uses dynamic parameters
-    with open("tests/data/search_page_1.json") as f:
+    this_file_dir = Path(__file__).resolve().parent
+    search_page_path = os.path.join(this_file_dir, "data/search_page_1.json")
+    with open(search_page_path) as f:
         test_data = json.load(f)
     
     with patch('nvdlib.cve.__get_with_generator') as mock_gen:
