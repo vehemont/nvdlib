@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nvdlib"
-version = "0.8.3"
+version = "0.8.4"
 description = "A simple wrapper for the National Vulnerability CVE/CPE API"
 readme = "README.md"
 requires-python = ">=3.11"
