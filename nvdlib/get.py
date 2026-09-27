@@ -49,13 +49,13 @@ def __get(
         delay = 6
     time.sleep(delay)
 
-    # If a limit is in the search criteria or the total number of results are less than or equal to the default 2000 that were just requested, return and don't request anymore.
+    # If a limit is in the search criteria or the total number of results fit in the page that was just requested, return and don't request anymore.
     totalResults = raw['totalResults']
-    if limit is not None or totalResults <= 2000:
+    if limit is not None or totalResults <= raw['resultsPerPage']:
         return raw
 
-    # If the results is more than the API limit, figure out how many pages there are and calculate the number of requests.
-    # Use the page we already grabbed, then send a request starting at startIndex = 2000, then get the next page and ask for 2000 more results at the 2000th index result until all results have been grabbed.
+    # If the results is more than one page, figure out how many pages there are and calculate the number of requests.
+    # Use the page we already grabbed, then send a request starting at the next startIndex, and repeat until all results have been grabbed.
     # Add each ['vulnerabilities'] or ['products'] list from each page to the end of the first request. Effectively creates one data point.
     elif totalResults > raw['resultsPerPage']:
         pages = (totalResults // raw['resultsPerPage'])

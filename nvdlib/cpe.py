@@ -48,7 +48,7 @@ def searchCPE(
     :param matchCriteriaId: Returns CPE records associated with a match string by its UUID. Requires a properly formatted UUID.
     :type matchCriteriaId: str
 
-    :param limit: Limits the number of results of the search.
+    :param limit: Limits the number of results of the search. Allowed any number between 1 and 10000.
     :type limit: int
 
     :param key: NVD API Key. Allows for a request every 0.6 seconds instead of 6 seconds.
@@ -128,7 +128,7 @@ def searchCPE_V2(
     :type matchCriteriaId: str
 
 
-    :param limit: Limits the number of results of the search.
+    :param limit: Limits the number of results of the search. Allowed any number between 1 and 10000.
     :type limit: int
 
     :param key: NVD API Key. Allows for a request every 0.6 seconds instead of 6 seconds.
@@ -214,8 +214,8 @@ def __buildCPECall(
         parameters['matchCriteriaId'] = matchCriteriaId
 
     if limit is not None:
-        if limit > 2000 or limit < 1:
-            raise SyntaxError('Limit parameter must be between 1 and 2000')
+        if limit > 10000 or limit < 1:
+            raise SyntaxError('Limit parameter must be between 1 and 10000')
         parameters['resultsPerPage'] = limit
 
     if key is not None:

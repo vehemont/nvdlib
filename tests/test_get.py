@@ -23,6 +23,7 @@ def sample_parameters():
 def sample_response_data():
     return {
         'totalResults': 1,
+        'resultsPerPage': 1,
         'vulnerabilities': [
             {'cve': {'id': 'CVE-2021-12345', 'descriptions': []}}
         ]
@@ -217,6 +218,28 @@ def test_get_pagination_logic(mock_requests_get, mock_sleep, sample_headers, sam
     assert len(result['vulnerabilities']) == 3000  # Combined results
     assert mock_requests_get.call_count == 2  # Two requests for pagination
     assert mock_sleep.call_count == 2  # Sleep after each request
+
+
+@patch('nvdlib.get.time.sleep')
+@patch('nvdlib.get.requests.get')
+def test_get_returns_cpe_page_over_2000(mock_requests_get, mock_sleep, sample_headers, sample_parameters):
+    """Test __get keeps a CPE page that already contains every result."""
+    response_data = {
+        'totalResults': 4788,
+        'resultsPerPage': 4788,
+        'products': [{'cpe': {'cpeName': 'cpe:2.3:a:jetbrains:omea_reader:2.2:*:*:*:*:*:*:*'}}]
+    }
+
+    mock_response = Mock()
+    mock_response.json.return_value = response_data
+    mock_response.raise_for_status.return_value = None
+    mock_response.encoding = 'utf-8'
+    mock_requests_get.return_value = mock_response
+
+    result = __get('cpe', sample_headers, sample_parameters)
+
+    assert result == response_data
+    assert mock_requests_get.call_count == 1
 
 
 # Tests for __get_with_generator function
