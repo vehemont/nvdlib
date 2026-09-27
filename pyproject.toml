@@ -8,6 +8,7 @@ version = "0.8.3"
 description = "A simple wrapper for the National Vulnerability CVE/CPE API"
 readme = "README.md"
 requires-python = ">=3.11"
+license = "MIT"
 license-files = ["LICENSE"]
 authors = [
     { name = "Vehemont", email = "brad@nvdlib.com" }
@@ -18,7 +19,6 @@ maintainers = [
 keywords = ["nvd", "cve"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 dependencies = [
@@ -34,7 +34,7 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/vehemont/nvdlib"
 BugTracker = "https://github.com/vehemont/nvdlib/issues"
-Documentation = "https://app.readthedocs.org/projects/nvdlib/"
+Documentation = "https://nvdlib.com"
 
 [tool.setuptools]
 packages = ["nvdlib"]
