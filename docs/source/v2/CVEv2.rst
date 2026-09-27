@@ -36,11 +36,18 @@ when using the `cveId` argument. From this point you are able to retrieve inform
    HIGH
 
 If you just need a score and severity from a CVE, you can use the `score` attribute that contains a list. This exists 
-on all CVE objects and will prefer version 3.1 scoring. If version 3.1 scoring does not exist, it will use version 3.0 and so on. If 
+on all CVE objects and will prefer version 4.0 scoring. If version 4.0 scoring does not exist, it will use version 3.1 and so on. If 
 no scoring exists for the CVE, it will set all values to `None`. The first element is the CVSS version, then score, and severity.
 
    >>> print(r[0].score)   
    ['V30', 8.1, 'HIGH']
+
+.. note::
+   CVSS 4.0 metrics do not match versions 2 and 3, and most CVEs still have no 4.0 score.
+
+   `score` uses 4.0 whenever a 4.0 block exists, even when NVD's primary score is still 3.1. The 4.0 values come from the Primary 4.0 entry when one is marked. There is no exploitability or impact score. Threat and environmental scores are usually missing, and many other 4.0 fields are `NOT_DEFINED` or left unset.
+
+   Do not combine `cvssV4Severity` or `cvssV4Metrics` with version 2 or 3 filters. NVD currently ignores the 4.0 filter and can return CVEs that have no 4.0 metrics.
 
 | 
 
@@ -99,6 +106,10 @@ it is assumed to be false and will not be added to the filter.
 Filter by publication start and end date, keyword, version 3 severity of critical, and an API key.
 
 >>> r = nvdlib.searchCVE(pubStartDate = '2021-09-08 00:00', pubEndDate = '2021-12-01 00:00', keywordSearch = 'Microsoft Exchange', cvssV3Severity = 'Critical', key='xxxxx-xxxxxx-xxxxxxx', delay=6)
+
+Version 4 filters work the same way. `cvssV4Severity` accepts `LOW`, `MEDIUM`, `HIGH`, or `CRITICAL`. `cvssV4Metrics` takes a full or partial CVSS 4.0 vector.
+
+>>> r = nvdlib.searchCVE(cvssV4Severity = 'HIGH', cvssV4Metrics = 'AV:N/AT:N')
 
 Get all CVEs in the last 7 days using a datetime object and use an API key.
 

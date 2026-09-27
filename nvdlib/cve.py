@@ -13,6 +13,8 @@ def searchCVE(
         cvssV2Severity: Optional[str] = None,
         cvssV3Metrics: Optional[str] = None,
         cvssV3Severity: Optional[str] = None,
+        cvssV4Metrics: Optional[str] = None,
+        cvssV4Severity: Optional[str] = None,
         cweId: Optional[str] = None,
         hasCertAlerts: Optional[bool] = None,
         hasCertNotes: Optional[bool] = None,
@@ -58,6 +60,12 @@ def searchCVE(
     :param cvssV3Severity: Find vulnerabilities having a 'LOW', 'MEDIUM', 'HIGH', or 'CRITICAL' version 3 severity.
     :type cvssV3Severity: str
 
+    :param cvssV4Metrics: This parameter returns only the CVEs that match the provided CVSSv4 vector string. Either full or partial vector strings may be used.
+    :type cvssV4Metrics: str
+
+    :param cvssV4Severity: Find vulnerabilities having a 'LOW', 'MEDIUM', 'HIGH', or 'CRITICAL' version 4 severity.
+    :type cvssV4Severity: str
+
     :param cweId: Filter collection by CWE (Common Weakness Enumeration) ID. You can find a list at https://cwe.mitre.org/. A CVE can have multiple CWE IDs assigned to it.
     :type cweId: str
 
@@ -132,6 +140,8 @@ def searchCVE(
         cvssV2Severity,
         cvssV3Metrics,
         cvssV3Severity,
+        cvssV4Metrics,
+        cvssV4Severity,
         cweId,
         hasCertAlerts,
         hasCertNotes,
@@ -173,6 +183,8 @@ def searchCVE_V2(
         cvssV2Severity: Optional[str] = None,
         cvssV3Metrics: Optional[str] = None,
         cvssV3Severity: Optional[str] = None,
+        cvssV4Metrics: Optional[str] = None,
+        cvssV4Severity: Optional[str] = None,
         cweId: Optional[str] = None,
         hasCertAlerts: Optional[bool] = None,
         hasCertNotes: Optional[bool] = None,
@@ -218,6 +230,12 @@ def searchCVE_V2(
     :param cvssV3Severity: Find vulnerabilities having a 'LOW', 'MEDIUM', 'HIGH', or 'CRITICAL' version 3 severity.
     :type cvssV3Severity: str
 
+    :param cvssV4Metrics: This parameter returns only the CVEs that match the provided CVSSv4 vector string. Either full or partial vector strings may be used.
+    :type cvssV4Metrics: str
+
+    :param cvssV4Severity: Find vulnerabilities having a 'LOW', 'MEDIUM', 'HIGH', or 'CRITICAL' version 4 severity.
+    :type cvssV4Severity: str
+
     :param cweId: Filter collection by CWE (Common Weakness Enumeration) ID. You can find a list at https://cwe.mitre.org/. A CVE can have multiple CWE IDs assigned to it.
     :type cweId: str
 
@@ -292,6 +310,8 @@ def searchCVE_V2(
         cvssV2Severity,
         cvssV3Metrics,
         cvssV3Severity,
+        cvssV4Metrics,
+        cvssV4Severity,
         cweId,
         hasCertAlerts,
         hasCertNotes,
@@ -331,6 +351,8 @@ def __buildCVECall(
         cvssV2Severity: Optional[str] = None,
         cvssV3Metrics: Optional[str] = None,
         cvssV3Severity: Optional[str] = None,
+        cvssV4Metrics: Optional[str] = None,
+        cvssV4Severity: Optional[str] = None,
         cweId: Optional[str] = None,
         hasCertAlerts: Optional[bool] = None,
         hasCertNotes: Optional[bool] = None,
@@ -390,6 +412,19 @@ def __buildCVECall(
         else:
             raise SyntaxError(
                 "cvssV3Severity parameter can only be assigned LOW, MEDIUM, HIGH, or CRITICAL value.")
+
+    if cvssV4Metrics is not None:
+        cvssV4Metrics = urllib.parse.quote_plus(
+            cvssV4Metrics, encoding='utf-8')
+        parameters['cvssV4Metrics'] = cvssV4Metrics
+
+    if cvssV4Severity is not None:
+        cvssV4Severity = cvssV4Severity.upper()
+        if cvssV4Severity in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']:
+            parameters['cvssV4Severity'] = cvssV4Severity
+        else:
+            raise SyntaxError(
+                "cvssV4Severity parameter can only be assigned LOW, MEDIUM, HIGH, or CRITICAL value.")
 
     if cweId is not None:
         parameters['cweId'] = cweId.upper()

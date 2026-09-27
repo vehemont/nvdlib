@@ -1,6 +1,55 @@
 import json
 from typing import Any, Union, Literal
 
+# CVSS 4.0 cvssData fields copied onto a CVE when that CVE includes them.
+# Supplemental names keep the capitalization used by the NVD schema.
+_V40_DATA_FIELDS = (
+    'attackVector',
+    'attackComplexity',
+    'attackRequirements',
+    'privilegesRequired',
+    'userInteraction',
+    'vulnConfidentialityImpact',
+    'vulnIntegrityImpact',
+    'vulnAvailabilityImpact',
+    'subConfidentialityImpact',
+    'subIntegrityImpact',
+    'subAvailabilityImpact',
+    'exploitMaturity',
+    'confidentialityRequirement',
+    'integrityRequirement',
+    'availabilityRequirement',
+    'modifiedAttackVector',
+    'modifiedAttackComplexity',
+    'modifiedAttackRequirements',
+    'modifiedPrivilegesRequired',
+    'modifiedUserInteraction',
+    'modifiedVulnConfidentialityImpact',
+    'modifiedVulnIntegrityImpact',
+    'modifiedVulnAvailabilityImpact',
+    'modifiedSubConfidentialityImpact',
+    'modifiedSubIntegrityImpact',
+    'modifiedSubAvailabilityImpact',
+    'threatScore',
+    'threatSeverity',
+    'environmentalScore',
+    'environmentalSeverity',
+    'Safety',
+    'Automatable',
+    'Recovery',
+    'valueDensity',
+    'vulnerabilityResponseEffort',
+    'providerUrgency',
+)
+
+
+def _cvss_primary(metrics):
+    """Return the Primary CVSS metric, or the first entry when none is marked Primary."""
+    for metric in metrics:
+        if getattr(metric, 'type', None) == 'Primary':
+            return metric
+    return metrics[0]
+
 
 class CPE:
     """JSON dump class for CPEs
@@ -121,7 +170,7 @@ class CVE:
     :var descriptions: CVE descriptions. Includes other languages.
     :vartype descriptions: list[CVE] 
 
-    :var metrics: Class attribute containing scoring lists (cvssMetricV4 / V31 / V30 / V2).
+    :var metrics: Class attribute containing scoring lists (cvssMetricV40 / V31 / V30 / V2).
     :vartype metrics: CVE class
 
     :var weaknesses: Contains relevant CWE information.
@@ -187,8 +236,53 @@ class CVE:
     :var v2impactScore: Version 2 of impact score. Reflects the direct consequence of a successful exploit. Optional, some CVEs may not contain version 2 CVSS scoring.
     :vartype v2impactScore: float
 
-    :var score: Contains the CVSS score of the latest CVSS version (3.1 > 3.0 > 2). Where score is an int, severity is a string('LOW','MEDIUM','HIGH','CRITICAL'), and version is a string (V3.1, V3.0, or V2).
+    :var score: Contains the CVSS score of the latest CVSS version (4.0 > 3.1 > 3.0 > 2). Where score is a float, severity is a string('LOW','MEDIUM','HIGH','CRITICAL'), and version is a string (V40, V31, V30, or V2). Version 4.0 uses the Primary metric when one is present.
     :vartype score: list[str]
+
+    :var v40score: Float that contains the V4.0 CVSS base score (0 - 10). Optional, some CVEs may not contain version 4.0 CVSS scoring. Uses the Primary metric when one is present.
+    :vartype v40score: float
+
+    :var v40vector: Version 4.0 of the CVSS score represented as a vector string. Optional, some CVEs may not contain version 4.0 CVSS scoring.
+    :vartype v40vector: str
+
+    :var v40severity: LOW, MEDIUM, HIGH, CRITICAL. Optional, some CVEs may not contain version 4.0 CVSS scoring.
+    :vartype v40severity: str
+
+    :var v40attackVector: NETWORK, ADJACENT, LOCAL, PHYSICAL. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40attackVector: str
+
+    :var v40attackComplexity: HIGH, LOW. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40attackComplexity: str
+
+    :var v40attackRequirements: NONE, PRESENT. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40attackRequirements: str
+
+    :var v40privilegesRequired: HIGH, LOW, NONE. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40privilegesRequired: str
+
+    :var v40userInteraction: NONE, PASSIVE, ACTIVE. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40userInteraction: str
+
+    :var v40vulnConfidentialityImpact: NONE, LOW, HIGH. Vulnerable-system impact. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40vulnConfidentialityImpact: str
+
+    :var v40vulnIntegrityImpact: NONE, LOW, HIGH. Vulnerable-system impact. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40vulnIntegrityImpact: str
+
+    :var v40vulnAvailabilityImpact: NONE, LOW, HIGH. Vulnerable-system impact. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40vulnAvailabilityImpact: str
+
+    :var v40subConfidentialityImpact: NONE, LOW, HIGH. Subsequent-system impact. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40subConfidentialityImpact: str
+
+    :var v40subIntegrityImpact: NONE, LOW, HIGH. Subsequent-system impact. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40subIntegrityImpact: str
+
+    :var v40subAvailabilityImpact: NONE, LOW, HIGH. Subsequent-system impact. Set when the CVE includes this CVSS 4.0 field.
+    :vartype v40subAvailabilityImpact: str
+
+    :var v40exploitMaturity: UNREPORTED, PROOF_OF_CONCEPT, ATTACKED, NOT_DEFINED. Other CVSS 4.0 threat, environmental, and supplemental fields are copied the same way when present: requirement fields, every modified field, threatScore, threatSeverity, environmentalScore, environmentalSeverity, Safety, Automatable, Recovery, valueDensity, vulnerabilityResponseEffort, and providerUrgency. NOT_DEFINED is kept. Missing fields are left unset. There is no exploitability or impact score for version 4.0.
+    :vartype v40exploitMaturity: str
 
     :var v31attackVector: NETWORK, ADJACENT_NETWORK, LOCAL, PHYSICAL. Present if CVE is scored.
     :vartype v31attackVector: str
@@ -298,10 +392,17 @@ class CVE:
         except:
             pass
         
-        if hasattr(self.metrics, 'cvssMetricV40'):
-            self.v40score = self.metrics.cvssMetricV40[0].cvssData.baseScore
-            self.v40vector = self.metrics.cvssMetricV40[0].cvssData.vectorString
-            self.v40severity = self.metrics.cvssMetricV40[0].cvssData.baseSeverity
+        if hasattr(self.metrics, 'cvssMetricV40') and self.metrics.cvssMetricV40:
+            cvss = _cvss_primary(self.metrics.cvssMetricV40).cvssData
+            if hasattr(cvss, 'baseScore'):
+                self.v40score = cvss.baseScore
+            if hasattr(cvss, 'vectorString'):
+                self.v40vector = cvss.vectorString
+            if hasattr(cvss, 'baseSeverity'):
+                self.v40severity = cvss.baseSeverity
+            for field in _V40_DATA_FIELDS:
+                if hasattr(cvss, field):
+                    setattr(self, 'v40' + field, getattr(cvss, field))
 
         if hasattr(self.metrics, 'cvssMetricV31'):
             self.v31score = self.metrics.cvssMetricV31[0].cvssData.baseScore
@@ -348,9 +449,9 @@ class CVE:
             self.v2exploitability = self.metrics.cvssMetricV2[0].exploitabilityScore
             self.v2impactScore = self.metrics.cvssMetricV2[0].impactScore
         
-        # Prefer the base score version to V3, if it isn't available use V2.
+        # Prefer the latest CVSS version. Version 4.0 uses the Primary metric when one is present.
         # If no score is present, then set it to None.
-        if hasattr(self.metrics, 'cvssMetricV40'):
+        if hasattr(self, 'v40score'):
             self.score = ['V40', self.v40score, self.v40severity]
         elif hasattr(self.metrics, 'cvssMetricV31'):
             self.score = ['V31', self.v31score, self.v31severity]
