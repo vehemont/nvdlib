@@ -18,7 +18,8 @@ def searchCPE(
         limit: Optional[int] = None,
         key: Optional[str] = None,
         delay: Optional[float] = None,
-        proxies: Optional[Dict] = None
+        proxies: Optional[Dict] = None,
+        asDict: Optional[bool] = None
 ) -> List[CPE]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
@@ -56,6 +57,9 @@ def searchCPE(
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
     :type delay: float
+
+    :param asDict: Return each record as the plain dictionary from the NVD response instead of an object.
+    :type asDict: bool
     """
 
 
@@ -81,7 +85,9 @@ def searchCPE(
         return cpes
     # Generates the CVEs into objects for easy referencing and appends them to self.cves
     for eachCPE in raw['products']:
-        cpe = __convert('cpe', eachCPE['cpe'])
+        cpe = eachCPE['cpe']
+        if not asDict:
+            cpe = __convert('cpe', cpe)
         cpes.append(cpe)
     return cpes
 
@@ -97,7 +103,8 @@ def searchCPE_V2(
         limit: Optional[int] = None,
         key: Optional[str] = None,
         delay: Optional[float] = None,
-        proxies: Optional[Dict] = None
+        proxies: Optional[Dict] = None,
+        asDict: Optional[bool] = None
 ) -> Generator[CPE, Any, None]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
@@ -136,6 +143,9 @@ def searchCPE_V2(
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
     :type delay: float
+
+    :param asDict: Return each record as the plain dictionary from the NVD response instead of an object.
+    :type asDict: bool
     """
 
     # Build the URL for the request
@@ -158,7 +168,10 @@ def searchCPE_V2(
             continue
         # Generator object that returns converted CPES
         for eachCPE in batch['products']:
-            yield __convert('cpe', eachCPE['cpe'])
+            cpe = eachCPE['cpe']
+            if not asDict:
+                cpe = __convert('cpe', cpe)
+            yield cpe
 
 
 def __buildCPECall(
@@ -297,7 +310,8 @@ def searchCPEmatch(
         matchStringSearch: Optional[str] = None,
         limit: Optional[int] = None,
         key: Optional[str] = None,
-        delay: Optional[float] = None
+        delay: Optional[float] = None,
+        asDict: Optional[bool] = None
 ) -> List[CPE]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
     
@@ -329,6 +343,9 @@ def searchCPEmatch(
 
     :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
     :type delay: float
+
+    :param asDict: Return each record as the plain dictionary from the NVD response instead of an object.
+    :type asDict: bool
     """
 
     # Build the URL for the request
@@ -349,6 +366,8 @@ def searchCPEmatch(
         return cpes
     # Generates the CVEs into objects for easy referencing and appends them to self.cves
     for eachCPE in raw['matchStrings']:
-        cpe = __convert('MatchString', eachCPE['matchString'])
+        cpe = eachCPE['matchString']
+        if not asDict:
+            cpe = __convert('MatchString', cpe)
         cpes.append(cpe)
     return cpes

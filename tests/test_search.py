@@ -267,3 +267,21 @@ def test_search_cve_v2_handles_empty_generator():
         
         assert result == []  # Should return empty list
         mock_get_gen.assert_called_once()
+
+
+def test_search_cve_as_dict():
+    """asDict returns the NVD record unchanged. The default path still returns a CVE object."""
+    payload = {
+        'vulnerabilities': [
+            {'cve': {'id': 'CVE-2024-0001', 'metrics': {}}}
+        ]
+    }
+    with patch('nvdlib.cve.__get') as mock_get:
+        mock_get.return_value = payload
+        result = nvdlib.searchCVE(cveId='CVE-2024-0001', asDict=True)
+        assert isinstance(result[0], dict)
+        assert result[0]['id'] == 'CVE-2024-0001'
+
+        result = nvdlib.searchCVE(cveId='CVE-2024-0001')
+        assert isinstance(result[0], nvdlib.classes.CVE)
+        assert result[0].id == 'CVE-2024-0001'

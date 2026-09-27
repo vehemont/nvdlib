@@ -99,7 +99,7 @@ SearchCVE Examples
 
 The arguments are not positional. SearchCVE will build the request based on what is passed to it. 
 All of the parameters can be mixed together in any order. If a value is not passed to the function,
-it is assumed to be false and will not be added to the filter.
+it is assumed to be false and will not be added to the filter. Pass `asDict=True` to get each CVE as the plain dictionary from NVD instead of an object.
 
 .. note:: There is a maximum 120 day range when using date ranges. If searching publication or modified dates, start and end dates are required. A `datetime` object can also be used instead of a string.
 

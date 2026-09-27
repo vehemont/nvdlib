@@ -38,7 +38,8 @@ def searchCVE(
         delay: Optional[float] = None,
         key: Optional[str] = None,
         verbose: Optional[bool] = None,
-        proxies: Optional[Dict] = None
+        proxies: Optional[Dict] = None,
+        asDict: Optional[bool] = None
 ) -> List[CVE]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
@@ -131,6 +132,9 @@ def searchCVE(
 
     :param key: NVD API Key. Allows for the user to define a delay. NVD recommends scripts sleep 6 seconds in between requests. If no valid API key is provided, requests are sent with a 6 second delay.
     :type key: str
+
+    :param asDict: Return each CVE as the plain dictionary from the NVD response instead of a CVE object.
+    :type asDict: bool
     """
 
     parameters, headers = __buildCVECall(
@@ -172,7 +176,10 @@ def searchCVE(
         return cves
     # Generates the CVEs into objects for easy access and appends them to self.cves
     for eachCVE in raw['vulnerabilities']:
-        cves.append(__convert('cve', eachCVE['cve']))
+        cve = eachCVE['cve']
+        if not asDict:
+            cve = __convert('cve', cve)
+        cves.append(cve)
     return cves
 
 
@@ -208,7 +215,8 @@ def searchCVE_V2(
         delay: Optional[float] = None,
         key: Optional[str] = None,
         verbose: Optional[bool] = None,
-        proxies: Optional[Dict] = None
+        proxies: Optional[Dict] = None,
+        asDict: Optional[bool] = None
 ) -> Generator[List[CVE], Tuple[str, Any], None]:
     """Build and send GET request then return list of objects containing a collection of CVEs. For more information on the parameters available, please visit https://nvd.nist.gov/developers/vulnerabilities 
 
@@ -301,6 +309,9 @@ def searchCVE_V2(
 
     :param key: NVD API Key. Allows for the user to define a delay. NVD recommends scripts sleep 6 seconds in between requests. If no valid API key is provided, requests are sent with a 6 second delay.
     :type key: str
+
+    :param asDict: Return each CVE as the plain dictionary from the NVD response instead of a CVE object.
+    :type asDict: bool
     """
 
     parameters, headers = __buildCVECall(
@@ -341,7 +352,10 @@ def searchCVE_V2(
         if not batch:
             continue
         for eachCVE in batch['vulnerabilities']:
-            yield __convert('cve', eachCVE['cve'])
+            cve = eachCVE['cve']
+            if not asDict:
+                cve = __convert('cve', cve)
+            yield cve
 
 
 def __buildCVECall(
