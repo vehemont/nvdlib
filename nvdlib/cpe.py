@@ -185,7 +185,7 @@ def __buildCPECall(
 
     if keywordExactMatch:
         if keywordSearch is not None:
-            parameters['keywordExactMatch'] = keywordExactMatch
+            parameters['keywordExactMatch'] = None
         else:
             raise SyntaxError('keywordSearch parameter must be passed if keywordExactMatch is set to True.')
     
