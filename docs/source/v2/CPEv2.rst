@@ -2,7 +2,7 @@ CPE
 ###
 
 Search CPE
-------------
+----------
 
 Searching for CPEs is similar to searching for CVEs albeit less parameters. 
 CPE match strings are allowed, meaning if partial strings are known, you can search for all possible
@@ -27,7 +27,7 @@ Here is an example of a CPE search with a keyword and a limit of 2 results then 
 
 
     'cpe:2.3:a:ca:unicenter_management_microsoft_exchange:-:*:*:*:*:*:*:*'
-    'cpe:2.3:a:microsoft:exchange_instant_messenger:-:*:*:*:*:*:*:*''
+    'cpe:2.3:a:microsoft:exchange_instant_messenger:-:*:*:*:*:*:*:*'
 
 
 .. autofunction:: nvdlib.cpe.searchCPE
@@ -37,7 +37,7 @@ Here is an example of a CPE search with a keyword and a limit of 2 results then 
 
 
 In addition to `searchCPE` there is also `searchCPE_V2`. This function uses the same parameters as `searchCPE` except creates a generator. This is
-useful if the search performed consumes a lot of data and there are memory constraints on the system. It will convert the CVE response one object at a time, 
+useful if the search performed consumes a lot of data and there are memory constraints on the system. It will convert the CPE response one object at a time, 
 instead of attempting to convert the entire data set into memory at once. Here is an example using `next()`.
 
 >>> r = nvdlib.searchCPE_V2(keywordSearch='Microsoft Exchange 2010', limit=100)
@@ -81,7 +81,7 @@ Filter for all CPE names modified in the last 30 days using `datetime` objects.
 
 
 CPE Match Criteria API
-------------
+----------------------
 
 This will allow you to search for CPE Match Strings that you can then use in CPE searches. When you search using this API, it will return a list of `MatchStrings`. I hightly recommend
 playing around with this API to get an understanding of how the responses work.
@@ -92,9 +92,15 @@ More information on how to utilize this API can be found on NVD's API page: http
 
 .. autoclass:: nvdlib.classes.MatchString
 
+`searchCPEmatch_V2` uses the same parameters as `searchCPEmatch` except creates a generator. The Match Criteria API returns at most 500 match strings per page, so `limit` must be between 1 and 500.
+
+>>> r = nvdlib.searchCPEmatch_V2(cveId='CVE-2017-0144')
+>>> oneMatch = next(r)
+>>> print(oneMatch.criteria)
+
 
 CPE Match String Search Examples
--------------------
+--------------------------------
 
 
 To obtain the CPE match strings for a single CVE and print the `matchCriteriaId` for each match.

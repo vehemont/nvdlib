@@ -285,8 +285,8 @@ def __buildCPEMatchCall(
         parameters['matchStringSearch'] = matchStringSearch
 
     if limit is not None:
-        if limit > 2000 or limit < 1:
-            raise SyntaxError('Limit parameter must be between 1 and 2000')
+        if limit > 500 or limit < 1:
+            raise SyntaxError('Limit parameter must be between 1 and 500')
         parameters['resultsPerPage'] = limit
 
     if key is not None:
@@ -311,6 +311,7 @@ def searchCPEmatch(
         limit: Optional[int] = None,
         key: Optional[str] = None,
         delay: Optional[float] = None,
+        proxies: Optional[Dict] = None,
         asDict: Optional[bool] = None
 ) -> List[CPE]:
     """Build and send GET request then return list of objects containing a collection of CPEs.
@@ -335,7 +336,7 @@ def searchCPEmatch(
     :param matchStringSearch: Returns CPE records that match the provided CPE match string. See the NVD API documentation website for more details on how to use CPE match strings. https://nvd.nist.gov/developers/products
     :type matchStringSearch: str
 
-    :param limit: Limits the number of results of the search.
+    :param limit: Limits the number of results of the search. Allowed any number between 1 and 500.
     :type limit: int
 
     :param key: NVD API Key. Allows for a request every 0.6 seconds instead of 6 seconds.
@@ -360,7 +361,7 @@ def searchCPEmatch(
         delay)
 
     # Send the GET request for the JSON and convert to dictionary
-    raw = __get('cpeMatch', headers, parameters, limit, delay)
+    raw = __get('cpeMatch', headers, parameters, limit, delay, proxies)
     cpes = []
     if not raw:
         return cpes
@@ -371,3 +372,68 @@ def searchCPEmatch(
             cpe = __convert('MatchString', cpe)
         cpes.append(cpe)
     return cpes
+
+
+def searchCPEmatch_V2(
+        cveId: Optional[str] = None,
+        lastModStartDate: Optional[Union[str, datetime]] = None,
+        lastModEndDate: Optional[Union[str, datetime]] = None,
+        matchCriteriaId: Optional[str] = None,
+        matchStringSearch: Optional[str] = None,
+        limit: Optional[int] = None,
+        key: Optional[str] = None,
+        delay: Optional[float] = None,
+        proxies: Optional[Dict] = None,
+        asDict: Optional[bool] = None
+) -> Generator[CPE, Any, None]:
+    """Build and send GET request then return a generator of CPE match strings. Uses the same parameters as `searchCPEmatch`.
+
+    :param cveId: Returns all matching CPE match strings for a CVE.
+    :type cveId: str
+
+    :param lastModStartDate: Match string last modification start date or CPE last modified start date. Maximum 120 day range. A start and end date is required. All times are in UTC 00:00.
+    :type lastModStartDate: str/datetime obj
+
+    :param lastModEndDate: CPE last modification end date. Maximum 120 day range. Must be included with lastModStartDate.
+    :type lastModEndDate: str/datetime obj
+
+    :param matchCriteriaId: Returns CPE records associated with a match string by its UUID. Requires a properly formatted UUID.
+    :type matchCriteriaId: str
+
+    :param matchStringSearch: Returns CPE records that match the provided CPE match string.
+    :type matchStringSearch: str
+
+    :param limit: Limits the number of results of the search. Allowed any number between 1 and 500.
+    :type limit: int
+
+    :param key: NVD API Key. Allows for a request every 0.6 seconds instead of 6 seconds.
+    :type key: str
+
+    :param delay: Can only be used if an API key is provided. The amount of time to sleep in between requests. Must be a value above 0.6 seconds if an API key is present. `delay` is set to 6 seconds if no API key is passed.
+    :type delay: float
+
+    :param asDict: Return each record as the plain dictionary from the NVD response instead of an object.
+    :type asDict: bool
+    """
+
+    # Build the URL for the request
+    parameters, headers = __buildCPEMatchCall(
+        cveId,
+        lastModStartDate,
+        lastModEndDate,
+        matchCriteriaId,
+        matchStringSearch,
+        limit,
+        key,
+        delay)
+
+    # Send the GET request. Get a generator object that returns batched
+    # responses converted to dictionaries
+    for batch in __get_with_generator('cpeMatch', headers, parameters, limit, delay, proxies):
+        if not batch:
+            continue
+        for eachCPE in batch['matchStrings']:
+            cpe = eachCPE['matchString']
+            if not asDict:
+                cpe = __convert('MatchString', cpe)
+            yield cpe

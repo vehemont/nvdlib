@@ -63,8 +63,8 @@ class CPE:
     :var cpeNameId: CPE UUID
     :vartype cpeNameId: str
 
-    :var lastModifiedDate: CPE modification date
-    :vartype lastModifiedDate: 
+    :var lastModified: CPE modification date
+    :vartype lastModified: str
 
     :var created: CPE creation date
     :vartype created: str
@@ -72,11 +72,14 @@ class CPE:
     :var titles: List of available titles for the CPE
     :vartype title: list
 
+    :var refs: Optional, reference links for the CPE
+    :vartype refs: list
+
     :var deprecatedBy: If deprecated=true, one or more CPE that replace this one
     :vartype deprecatedby: list
 
-    :var vulnerabilities: Optional vulnerabilities associated with this CPE. Must use 'cves = true' argument in searchCPE.
-    :vartype vulnerabilities: list
+    :var deprecates: Optional, one or more CPE that this CPE replaces
+    :vartype deprecates: list
     """
 
     def __init__(self, response):
@@ -110,8 +113,8 @@ class MatchString:
     :var criteria: CPE name
     :vartype criteria: str
 
-    :var lastModifiedDate: Match string modification date
-    :vartype lastModifiedDate: str
+    :var lastModified: Match string modification date
+    :vartype lastModified: str
 
     :var cpeLastModified: CPE modification date
     :vartype cpeLastModified: str 
@@ -121,6 +124,18 @@ class MatchString:
 
     :var status: CPE active status
     :vartype status: str
+
+    :var versionStartIncluding: Optional, only exists if the match string is a version range.
+    :vartype versionStartIncluding: str
+
+    :var versionStartExcluding: Optional, only exists if the match string is a version range.
+    :vartype versionStartExcluding: str
+
+    :var versionEndIncluding: Optional, only exists if the match string is a version range.
+    :vartype versionEndIncluding: str
+
+    :var versionEndExcluding: Optional, only exists if the match string is a version range.
+    :vartype versionEndExcluding: str
     
     :var matches: CPE Names and IDs within the CPE Dictionary that matches the CPE Match Criteria
     :vartype matches: list
@@ -138,6 +153,71 @@ class MatchString:
     def __iter__(self):
         yield 5
         yield from list(self.__dict__.keys())
+
+class CVEHistory:
+    """JSON dump class for CVE change history events
+
+    :var cveId: CVE ID
+    :vartype cveId: str
+
+    :var eventName: Type of change event, such as 'Initial Analysis' or 'CVE Modified'.
+    :vartype eventName: str
+
+    :var cveChangeId: UUID of the change event
+    :vartype cveChangeId: str
+
+    :var sourceIdentifier: Source of the change event
+    :vartype sourceIdentifier: str
+
+    :var created: Date and time of the change
+    :vartype created: str
+
+    :var details: List of changes made in the event
+    :vartype details: list
+    """
+
+    def __init__(self, response):
+        vars(self).update(response)
+
+    def __getattr__(self, item):
+        try:
+            return self.__dict__[item]
+        except KeyError:
+            classname = type(self).__name__
+            msg = f'{classname!r} object has no attribute {item!r}'
+            raise AttributeError(msg)
+
+
+class Source:
+    """JSON dump class for NVD data sources
+
+    :var name: Source name
+    :vartype name: str
+
+    :var contactEmail: Email address used by the CVE Program to identify the source
+    :vartype contactEmail: str
+
+    :var sourceIdentifiers: All source identifiers linked to the source
+    :vartype sourceIdentifiers: list
+
+    :var lastModified: Source modification date
+    :vartype lastModified: str
+
+    :var created: Source creation date
+    :vartype created: str
+    """
+
+    def __init__(self, response):
+        vars(self).update(response)
+
+    def __getattr__(self, item):
+        try:
+            return self.__dict__[item]
+        except KeyError:
+            classname = type(self).__name__
+            msg = f'{classname!r} object has no attribute {item!r}'
+            raise AttributeError(msg)
+
 
 class CVE:
     """JSON dump class for CVEs
@@ -158,19 +238,40 @@ class CVE:
     :var vulnStatus: CVE modified status.
     :vartype vulnStatus: str
 
-    :var exploitAdd: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
-    :vartype exploitAdd: str
+    :var cisaExploitAdd: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
+    :vartype cisaExploitAdd: str
 
-    :var actionDue: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
-    :vartype actionDue: str
+    :var cisaActionDue: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
+    :vartype cisaActionDue: str
 
-    :var requiredAction: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
-    :vartype requiredAction: str
+    :var cisaRequiredAction: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
+    :vartype cisaRequiredAction: str
+
+    :var cisaVulnerabilityName: Optional, only exists if the CVE is listed in the Known Exploited Vulnerabilities (KEV) catalog.
+    :vartype cisaVulnerabilityName: str
+
+    :var cveTags: Optional, tags such as 'disputed' provided by a source.
+    :vartype cveTags: list[CVE]
+
+    :var affected: Optional, affected vendors, products, and versions provided by a source.
+    :vartype affected: list[CVE]
+
+    :var vendorComments: Optional, official vendor comments on the CVE.
+    :vartype vendorComments: list[CVE]
+
+    :var evaluatorComment: Optional, additional context from the NVD analysis.
+    :vartype evaluatorComment: str
+
+    :var evaluatorImpact: Optional, additional context on the impact from the NVD analysis.
+    :vartype evaluatorImpact: str
+
+    :var evaluatorSolution: Optional, additional context on the solution from the NVD analysis.
+    :vartype evaluatorSolution: str
 
     :var descriptions: CVE descriptions. Includes other languages.
     :vartype descriptions: list[CVE] 
 
-    :var metrics: Class attribute containing scoring lists (cvssMetricV40 / V31 / V30 / V2).
+    :var metrics: Class attribute containing scoring lists (cvssMetricV40 / V31 / V30 / V2). May also contain SSVC data (ssvcV203).
     :vartype metrics: CVE class
 
     :var weaknesses: Contains relevant CWE information.
@@ -188,17 +289,20 @@ class CVE:
     :var url: Link to additional details on nvd.nist.gov for that CVE.
     :vartype url: str
 
-    :var cpe: Common Platform Enumeration (CPE) assigned to the CVE.
+    :var cpe: Common Platform Enumeration (CPE) matches assigned to the CVE, from every configuration node.
     :vartype cpe: list[CVE]
 
-    :var v31score: Integer that contains V3.1 CVSS score (float 1 - 10). Optional, some CVEs may not contain version 3.1 CVSS scoring.
-    :vartype v31score: int
+    :var ssvc: Stakeholder-Specific Vulnerability Categorization (SSVC) assessments. Optional, only exists if the CVE includes SSVC data.
+    :vartype ssvc: list[CVE]
+
+    :var v31score: Float that contains the V3.1 CVSS base score (0 - 10). Optional, some CVEs may not contain version 3.1 CVSS scoring.
+    :vartype v31score: float
     
-    :var v30score: Integer that contains V3.0 CVSS score (float 1 - 10) Optional, some CVEs may not contain version 3.0 CVSS scoring.
-    :vartype v30score: int
+    :var v30score: Float that contains the V3.0 CVSS base score (0 - 10). Optional, some CVEs may not contain version 3.0 CVSS scoring.
+    :vartype v30score: float
     
-    :var v2score: Integer that contains V2 CVSS score (float 1 - 10) Optional, some CVEs may not contain version 2 CVSS scoring.
-    :vartype v2score: int
+    :var v2score: Float that contains the V2 CVSS base score (0 - 10). Optional, some CVEs may not contain version 2 CVSS scoring.
+    :vartype v2score: float
 
     :var v31vector: Version 3.1 of the CVSS score represented as a vector string. Optional, some CVEs may not contain version 3.1 CVSS scoring.
     :vartype v31vector: str
@@ -236,7 +340,7 @@ class CVE:
     :var v2impactScore: Version 2 of impact score. Reflects the direct consequence of a successful exploit. Optional, some CVEs may not contain version 2 CVSS scoring.
     :vartype v2impactScore: float
 
-    :var score: Contains the CVSS score of the latest CVSS version (4.0 > 3.1 > 3.0 > 2). Where score is a float, severity is a string('LOW','MEDIUM','HIGH','CRITICAL'), and version is a string (V40, V31, V30, or V2). Version 4.0 uses the Primary metric when one is present.
+    :var score: Contains the CVSS score of the latest CVSS version (4.0 > 3.1 > 3.0 > 2). Where score is a float, severity is a string('LOW','MEDIUM','HIGH','CRITICAL'), and version is a string (V40, V31, V30, or V2). Each version uses the Primary metric when one is present, otherwise the first metric.
     :vartype score: list[str]
 
     :var v40score: Float that contains the V4.0 CVSS base score (0 - 10). Optional, some CVEs may not contain version 4.0 CVSS scoring. Uses the Primary metric when one is present.
@@ -291,7 +395,7 @@ class CVE:
     :vartype v30attackVector: str
 
     :var v2accessVector: NETWORK, ADJACENT_NETWORK, LOCAL. Present if CVE is scored.
-    :vartype v2accesVector: str
+    :vartype v2accessVector: str
 
     :var v31attackComplexity: HIGH, LOW. Present if CVE is scored. 
     :vartype v31attackComplexity: str
@@ -320,10 +424,10 @@ class CVE:
     :var v30scope: UNCHANGED, CHANGED. Present if CVE is scored.
     :vartype v30scope: str
     
-    :var v31confidentialityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :var v31confidentialityImpact: NONE, LOW, HIGH. Present if CVE is scored.
     :vartype v31confidentialityImpact: str
 
-    :var v30confidentialityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :var v30confidentialityImpact: NONE, LOW, HIGH. Present if CVE is scored.
     :vartype v30confidentialityImpact: str
 
     :var v2confidentialityImpact: NONE, PARTIAL, COMPLETE. Present if CVE is scored.
@@ -332,19 +436,19 @@ class CVE:
     :var v2authentication: MULTIPLE, SINGLE, NONE. Present if CVE is scored.
     :vartype v2authentication: str
 
-    :var v31integrityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :var v31integrityImpact: NONE, LOW, HIGH. Present if CVE is scored.
     :vartype v31integrityImpact: str
 
-    :var v30integrityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :var v30integrityImpact: NONE, LOW, HIGH. Present if CVE is scored.
     :vartype v30integrityImpact: str
 
     :var v2integrityImpact: NONE, PARTIAL, COMPLETE. Present if CVE is scored.
     :vartype v2integrityImpact: str
 
-    :var v31availabilityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :var v31availabilityImpact: NONE, LOW, HIGH. Present if CVE is scored.
     :vartype v31availabilityImpact: str
 
-    :var v30availabilityImpact: LOW, MEDIUM, HIGH, CRITICAL. Present if CVE is scored.
+    :var v30availabilityImpact: NONE, LOW, HIGH. Present if CVE is scored.
     :vartype v30availabilityImpact: str
 
     :var v2availabilityImpact: NONE, PARTIAL, COMPLETE. Present if CVE is scored.
@@ -378,7 +482,7 @@ class CVE:
 
     def getvars(self):
         try:
-            self.cpe = self.configurations[0].nodes[0].cpeMatch
+            self.cpe = [match for config in self.configurations for node in config.nodes for match in node.cpeMatch]
         except AttributeError:
             pass
         
@@ -404,52 +508,59 @@ class CVE:
                 if hasattr(cvss, field):
                     setattr(self, 'v40' + field, getattr(cvss, field))
 
-        if hasattr(self.metrics, 'cvssMetricV31'):
-            self.v31score = self.metrics.cvssMetricV31[0].cvssData.baseScore
-            self.v31vector = self.metrics.cvssMetricV31[0].cvssData.vectorString
-            self.v31severity = self.metrics.cvssMetricV31[0].cvssData.baseSeverity
-            self.v31attackVector = self.metrics.cvssMetricV31[0].cvssData.attackVector
-            self.v31attackComplexity = self.metrics.cvssMetricV31[0].cvssData.attackComplexity
-            self.v31privilegesRequired = self.metrics.cvssMetricV31[0].cvssData.privilegesRequired
-            self.v31userInteraction = self.metrics.cvssMetricV31[0].cvssData.userInteraction
-            self.v31scope = self.metrics.cvssMetricV31[0].cvssData.scope
-            self.v31confidentialityImpact = self.metrics.cvssMetricV31[0].cvssData.confidentialityImpact
-            self.v31integrityImpact = self.metrics.cvssMetricV31[0].cvssData.integrityImpact
-            self.v31availabilityImpact= self.metrics.cvssMetricV31[0].cvssData.availabilityImpact
+        for name in vars(self.metrics):
+            if name.startswith('ssvc'):
+                self.ssvc = getattr(self.metrics, name)
 
-            self.v31exploitability = self.metrics.cvssMetricV31[0].exploitabilityScore
-            self.v31impactScore = self.metrics.cvssMetricV31[0].impactScore
+        if hasattr(self.metrics, 'cvssMetricV31'):
+            v31 = _cvss_primary(self.metrics.cvssMetricV31)
+            self.v31score = v31.cvssData.baseScore
+            self.v31vector = v31.cvssData.vectorString
+            self.v31severity = v31.cvssData.baseSeverity
+            self.v31attackVector = v31.cvssData.attackVector
+            self.v31attackComplexity = v31.cvssData.attackComplexity
+            self.v31privilegesRequired = v31.cvssData.privilegesRequired
+            self.v31userInteraction = v31.cvssData.userInteraction
+            self.v31scope = v31.cvssData.scope
+            self.v31confidentialityImpact = v31.cvssData.confidentialityImpact
+            self.v31integrityImpact = v31.cvssData.integrityImpact
+            self.v31availabilityImpact= v31.cvssData.availabilityImpact
+
+            self.v31exploitability = v31.exploitabilityScore
+            self.v31impactScore = v31.impactScore
 
         if hasattr(self.metrics, 'cvssMetricV30'):
-            self.v30score = self.metrics.cvssMetricV30[0].cvssData.baseScore
-            self.v30vector = self.metrics.cvssMetricV30[0].cvssData.vectorString
-            self.v30severity = self.metrics.cvssMetricV30[0].cvssData.baseSeverity
-            self.v30attackVector = self.metrics.cvssMetricV30[0].cvssData.attackVector
-            self.v30attackComplexity = self.metrics.cvssMetricV30[0].cvssData.attackComplexity
-            self.v30privilegesRequired = self.metrics.cvssMetricV30[0].cvssData.privilegesRequired
-            self.v30userInteraction = self.metrics.cvssMetricV30[0].cvssData.userInteraction
-            self.v30scope = self.metrics.cvssMetricV30[0].cvssData.scope
-            self.v30confidentialityImpact= self.metrics.cvssMetricV30[0].cvssData.confidentialityImpact
-            self.v30integrityImpact = self.metrics.cvssMetricV30[0].cvssData.integrityImpact
-            self.v30availabilityImpact= self.metrics.cvssMetricV30[0].cvssData.availabilityImpact
+            v30 = _cvss_primary(self.metrics.cvssMetricV30)
+            self.v30score = v30.cvssData.baseScore
+            self.v30vector = v30.cvssData.vectorString
+            self.v30severity = v30.cvssData.baseSeverity
+            self.v30attackVector = v30.cvssData.attackVector
+            self.v30attackComplexity = v30.cvssData.attackComplexity
+            self.v30privilegesRequired = v30.cvssData.privilegesRequired
+            self.v30userInteraction = v30.cvssData.userInteraction
+            self.v30scope = v30.cvssData.scope
+            self.v30confidentialityImpact= v30.cvssData.confidentialityImpact
+            self.v30integrityImpact = v30.cvssData.integrityImpact
+            self.v30availabilityImpact= v30.cvssData.availabilityImpact
 
-            self.v30exploitability = self.metrics.cvssMetricV30[0].exploitabilityScore
-            self.v30impactScore = self.metrics.cvssMetricV30[0].impactScore        
+            self.v30exploitability = v30.exploitabilityScore
+            self.v30impactScore = v30.impactScore        
 
         if hasattr(self.metrics, 'cvssMetricV2'):
-            self.v2score = self.metrics.cvssMetricV2[0].cvssData.baseScore
-            self.v2vector = self.metrics.cvssMetricV2[0].cvssData.vectorString
-            self.v2severity = self.metrics.cvssMetricV2[0].baseSeverity
-            self.v2accessVector = self.metrics.cvssMetricV2[0].cvssData.accessVector
-            self.v2accessComplexity = self.metrics.cvssMetricV2[0].cvssData.accessComplexity
-            self.v2authentication = self.metrics.cvssMetricV2[0].cvssData.authentication
-            self.v2confidentialityImpact = self.metrics.cvssMetricV2[0].cvssData.confidentialityImpact
-            self.v2integrityImpact = self.metrics.cvssMetricV2[0].cvssData.integrityImpact
-            self.v2availabilityImpact = self.metrics.cvssMetricV2[0].cvssData.availabilityImpact
-            self.v2exploitability = self.metrics.cvssMetricV2[0].exploitabilityScore
-            self.v2impactScore = self.metrics.cvssMetricV2[0].impactScore
+            v2 = _cvss_primary(self.metrics.cvssMetricV2)
+            self.v2score = v2.cvssData.baseScore
+            self.v2vector = v2.cvssData.vectorString
+            self.v2severity = v2.baseSeverity
+            self.v2accessVector = v2.cvssData.accessVector
+            self.v2accessComplexity = v2.cvssData.accessComplexity
+            self.v2authentication = v2.cvssData.authentication
+            self.v2confidentialityImpact = v2.cvssData.confidentialityImpact
+            self.v2integrityImpact = v2.cvssData.integrityImpact
+            self.v2availabilityImpact = v2.cvssData.availabilityImpact
+            self.v2exploitability = v2.exploitabilityScore
+            self.v2impactScore = v2.impactScore
         
-        # Prefer the latest CVSS version. Version 4.0 uses the Primary metric when one is present.
+        # Prefer the latest CVSS version.
         # If no score is present, then set it to None.
         if hasattr(self, 'v40score'):
             self.score = ['V40', self.v40score, self.v40severity]
@@ -462,7 +573,7 @@ class CVE:
         else:
             self.score = [None, None, None]
 
-def __convert(product: Literal["cve", "cpe", "MatchString"], CVEID: Any) -> Union[CVE, CPE, MatchString]:
+def __convert(product: Literal["cve", "cpe", "MatchString", "cveHistory", "source"], CVEID: Any) -> Union[CVE, CPE, MatchString, CVEHistory, Source]:
     """Convert the JSON response to a referenceable object."""
     if product == 'cve':
         vuln = json.loads(json.dumps(CVEID), object_hook= CVE)
@@ -471,6 +582,12 @@ def __convert(product: Literal["cve", "cpe", "MatchString"], CVEID: Any) -> Unio
     elif product == 'cpe':
         cpeEntry = json.loads(json.dumps(CVEID), object_hook= CPE)
         return cpeEntry 
+    elif product == 'cveHistory':
+        change = json.loads(json.dumps(CVEID), object_hook= CVEHistory)
+        return change
+    elif product == 'source':
+        source = json.loads(json.dumps(CVEID), object_hook= Source)
+        return source
     else:
         matchString = json.loads(json.dumps(CVEID), object_hook= MatchString)
         return matchString

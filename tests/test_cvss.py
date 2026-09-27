@@ -90,6 +90,41 @@ def test_missing_threat_score_does_not_raise_and_not_defined_is_copied():
     assert not hasattr(cve, 'v40environmentalScore')
 
 
+def _v31(metric_type, score, severity):
+    return {
+        'type': metric_type,
+        'cvssData': {
+            'version': '3.1',
+            'vectorString': 'CVSS:3.1/AV:N',
+            'baseScore': score,
+            'baseSeverity': severity,
+            'attackVector': 'NETWORK',
+            'attackComplexity': 'LOW',
+            'privilegesRequired': 'NONE',
+            'userInteraction': 'NONE',
+            'scope': 'UNCHANGED',
+            'confidentialityImpact': 'HIGH',
+            'integrityImpact': 'HIGH',
+            'availabilityImpact': 'HIGH',
+        },
+        'exploitabilityScore': 3.9,
+        'impactScore': 5.9,
+    }
+
+
+def test_primary_v31_score_is_used_when_not_first():
+    cve = _cve({
+        'cvssMetricV31': [
+            _v31('Secondary', 5.0, 'MEDIUM'),
+            _v31('Primary', 9.8, 'CRITICAL'),
+        ]
+    })
+
+    assert cve.score == ['V31', 9.8, 'CRITICAL']
+    assert cve.v31score == 9.8
+    assert cve.v31exploitability == 3.9
+
+
 def test_cvss_v4_search_parameters():
     parameters, _ = __buildCVECall(
         cvssV4Severity='high',

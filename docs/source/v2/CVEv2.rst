@@ -32,7 +32,7 @@ Example with an API key (insert your own API key).
 :func:`nvdlib.searchCVE` will always return a `list`. Since we are obtaining a single CVE, there will always only be 1 element in the list
 when using the `cveId` argument. From this point you are able to retrieve information on the CVE. Here is a method to print the version 3 CVSS severity on a single CVE after a search has been ran.
 
-   >>> print(r[0].v3severity)
+   >>> print(r[0].v31severity)
    HIGH
 
 If you just need a score and severity from a CVE, you can use the `score` attribute that contains a list. This exists 
@@ -40,7 +40,7 @@ on all CVE objects and will prefer version 4.0 scoring. If version 4.0 scoring d
 no scoring exists for the CVE, it will set all values to `None`. The first element is the CVSS version, then score, and severity.
 
    >>> print(r[0].score)   
-   ['V30', 8.1, 'HIGH']
+   ['V31', 8.8, 'HIGH']
 
 .. note::
    CVSS 4.0 metrics do not match versions 2 and 3, and most CVEs still have no 4.0 score.
@@ -111,6 +111,12 @@ Version 4 filters work the same way. `cvssV4Severity` accepts `LOW`, `MEDIUM`, `
 
 >>> r = nvdlib.searchCVE(cvssV4Severity = 'HIGH', cvssV4Metrics = 'AV:N/AT:N')
 
+Get several CVEs at once with `cveIds`, find disputed CVEs with `cveTag`, or find CVEs added to the KEV catalog in a date range.
+
+>>> r = nvdlib.searchCVE(cveIds = 'CVE-2021-26855,CVE-2021-44228')
+>>> r = nvdlib.searchCVE(cveTag = 'disputed', limit = 10)
+>>> r = nvdlib.searchCVE(kevStartDate = '2024-01-01 00:00', kevEndDate = '2024-03-01 00:00')
+
 Get all CVEs in the last 7 days using a datetime object and use an API key.
 
 >>> import datetime
@@ -152,3 +158,31 @@ Grab the CPE names that match a CVE.
 Search for 100 CVEs that have a source identifier of `cve@mitre.org`
 
 >>> r = nvdlib.searchCVE(sourceIdentifier = 'cve@mitre.org', limit = 100)
+
+CVE Change History
+******************
+
+`searchCVEHistory` returns the change events for CVEs, such as when NVD analyzed a CVE or when a CVSS score changed. 
+`searchCVEHistory_V2` takes the same parameters and returns a generator.
+
+>>> r = nvdlib.searchCVEHistory(cveId = 'CVE-2021-44228')
+>>> for eachChange in r:
+...   print(eachChange.created, eachChange.eventName)
+
+.. autofunction:: nvdlib.history.searchCVEHistory
+
+.. autoclass:: nvdlib.classes.CVEHistory
+
+Sources
+*******
+
+`searchSource` returns the organizations that provide NVD data. Use it to look up a `sourceIdentifier` found on a CVE.
+`searchSource_V2` takes the same parameters and returns a generator.
+
+>>> r = nvdlib.searchSource(sourceIdentifier = 'cve@mitre.org')
+>>> print(r[0].name)
+MITRE
+
+.. autofunction:: nvdlib.source.searchSource
+
+.. autoclass:: nvdlib.classes.Source

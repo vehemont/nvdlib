@@ -9,6 +9,8 @@ from .get import __get, __get_with_generator
 def searchCVE(
         cpeName: Optional[str] = None,
         cveId: Optional[str] = None,
+        cveIds: Optional[str] = None,
+        cveTag: Optional[str] = None,
         cvssV2Metrics: Optional[str] = None,
         cvssV2Severity: Optional[str] = None,
         cvssV3Metrics: Optional[str] = None,
@@ -21,6 +23,8 @@ def searchCVE(
         hasKev: Optional[bool] = None,
         hasOval: Optional[bool] = None,
         isVulnerable: Optional[bool] = None,
+        kevStartDate: Optional[Union[str, datetime]] = None,
+        kevEndDate: Optional[Union[str, datetime]] = None,
         keywordExactMatch: Optional[bool] = None,
         keywordSearch: Optional[str] = None,
         lastModStartDate: Optional[Union[str, datetime]] = None,
@@ -37,7 +41,6 @@ def searchCVE(
         limit: Optional[int] = None,
         delay: Optional[float] = None,
         key: Optional[str] = None,
-        verbose: Optional[bool] = None,
         proxies: Optional[Dict] = None,
         asDict: Optional[bool] = None
 ) -> List[CVE]:
@@ -48,6 +51,12 @@ def searchCVE(
 
     :param cveId: Returns a single CVE that already exists in the NVD.
     :type cveId: str
+
+    :param cveIds: Returns one or more CVEs from a comma separated list of CVE IDs. Maximum of 100 CVE IDs.
+    :type cveIds: str
+
+    :param cveTag: Returns CVEs that include the CVE tag 'disputed', 'unsupported-when-assigned', or 'exclusively-hosted-service'.
+    :type cveTag: str
 
     :param cvssV2Metrics: This parameter returns only the CVEs that match the provided CVSSv2 vector string. Either full or partial vector strings may be used. This parameter cannot be used in requests that include cvssV3Metrics.
     :type cvssV2Metrics: str
@@ -84,6 +93,12 @@ def searchCVE(
 
     :param isVulnerable: Returns CVE associated with a specific CPE, where the CPE is also considered vulnerable. **REQUIRES** `cpeName` parameter. `isVulnerable` is not compatible with `virtualMatchString` parameter.
     :type isVulnerable: bool    
+
+    :param kevStartDate: Returns CVEs added to CISA's Known Exploited Vulnerabilities (KEV) catalog during the specified period. If filtering by KEV date, both `kevStartDate` and `kevEndDate` are REQUIRED. The maximum allowable range is 120 consecutive days.
+    :type kevStartDate: str,datetime obj
+
+    :param kevEndDate: Required if using kevStartDate.
+    :type kevEndDate: str, datetime obj
 
     :param keywordExactMatch: When `keywordSearch` is used along with `keywordExactmatch`, it will search the NVD for CVEs containing exactly what was passed to `keywordSearch`. **REQUIRES** `keywordSearch`.
     :type keywordExactMatch: bool
@@ -140,6 +155,8 @@ def searchCVE(
     parameters, headers = __buildCVECall(
         cpeName,
         cveId,
+        cveIds,
+        cveTag,
         cvssV2Metrics,
         cvssV2Severity,
         cvssV3Metrics,
@@ -152,6 +169,8 @@ def searchCVE(
         hasKev,
         hasOval,
         isVulnerable,
+        kevStartDate,
+        kevEndDate,
         keywordExactMatch,
         keywordSearch,
         lastModStartDate,
@@ -186,6 +205,8 @@ def searchCVE(
 def searchCVE_V2(
         cpeName: Optional[str] = None,
         cveId: Optional[str] = None,
+        cveIds: Optional[str] = None,
+        cveTag: Optional[str] = None,
         cvssV2Metrics: Optional[str] = None,
         cvssV2Severity: Optional[str] = None,
         cvssV3Metrics: Optional[str] = None,
@@ -198,6 +219,8 @@ def searchCVE_V2(
         hasKev: Optional[bool] = None,
         hasOval: Optional[bool] = None,
         isVulnerable: Optional[bool] = None,
+        kevStartDate: Optional[Union[str, datetime]] = None,
+        kevEndDate: Optional[Union[str, datetime]] = None,
         keywordExactMatch: Optional[bool] = None,
         keywordSearch: Optional[str] = None,
         lastModStartDate: Optional[Union[str, datetime]] = None,
@@ -214,7 +237,6 @@ def searchCVE_V2(
         limit: Optional[int] = None,
         delay: Optional[float] = None,
         key: Optional[str] = None,
-        verbose: Optional[bool] = None,
         proxies: Optional[Dict] = None,
         asDict: Optional[bool] = None
 ) -> Generator[List[CVE], Tuple[str, Any], None]:
@@ -225,6 +247,12 @@ def searchCVE_V2(
 
     :param cveId: Returns a single CVE that already exists in the NVD.
     :type cveId: str
+
+    :param cveIds: Returns one or more CVEs from a comma separated list of CVE IDs. Maximum of 100 CVE IDs.
+    :type cveIds: str
+
+    :param cveTag: Returns CVEs that include the CVE tag 'disputed', 'unsupported-when-assigned', or 'exclusively-hosted-service'.
+    :type cveTag: str
 
     :param cvssV2Metrics: This parameter returns only the CVEs that match the provided CVSSv2 vector string. Either full or partial vector strings may be used. This parameter cannot be used in requests that include cvssV3Metrics.
     :type cvssV2Metrics: str
@@ -261,6 +289,12 @@ def searchCVE_V2(
 
     :param isVulnerable: Returns CVE associated with a specific CPE, where the CPE is also considered vulnerable. **REQUIRES** `cpeName` parameter. `isVulnerable` is not compatible with `virtualMatchString` parameter.
     :type isVulnerable: bool    
+
+    :param kevStartDate: Returns CVEs added to CISA's Known Exploited Vulnerabilities (KEV) catalog during the specified period. If filtering by KEV date, both `kevStartDate` and `kevEndDate` are REQUIRED. The maximum allowable range is 120 consecutive days.
+    :type kevStartDate: str,datetime obj
+
+    :param kevEndDate: Required if using kevStartDate.
+    :type kevEndDate: str, datetime obj
 
     :param keywordExactMatch: When `keywordSearch` is used along with `keywordExactmatch`, it will search the NVD for CVEs containing exactly what was passed to `keywordSearch`. **REQUIRES** `keywordSearch`.
     :type keywordExactMatch: bool
@@ -317,6 +351,8 @@ def searchCVE_V2(
     parameters, headers = __buildCVECall(
         cpeName,
         cveId,
+        cveIds,
+        cveTag,
         cvssV2Metrics,
         cvssV2Severity,
         cvssV3Metrics,
@@ -329,6 +365,8 @@ def searchCVE_V2(
         hasKev,
         hasOval,
         isVulnerable,
+        kevStartDate,
+        kevEndDate,
         keywordExactMatch,
         keywordSearch,
         lastModStartDate,
@@ -361,6 +399,8 @@ def searchCVE_V2(
 def __buildCVECall(
         cpeName: Optional[str] = None,
         cveId: Optional[str] = None,
+        cveIds: Optional[str] = None,
+        cveTag: Optional[str] = None,
         cvssV2Metrics: Optional[str] = None,
         cvssV2Severity: Optional[str] = None,
         cvssV3Metrics: Optional[str] = None,
@@ -373,6 +413,8 @@ def __buildCVECall(
         hasKev: Optional[bool] = None,
         hasOval: Optional[bool] = None,
         isVulnerable: Optional[bool] = None,
+        kevStartDate: Optional[Union[str, datetime]] = None,
+        kevEndDate: Optional[Union[str, datetime]] = None,
         keywordExactMatch: Optional[bool] = None,
         keywordSearch: Optional[str] = None,
         lastModStartDate: Optional[Union[str, datetime]] = None,
@@ -388,8 +430,7 @@ def __buildCVECall(
         virtualMatchString: Optional[str] = None,
         limit: Optional[int] = None,
         delay: Optional[float] = None,
-        key: Optional[str] = None,
-        verbose: Optional[bool] = None
+        key: Optional[str] = None
 ) -> Tuple[Dict[str, Union[str, bool, None]], Dict[str, str]]:
 
     parameters = {}
@@ -400,6 +441,17 @@ def __buildCVECall(
 
     if cveId is not None:
         parameters['cveId'] = cveId
+
+    if cveIds is not None:
+        parameters['cveIds'] = cveIds
+
+    if cveTag is not None:
+        cveTag = cveTag.lower()
+        if cveTag in ['disputed', 'unsupported-when-assigned', 'exclusively-hosted-service']:
+            parameters['cveTag'] = cveTag
+        else:
+            raise SyntaxError(
+                "cveTag parameter can only be assigned disputed, unsupported-when-assigned, or exclusively-hosted-service value.")
 
     if cvssV2Metrics is not None:
         cvssV2Metrics = urllib.parse.quote_plus(
@@ -462,6 +514,26 @@ def __buildCVECall(
             raise SyntaxError(
                 'cpeName parameter must be defined if isVulnerable parameter is passed.')
 
+    if kevStartDate is not None:
+        if isinstance(kevStartDate, datetime):
+            date = kevStartDate.isoformat()
+        elif isinstance(kevStartDate, str):
+            date = datetime.strptime(
+                kevStartDate, '%Y-%m-%d %H:%M').isoformat()
+        else:
+            raise SyntaxError('Invalid date syntax: ' + kevStartDate)
+        parameters['kevStartDate'] = date.replace('+', '%2B')
+
+    if kevEndDate is not None:
+        if isinstance(kevEndDate, datetime):
+            date = kevEndDate.isoformat()
+        elif isinstance(kevEndDate, str):
+            date = datetime.strptime(
+                kevEndDate, '%Y-%m-%d %H:%M').isoformat()
+        else:
+            raise SyntaxError('Invalid date syntax: ' + kevEndDate)
+        parameters['kevEndDate'] = date.replace('+', '%2B')
+
     if keywordExactMatch is not None:
         if keywordSearch:
             parameters['keywordExactMatch'] = None
@@ -502,10 +574,10 @@ def __buildCVECall(
             date = datetime.strptime(
                 pubStartDate, '%Y-%m-%d %H:%M').isoformat()
         else:
-            raise SyntaxError('Invalid date syntax: ' + pubEndDate)
+            raise SyntaxError('Invalid date syntax: ' + pubStartDate)
         parameters['pubStartDate'] = date.replace('+', '%2B')
 
-    if pubEndDate:
+    if pubEndDate is not None:
         if isinstance(pubEndDate, datetime):
             date = pubEndDate.isoformat()
         elif isinstance(pubEndDate, str):

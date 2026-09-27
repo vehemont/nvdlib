@@ -5,7 +5,7 @@ NVDLib: NIST National Vulnerability Database API Wrapper
    :target: https://pypi.org/project/nvdlib/
    :alt: License Badge
 
-.. image:: https://img.shields.io/badge/Python%203.8.3-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen
+.. image:: https://img.shields.io/badge/Python%203.11-https%3A%2F%2Fpypi.org%2Fproject%2Fnvdlib%2F-yellowgreen
 
 .. image:: https://readthedocs.org/projects/nvdlib/badge/?version=latest
    :target: https://nvdlib.readthedocs.io/en/latest/?badge=latest
@@ -20,12 +20,12 @@ Demo::
    >>> import nvdlib
    >>> r = nvdlib.searchCVE(cveId='CVE-2021-26855')[0]
    >>> print(r.v31severity + ' - ' + str(r.v31score))
-   CRITICAL - 9.8
+   CRITICAL - 9.1
    >>> print(r.descriptions[0].value)
    Microsoft Exchange Server Remote Code Execution Vulnerability This CVE ID is unique from CVE-2021-26412, 
    CVE-2021-26854, CVE-2021-26857, CVE-2021-26858, CVE-2021-27065, CVE-2021-27078.
    >>> print(r.v31vector)
-   CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H 
+   CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N 
 
 **NVDLib** is able to pull all data on known CVEs, search the NVD for CVEs 
 or `Common Platform Enumeration (CPE) <https://nvd.nist.gov/products/cpe>`_ names.
@@ -37,24 +37,29 @@ Features:
 * Pull data on individual CVEs:
    * CVE ID, description, reference links, CWE
    * CPE applicability statements and optional CPE names
-   * CVSS severity scores or metrics
+   * CVSS V2/V3/V4 severity scores or metrics
    * CVE publication date
    * CVE modified date
 * Search the NVD for CVEs by: 
+   * CVE ID or a list of CVE IDs
    * Keywords
-   * Publish or modification start/end dates
+   * Publish, modification, or KEV catalog start/end dates
    * cweID
-   * CVSS V2/V3, score, severity, or metrics.
+   * CVSS V2/V3/V4, score, severity, or metrics.
    * CPE match string/virtual match string
    * CPE name
    * US-CERT alerts, KEV Catalog or OVAL
+   * CVE tags
    * Source identifier
    * Vulnerable status
 * Search the NVD for CPE names by:
    * Modification start/End dates 
    * Keywords 
    * CPE match string. 
-   * Dump data into objects to be accessible easily as class attributes. 
+* Search CPE match strings.
+* Search the CVE change history.
+* Search the organizations (sources) that provide NVD data.
+* Dump data into objects to be accessible easily as class attributes, or get the plain dictionaries with `asDict=True`. 
 
 
 For more information on the NIST NVD API for CPE and CVEs, see the documentation here:

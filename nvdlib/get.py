@@ -9,7 +9,7 @@ from json.decoder import JSONDecodeError
 logger = logging.getLogger(__name__)
 
 def __get(
-        product: Literal["cve", "cpe", "cpeMatch"],
+        product: Literal["cve", "cpe", "cpeMatch", "cveHistory", "source"],
         headers: Mapping[str, Union[str, bytes, None]],
         parameters: Dict[str, Union[str, LiteralString, int]],
         limit: Optional[int] = None,
@@ -25,6 +25,10 @@ def __get(
         link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
     elif product == 'cpeMatch':
         link = 'https://services.nvd.nist.gov/rest/json/cpematch/2.0?'
+    elif product == 'cveHistory':
+        link = 'https://services.nvd.nist.gov/rest/json/cvehistory/2.0?'
+    elif product == 'source':
+        link = 'https://services.nvd.nist.gov/rest/json/source/2.0?'
 
     # Requests doesn't really work with dictionary parameters that have no value like `isVulnerable`. The workaround is to just pass a string instead.
     # This joins the parameters into a string with '&' and if a key contains a value then it will join the values with '='
@@ -34,6 +38,8 @@ def __get(
 
     raw = requests.get(link, params=stringParams, headers=headers, timeout=30, proxies=proxies)
     raw.encoding = 'utf-8'
+    if not raw.ok and 'message' in raw.headers:
+        raise requests.HTTPError(f"{raw.status_code} {raw.headers['message']}: {raw.url}", response=raw)
     raw.raise_for_status()
 
     try:  # Try to convert the request to JSON. If it is not JSON, then log the response and exit.
@@ -58,12 +64,16 @@ def __get(
     # Use the page we already grabbed, then send a request starting at the next startIndex, and repeat until all results have been grabbed.
     # Add each ['vulnerabilities'] or ['products'] list from each page to the end of the first request. Effectively creates one data point.
     elif totalResults > raw['resultsPerPage']:
-        pages = (totalResults // raw['resultsPerPage'])
+        pages = (totalResults - 1) // raw['resultsPerPage']
         startIndex = raw['resultsPerPage']
         if product == 'cve':
             path = 'vulnerabilities'
         elif product == 'cpeMatch':
             path = 'matchStrings'
+        elif product == 'cveHistory':
+            path = 'cveChanges'
+        elif product == 'source':
+            path = 'sources'
         else:
             path = 'products'
 
@@ -86,6 +96,8 @@ def __get(
                 logger.error('Something went wrong: %s', str(getReq))
                 logger.error('Attempted search criteria: %s', str(stringParams))
                 logger.error('URL: %s', getReq.request.url)
+                if not getReq.ok and 'message' in getReq.headers:
+                    raise requests.HTTPError(f"{getReq.status_code} {getReq.headers['message']}: {getReq.url}", response=getReq)
                 getReq.raise_for_status()
                 getData = None
 
@@ -97,7 +109,7 @@ def __get(
 
 
 def __get_with_generator(
-        product: Literal["cve", "cpe", "cpeMatch"],
+        product: Literal["cve", "cpe", "cpeMatch", "cveHistory", "source"],
         headers: Mapping[str, Union[str, bytes, None]],
         parameters: Dict[str, Union[str, LiteralString, int]],
         limit: Optional[int],
@@ -110,7 +122,11 @@ def __get_with_generator(
     elif product == 'cpe':
         link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
     elif product == 'cpeMatch':
-        link = 'https://services.nvd.nist.gov/rest/json/cpes/2.0?'
+        link = 'https://services.nvd.nist.gov/rest/json/cpematch/2.0?'
+    elif product == 'cveHistory':
+        link = 'https://services.nvd.nist.gov/rest/json/cvehistory/2.0?'
+    elif product == 'source':
+        link = 'https://services.nvd.nist.gov/rest/json/source/2.0?'
     startIndex = 0
     while True:
         stringParams = '&'.join(
@@ -128,6 +144,8 @@ def __get_with_generator(
                 break
 
         raw.encoding = 'utf-8'
+        if not raw.ok and 'message' in raw.headers:
+            raise requests.HTTPError(f"{raw.status_code} {raw.headers['message']}: {raw.url}", response=raw)
         raw.raise_for_status()
 
         try:  # Try to convert the request to JSON. If it is not JSON, then log the response and exit.

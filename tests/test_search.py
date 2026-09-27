@@ -1,9 +1,12 @@
 import nvdlib
 import os
+import pytest
 import responses
 import json
 from unittest.mock import patch
 from pathlib import Path
+from nvdlib.classes import __convert
+from nvdlib.cve import __buildCVECall
 
 
 def mock_nvd(bad_json=False):
@@ -285,3 +288,46 @@ def test_search_cve_as_dict():
         result = nvdlib.searchCVE(cveId='CVE-2024-0001')
         assert isinstance(result[0], nvdlib.classes.CVE)
         assert result[0].id == 'CVE-2024-0001'
+
+
+def test_cve_ids_tag_and_kev_date_parameters():
+    """Test that cveIds, cveTag, and the KEV dates are added to the request."""
+    parameters, _ = __buildCVECall(
+        cveIds='CVE-2021-26855,CVE-2021-44228',
+        cveTag='Disputed',
+        kevStartDate='2024-01-01 00:00',
+        kevEndDate='2024-03-01 00:00',
+    )
+
+    assert parameters['cveIds'] == 'CVE-2021-26855,CVE-2021-44228'
+    assert parameters['cveTag'] == 'disputed'
+    assert parameters['kevStartDate'] == '2024-01-01T00:00:00'
+    assert parameters['kevEndDate'] == '2024-03-01T00:00:00'
+
+
+def test_cve_tag_rejects_unknown_value():
+    """Test that cveTag only accepts the tags NVD documents."""
+    with pytest.raises(SyntaxError):
+        __buildCVECall(cveTag='unknown')
+
+
+def test_cve_cpe_includes_every_node_and_ssvc():
+    """Test that `cpe` has the matches from every configuration node and `ssvc` is copied from metrics."""
+    cve = __convert('cve', {
+        'id': 'CVE-2024-0001',
+        'metrics': {
+            'ssvcV203': [{'source': 'cisa', 'ssvcData': {'role': 'CISA Coordinator'}}],
+        },
+        'configurations': [
+            {'nodes': [
+                {'cpeMatch': [{'criteria': 'cpe:2.3:a:example:one:*:*:*:*:*:*:*:*'}]},
+                {'cpeMatch': [{'criteria': 'cpe:2.3:a:example:two:*:*:*:*:*:*:*:*'}]},
+            ]}
+        ],
+    })
+
+    assert [match.criteria for match in cve.cpe] == [
+        'cpe:2.3:a:example:one:*:*:*:*:*:*:*:*',
+        'cpe:2.3:a:example:two:*:*:*:*:*:*:*:*',
+    ]
+    assert cve.ssvc[0].ssvcData.role == 'CISA Coordinator'

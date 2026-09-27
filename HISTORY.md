@@ -1,5 +1,28 @@
 Release History
 ===============
+0.9.0 (2026-09-27)
+-------------------
+**Breaking**
+- Removed the `verbose` parameter from `searchCVE` and `searchCVE_V2`. It has done nothing since 0.7.8. Use the Python logging module instead, see https://nvdlib.com/en/latest/v2/startedv2.html#logging
+
+**Bugfixes**
+- Capped the `searchCPEmatch` limit at 500, the Match Criteria API maximum.
+- Fixed CPE match generator requests being sent to the CPE URL.
+- Stopped requesting an extra empty page when the total results are an exact multiple of the page size.
+- Fixed the `pubStartDate` error message showing `pubEndDate`.
+- Corrected CVE, CPE, and match string docstrings to match the live API field names, such as `cisaExploitAdd` and `lastModified`.
+
+**Enhancements**
+- Added `asDict` to every search function to return the plain dictionaries from the NVD API instead of objects.
+- Added `searchCVEHistory` and `searchCVEHistory_V2` for the CVE Change History API.
+- Added `searchSource` and `searchSource_V2` for the Source API.
+- Added `cveIds`, `cveTag`, `kevStartDate`, and `kevEndDate` to `searchCVE` and `searchCVE_V2`.
+- Added `searchCPEmatch_V2` and the `proxies` parameter to `searchCPEmatch`.
+- CVSS 3.1, 3.0, and 2.0 scores now use the Primary metric when one is present, the same as CVSS 4.0.
+- `cpe` now includes the CPE matches from every configuration node, not just the first.
+- Added `ssvc` to CVE objects when the CVE includes SSVC data.
+- HTTP errors now include the reason NVD returns in the `message` header.
+
 0.8.5 (2026-09-27)
 -------------------
 **Enhancements**

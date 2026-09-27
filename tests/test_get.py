@@ -222,6 +222,46 @@ def test_get_pagination_logic(mock_requests_get, mock_sleep, sample_headers, sam
 
 @patch('nvdlib.get.time.sleep')
 @patch('nvdlib.get.requests.get')
+def test_get_raises_nvd_error_message(mock_requests_get, mock_sleep, sample_headers, sample_parameters):
+    """Test that __get includes the NVD message header in the HTTPError."""
+    mock_response = Mock()
+    mock_response.ok = False
+    mock_response.status_code = 404
+    mock_response.headers = {'message': 'Both kevStartDate and kevEndDate are required when either is present.'}
+    mock_response.url = 'https://services.nvd.nist.gov/rest/json/cves/2.0?kevStartDate=2024-01-01T00:00:00'
+    mock_requests_get.return_value = mock_response
+
+    with pytest.raises(requests.exceptions.HTTPError, match='Both kevStartDate and kevEndDate are required'):
+        __get('cve', sample_headers, sample_parameters)
+
+
+@patch('nvdlib.get.time.sleep')
+@patch('nvdlib.get.requests.get')
+def test_get_pagination_exact_multiple(mock_requests_get, mock_sleep, sample_headers, sample_parameters):
+    """Test __get does not request an extra page when totalResults is an exact multiple of resultsPerPage."""
+    first_response_data = {
+        'totalResults': 4000,
+        'resultsPerPage': 2000,
+        'vulnerabilities': [{'cve': {'id': f'CVE-2021-{i}'}} for i in range(2000)]
+    }
+    second_response_data = {
+        'vulnerabilities': [{'cve': {'id': f'CVE-2021-{i}'}} for i in range(2000, 4000)]
+    }
+
+    mock_first_response = Mock()
+    mock_first_response.json.return_value = first_response_data
+    mock_second_response = Mock()
+    mock_second_response.json.return_value = second_response_data
+    mock_requests_get.side_effect = [mock_first_response, mock_second_response]
+
+    result = __get('cve', sample_headers, sample_parameters)
+
+    assert len(result['vulnerabilities']) == 4000
+    assert mock_requests_get.call_count == 2
+
+
+@patch('nvdlib.get.time.sleep')
+@patch('nvdlib.get.requests.get')
 def test_get_returns_cpe_page_over_2000(mock_requests_get, mock_sleep, sample_headers, sample_parameters):
     """Test __get keeps a CPE page that already contains every result."""
     response_data = {
