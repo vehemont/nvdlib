@@ -1,5 +1,12 @@
 Release History
 ===============
+0.8.5 (2026-09-27)
+-------------------
+**Enhancements**
+- CVSS 4.0 scores now use the Primary metric when one is present, instead of whichever 4.0 entry is listed first. `score` still prefers 4.0 over 3.1 when any 4.0 block exists. https://github.com/vehemont/nvdlib/issues/52
+- CVSS 4.0 fields that are present on a CVE are copied onto the CVE object, including `NOT_DEFINED`. Missing fields are left unset. Version 4.0 has no exploitability or impact score.
+- Added `cvssV4Metrics` and `cvssV4Severity` to `searchCVE` and `searchCVE_V2`.
+
 0.8.4 (2026-09-27)
 -------------------
 **Bugfixes**
