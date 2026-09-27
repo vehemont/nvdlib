@@ -1,5 +1,40 @@
 Release History
 ===============
+0.8.4 (2026-09-27)
+-------------------
+**Bugfixes**
+- Fixed `keywordExactMatch` on `searchCPE` and `searchCPE_V2` being sent as `True`. The NVD CPE API expects the flag with no value and was returning 404. https://github.com/vehemont/nvdlib/issues/68
+- Raised the CPE `limit` maximum from 2000 to 10000, matching the CPE API. A full first page larger than 2000 was also being discarded, so a search such as `searchCPE(keywordSearch="Jetbrains")` came back empty. https://github.com/vehemont/nvdlib/issues/69
+- Fixed `tests/test_search.py` so the fixture paths resolve from the test file. Pytest failed when it was not started from the repository root. https://github.com/vehemont/nvdlib/issues/71
+
+**Enhancements**
+- Replaced `setup.py` with `pyproject.toml`. https://github.com/vehemont/nvdlib/pull/70
+
+0.8.3 (2025-08-06)
+-------------------
+**Bugfixes**
+- Fixed `searchCPEmatch` batching and paging. https://github.com/vehemont/nvdlib/issues/62
+- Updated paging to follow the NVD API page size returned by each response.
+
+0.8.2 (2025-08-06)
+-------------------
+**Bugfixes**
+- Fixed a `JSONDecodeError` during paged searches that could leave `getData` unset and raise `UnboundLocalError`. https://github.com/vehemont/nvdlib/issues/60
+- Fixed `searchCVE_V2` raising `TypeError` when a failed request yielded a response object instead of a dictionary. https://github.com/vehemont/nvdlib/issues/61
+
+**Enhancements**
+- Added proxy support to the generator requests in `__get_with_generator`.
+
+0.8.1 (2025-05-28)
+-------------------
+**Bugfixes**
+- Fixed the generator failing when `delay` was explicitly passed as `None`.
+- Fixed incorrect docstrings, including `CVE.metrics` being described as a dictionary. https://github.com/vehemont/nvdlib/issues/56
+
+**Enhancements**
+- Added `__getattr__` so linters handle dynamic CVE and CPE attributes more cleanly.
+- Added a proxy option for API calls. Courtesy of @tigre-bleu in https://github.com/vehemont/nvdlib/pull/55
+
 0.8.0 (2025-03-19)
 -------------------
 **Bugfixes**
